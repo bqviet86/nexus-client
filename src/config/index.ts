@@ -1,9 +1,1 @@
-import routes from './routes'
-
-const config = {
-    routes
-}
-
-export { routes }
-
-export default config
+export { default as routes } from './routes'

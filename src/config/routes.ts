@@ -1,4 +1,4 @@
-const routes: Record<string, string> = {
+const routes = {
     home: '/',
     welcome: '/welcome',
     login: '/login',

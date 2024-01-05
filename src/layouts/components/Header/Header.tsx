@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 
 import images from '~/assets/images'
 import { routes } from '~/config'
-import { HEADER_MENU_ITEMS } from '~/constants/data'
+import { HEADER_MENU_ITEMS } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 
 function Header() {

@@ -13,6 +13,9 @@
         "prettier:fix": "prettier --write \"src/**/(*.tsx|*.ts|*.css|*.scss)\""
     },
     "dependencies": {
+        "@tanstack/react-query": "^5.17.0",
+        "@tanstack/react-query-devtools": "^5.17.0",
+        "antd": "^5.12.7",
         "axios": "^1.6.3",
         "date-fns": "^3.0.6",
         "jwt-decode": "^4.0.0",

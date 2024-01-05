@@ -7,12 +7,18 @@ function Welcome() {
     const navigate = useNavigate()
 
     return (
-        <div className='fixed inset-x-0 h-[calc(100vh-60px)] bg-[#f0f2f5]'>
+        <div className='fixed inset-x-0 h-[calc(100vh-60px)]'>
+            <img
+                src={images.cloud_space}
+                alt='cloud_space'
+                className='absolute left-0 top-0 h-full w-full object-cover transition-all dark:opacity-0'
+            />
             <img
                 src={images.space}
                 alt='space'
-                className='h-full w-full object-cover opacity-0 transition-all dark:opacity-[1]'
+                className='absolute left-0 top-0 h-full w-full object-cover opacity-0 transition-all dark:opacity-[1]'
             />
+
             <div className='absolute left-0 top-1/2 z-30 flex h-[80%] max-w-[400px] -translate-y-1/2 flex-col justify-between p-2 sm:h-[90%] sm:max-w-[460px] sm:pl-10 md:max-w-[500px] md:pl-16'>
                 <div>
                     <h2 className='text-[40px] font-medium transition-all sm:text-[60px] md:text-[80px] dark:text-[#7dd3fc]'>
@@ -22,6 +28,7 @@ function Welcome() {
                         Chào mừng bạn đến với Nexus
                     </p>
                 </div>
+
                 <div>
                     <h4 className='my-1 text-xl font-medium transition-all sm:my-2 sm:text-[24px] md:my-3 md:text-[32px] dark:text-[#e4e6eb]'>
                         Lorem
@@ -31,15 +38,16 @@ function Welcome() {
                         animi ab ex, iure eveniet provident facilis, similique dignissimos fuga. Nam ex at ipsum quae
                         placeat voluptates.
                     </p>
+
                     <div className='mt-5 flex'>
                         <button
-                            className='rounded-xl bg-gradient-to-bl from-cyan-500 to-blue-500 px-2.5 py-2 font-medium transition-all hover:text-white sm:px-4 sm:py-2.5 sm:text-[20px] dark:text-[#e4e6eb]'
+                            className='rounded-xl bg-gradient-to-bl from-[#07a787] to-[#2979ff] px-2.5 py-2 font-medium transition-all hover:text-white sm:px-4 sm:py-2 sm:text-[18px] dark:text-[#e4e6eb]'
                             onClick={() => navigate(routes.login)}
                         >
                             Đăng nhập
                         </button>
                         <button
-                            className='ml-2.5 rounded-xl bg-gradient-to-bl from-cyan-500 to-blue-500 px-2.5 py-2 font-medium transition-all hover:text-white sm:ml-4 sm:px-4 sm:py-2.5 sm:text-[20px] dark:text-[#e4e6eb]'
+                            className='ml-2.5 rounded-xl bg-gradient-to-bl from-[#07a787] to-[#2979ff] px-2.5 py-2 font-medium transition-all hover:text-white sm:ml-4 sm:px-4 sm:py-2 sm:text-[18px] dark:text-[#e4e6eb]'
                             onClick={() => navigate(routes.register)}
                         >
                             Đăng ký

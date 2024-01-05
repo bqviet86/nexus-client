@@ -1,4 +1,4 @@
-import { UserSaveClient } from '~/types/user.type'
+import { UserSaveClient } from '~/contexts/appContext'
 
 export const getUserFromLS = () => {
     const result = localStorage.getItem('user')

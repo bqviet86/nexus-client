@@ -11,7 +11,7 @@ import Register from '~/pages/Register'
 // Thêm onlyAdmin: true để báo là route này chỉ có admin mới được truy cập
 // Children: [] chứa các route con của nó
 
-type Route = {
+export type Route = {
     path: string
     component: () => JSX.Element
     layout: ({ children }: { children: React.ReactNode }) => JSX.Element
@@ -25,12 +25,14 @@ const routes: Route[] = [
     {
         path: routesConfig.welcome,
         component: Welcome,
-        layout: DefaultLayout
+        layout: DefaultLayout,
+        unnecessary: true
     },
     {
         path: routesConfig.home,
         component: Home,
-        layout: DefaultLayout
+        layout: DefaultLayout,
+        protected: true
     },
     {
         path: routesConfig.login,
@@ -45,7 +47,5 @@ const routes: Route[] = [
         unnecessary: true
     }
 ]
-
-export type { Route }
 
 export default routes

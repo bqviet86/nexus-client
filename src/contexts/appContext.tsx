@@ -1,33 +1,60 @@
 import { createContext, useEffect, useState } from 'react'
+import { jwtDecode } from 'jwt-decode'
 
-import { UserSaveClient } from '~/types/user.type'
-import { getDarkModeFromLS, getUserFromLS, setDarkModeToLS } from '~/utils/localStorage'
+import { UserRole } from '~/constants/enums'
+import { TokenResponse } from '~/types/users.types'
+import { TokenPayload } from '~/types/jwt.types'
+import { getDarkModeFromLS, getUserFromLS, setDarkModeToLS, setUserToLS } from '~/utils/localStorage'
 
-interface AppContextInterface {
+export type UserSaveClient = {
+    user_id: string
+    role: UserRole
+    access_token: string
+    refresh_token: string
+}
+
+type AppContextType = {
     user: UserSaveClient | null
-    setUser: React.Dispatch<React.SetStateAction<UserSaveClient | null>>
+    setUser: (tokenResponse: TokenResponse) => void
     darkMode: boolean
     setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const initialAppContext: AppContextInterface = {
+const initialAppContext: AppContextType = {
     user: getUserFromLS(),
-    setUser: () => null,
+    setUser: () => {},
     darkMode: getDarkModeFromLS(),
-    setDarkMode: () => null
+    setDarkMode: () => {}
 }
 
-const AppContext = createContext<AppContextInterface>(initialAppContext)
+export const AppContext = createContext<AppContextType>(initialAppContext)
 
 function AppProvider({
     children,
     defaultValue = initialAppContext
 }: {
     children: React.ReactNode
-    defaultValue?: AppContextInterface
+    defaultValue?: AppContextType
 }) {
     const [user, setUser] = useState<UserSaveClient | null>(defaultValue.user)
     const [darkMode, setDarkMode] = useState<boolean>(defaultValue.darkMode)
+
+    const setUserByToken = ({ access_token, refresh_token }: TokenResponse) => {
+        const { user_id, role } = jwtDecode<TokenPayload>(access_token)
+
+        setUser({
+            user_id,
+            role,
+            access_token,
+            refresh_token
+        })
+    }
+
+    useEffect(() => {
+        if (user) {
+            setUserToLS(user)
+        }
+    }, [user])
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode)
@@ -38,7 +65,7 @@ function AppProvider({
         <AppContext.Provider
             value={{
                 user,
-                setUser,
+                setUser: setUserByToken,
                 darkMode,
                 setDarkMode
             }}
@@ -47,7 +74,5 @@ function AppProvider({
         </AppContext.Provider>
     )
 }
-
-export { AppContext }
 
 export default AppProvider

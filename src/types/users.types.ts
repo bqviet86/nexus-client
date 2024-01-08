@@ -19,6 +19,17 @@ export type TokenResponse = {
     refresh_token: string
 }
 
-export type LoginResponse = SuccessResponse<TokenResponse>
+export type AuthResponse = {
+    user: User
+    token: TokenResponse
+}
 
-export type RegisterResponse = SuccessResponse<TokenResponse>
+export type LoginResponse = SuccessResponse<AuthResponse>
+
+export type RegisterResponse = SuccessResponse<AuthResponse>
+
+export type LogoutResponse = SuccessResponse
+
+export type RefreshTokenResponse = SuccessResponse<TokenResponse>
+
+export type GetMeResponse = SuccessResponse<User>

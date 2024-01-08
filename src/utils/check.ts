@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 import HTTP_STATUS from '~/constants/httpStatus'
+import { TokenPayload } from '~/types/jwt.types'
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
@@ -19,4 +21,9 @@ export function isAxiosUnauthorizedError<UnauthorizedError>(error: unknown): err
 
 export function isAxiosExpiredTokenError<UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> {
     return isAxiosUnauthorizedError<ErrorResponse>(error) && error.response?.data?.message === 'Jwt expired'
+}
+
+export function isAccessTokenExpired(access_token: string) {
+    const { exp } = jwtDecode<TokenPayload>(access_token)
+    return Date.now() >= exp * 1000
 }

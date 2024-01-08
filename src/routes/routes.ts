@@ -5,6 +5,9 @@ import Home from '~/pages/Home'
 import Welcome from '~/pages/Welcome'
 import Login from '~/pages/Login'
 import Register from '~/pages/Register'
+import Chat from '~/pages/Chat'
+import Profile from '~/pages/Profile'
+import UpdateProfile from '~/pages/UpdateProfile'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
 // Thêm protected: true để báo là route này cần phải đăng nhập mới được truy cập
@@ -23,16 +26,16 @@ export type Route = {
 
 const routes: Route[] = [
     {
-        path: routesConfig.welcome,
-        component: Welcome,
-        layout: DefaultLayout,
-        unnecessary: true
-    },
-    {
         path: routesConfig.home,
         component: Home,
         layout: DefaultLayout,
         protected: true
+    },
+    {
+        path: routesConfig.welcome,
+        component: Welcome,
+        layout: DefaultLayout,
+        unnecessary: true
     },
     {
         path: routesConfig.login,
@@ -45,6 +48,24 @@ const routes: Route[] = [
         component: Register,
         layout: DefaultLayout,
         unnecessary: true
+    },
+    {
+        path: routesConfig.chat,
+        component: Chat,
+        layout: DefaultLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.profile,
+        component: Profile,
+        layout: DefaultLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.updateProfile,
+        component: UpdateProfile,
+        layout: DefaultLayout,
+        protected: true
     }
 ]
 

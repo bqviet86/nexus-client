@@ -8,6 +8,7 @@ import cloud from './cloud.png'
 import rocket from './rocket.png'
 import cloud_under from './cloud-under.png'
 import alien from './alien.png'
+import avatar from './avatar.png'
 
 const images = {
     logo,
@@ -19,7 +20,8 @@ const images = {
     cloud,
     rocket,
     cloud_under,
-    alien
+    alien,
+    avatar
 }
 
 export default images

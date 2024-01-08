@@ -9,9 +9,10 @@ import images from '~/assets/images'
 import { routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
-import { TokenResponse } from '~/types/users.types'
+import { AuthResponse } from '~/types/users.types'
 import { isAxiosUnprocessableEntityError } from '~/utils/check'
 import { handleUnprocessableEntityError } from '~/utils/handle'
+import { setTokenToLS, setUserToLS } from '~/utils/localStorage'
 
 type RegisterResError = {
     [K in keyof RegisterReqData]: string | null
@@ -58,8 +59,12 @@ function Register() {
         e.preventDefault()
 
         mutateRegister(formData, {
-            onSuccess: (registerData) => {
-                setUser(registerData.data.result as TokenResponse)
+            onSuccess: (resData) => {
+                const result = resData.data.result as AuthResponse
+
+                setUser(result.user)
+                setUserToLS(result.user)
+                setTokenToLS(result.token)
                 navigate(routes.home)
             },
             onError: (error) => {

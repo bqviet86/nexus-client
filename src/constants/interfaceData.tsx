@@ -81,16 +81,13 @@ export const HEADER_NAV_ITEMS_LOGGED_IN: HeaderNavItemType[] = [
         color: '#26a69a',
         icon: (
             <svg
-                className='h-[24px] w-[24px] text-[#26a69a]'
+                className='h-[20px] w-[20px] text-[#26a69a]'
+                aria-hidden='true'
                 xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
                 fill='currentColor'
+                viewBox='0 0 20 18'
             >
-                <path
-                    fillRule='evenodd'
-                    d='M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z'
-                    clipRule='evenodd'
-                />
+                <path d='M18 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3.546l3.2 3.659a1 1 0 0 0 1.506 0L13.454 14H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-8 10H5a1 1 0 0 1 0-2h5a1 1 0 1 1 0 2Zm5-4H5a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2Z' />
             </svg>
         )
     }
@@ -151,7 +148,7 @@ export const HEADER_MENU_ITEMS_NOT_LOGGED_IN: HeaderMenuItemType[] = [
 export const HEADER_MENU_ITEMS_LOGGED_IN: HeaderMenuItemType[] = [
     {
         title: 'Trang cá nhân',
-        path: routes.profile,
+        path: routes.myProfile,
         color: '#ff5722',
         icon: (
             <svg
@@ -251,3 +248,21 @@ export const HEADER_MENU_ITEMS_LOGGED_IN_MOBILE: HeaderMenuItemType[] = [
     },
     ...HEADER_MENU_ITEMS_LOGGED_IN
 ]
+
+export const MEDIAS_MAX_LENGTH: number = 5
+
+export const MEDIAS_GRID_TEMPLATE_AREAS: Record<number, string> = {
+    1: 'grid-areas-medias-1',
+    2: 'grid-areas-medias-2',
+    3: 'grid-areas-medias-3',
+    4: 'grid-areas-medias-4',
+    5: 'grid-areas-medias-5'
+}
+
+export const MEDIAS_GRID_AREA: Record<number, string> = {
+    1: 'grid-in-media-1',
+    2: 'grid-in-media-2',
+    3: 'grid-in-media-3',
+    4: 'grid-in-media-4',
+    5: 'grid-in-media-5'
+}

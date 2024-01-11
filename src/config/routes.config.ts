@@ -4,7 +4,7 @@ const routes = {
     login: '/login',
     register: '/register',
     chat: '/chat',
-    profile: '/profile',
+    myProfile: '/my-profile',
     updateProfile: '/update-profile'
 }
 

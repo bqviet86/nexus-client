@@ -56,7 +56,7 @@ const routes: Route[] = [
         protected: true
     },
     {
-        path: routesConfig.profile,
+        path: routesConfig.myProfile,
         component: Profile,
         layout: DefaultLayout,
         protected: true

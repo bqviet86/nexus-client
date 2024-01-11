@@ -113,7 +113,11 @@ function Header() {
                     <img src={darkMode ? images.logo_dark : images.logo} alt='logo' className='w-10' />
                 </Link>
 
-                <ul className='absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center md:flex'>
+                <ul
+                    className={`absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center justify-evenly md:flex${
+                        user ? ' w-[50%]' : ''
+                    }`}
+                >
                     {(user ? HEADER_NAV_ITEMS_LOGGED_IN : HEADER_NAV_ITEMS_NOT_LOGGED_IN).map((item) => (
                         <li key={nanoid()} className='relative mx-1'>
                             <NavLink
@@ -139,23 +143,23 @@ function Header() {
                 <div className='flex items-center'>
                     <div className={`relative mr-3${user ? ' flex items-center' : ' md:hidden'}`}>
                         {user && (
-                            <div className='flex max-w-[160px] translate-x-4 items-center rounded-s-full bg-[#3f51b5] py-2 pl-4 pr-6 text-sm font-medium text-white'>
-                                <span className='line-clamp-1 leading-[14px]'>{user.name}</span>
+                            <div className='flex max-w-[160px] translate-x-[18px] items-center rounded-s-full border border-solid border-[#3f51b5] bg-[#3f51b5] py-1.5 pl-4 pr-6 text-sm font-medium text-white transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'>
+                                <span className='line-clamp-1 leading-4'>{user.name}</span>
                             </div>
                         )}
 
                         <div
                             className={`cursor-pointer${
-                                user ? ' z-40 h-10 w-10 rounded-full bg-[#3f51b5] p-1.5' : ' p-2'
+                                user
+                                    ? ' z-40 h-10 w-10 rounded-full bg-[#3f51b5] p-[5px] transition-all dark:bg-[#cbd5e1]'
+                                    : ' p-2'
                             }`}
                             onClick={() => setShowMenu(!showMenu)}
                         >
                             {user ? (
-                                <img
-                                    src={images.avatar}
-                                    alt='avatar'
-                                    className='h-full w-full rounded-full object-cover'
-                                />
+                                <div className='overflow-hidden rounded-full border border-solid border-black'>
+                                    <img src={images.avatar} alt='avatar' className='h-full w-full object-cover' />
+                                </div>
                             ) : (
                                 <svg
                                     className='h-[16px] w-[16px] text-gray-800 transition-all dark:text-white'

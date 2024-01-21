@@ -4,14 +4,11 @@ import { ErrorResponse } from '~/types/response.types'
 import { RefreshTokenResponse, TokenResponse } from '~/types/users.types'
 import { isAccessTokenExpired, isAxiosUnauthorizedError } from './check'
 import { sendEvent } from './event'
-import { getAccessTokenFromLS, getRefreshTokenFromLS, setTokenToLS } from './localStorage'
+import { getTokenFromLS, setTokenToLS } from './localStorage'
 
-const requestConfig: CreateAxiosDefaults | AxiosRequestConfig = {
+export const requestConfig: CreateAxiosDefaults | AxiosRequestConfig = {
     baseURL: import.meta.env.VITE_API_URL as string, // http://localhost:4000
-    timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
+    timeout: 15000
 }
 
 class Http {
@@ -26,8 +23,9 @@ class Http {
 
         this.instance.interceptors.request.use(
             async (config) => {
-                const access_token = getAccessTokenFromLS()
-                const refresh_token = getRefreshTokenFromLS()
+                const token = getTokenFromLS()
+                const access_token = token?.access_token || null
+                const refresh_token = token?.refresh_token || null
 
                 const setAuthorization = (access_token: string) => {
                     config.headers.Authorization = `Bearer ${access_token}`
@@ -91,8 +89,10 @@ class Http {
                 { refresh_token },
                 requestConfig as AxiosRequestConfig
             )
+            const tokenResponse = response.data.result as TokenResponse
 
-            setTokenToLS(response.data.result as TokenResponse)
+            sendEvent<TokenResponse>('refresh-token-success', tokenResponse)
+            setTokenToLS(tokenResponse)
 
             return response.data.result as TokenResponse
         } catch (error) {

@@ -1,24 +1,54 @@
 import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Modal } from 'antd'
-import { nanoid } from 'nanoid'
+import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 import Button from '~/components/Button'
 import PostForm from '~/components/PostForm'
+import { CreatePostReqData, createPost } from '~/apis/posts.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
+import { MediaTypes } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
+import { MediaWithFile } from '~/types/medias.types'
 
 function CreatePost() {
     const { user } = useContext(AppContext)
-    const [isOpenModal, setIsOpenModal] = useState(false)
+    const [isOpenForm, setIsOpenForm] = useState<boolean>(false)
+    const [isShowInputFile, setIsShowInputFile] = useState<boolean>(false)
 
-    const handleOpenModal = () => {
-        setIsOpenModal(true)
+    const handleOpenForm = ({
+        showInputFile = true,
+        medias = []
+    }: {
+        showInputFile?: boolean
+        medias?: MediaWithFile[]
+    }) => {
+        setIsOpenForm(true)
+
+        if (medias.length) {
+            setIsShowInputFile(true)
+        } else {
+            setIsShowInputFile(showInputFile)
+        }
     }
 
-    const handleCloseModal = () => {
-        setIsOpenModal(false)
+    const handleCloseForm = () => {
+        setIsOpenForm(false)
+    }
+
+    const { mutateAsync: mutateCreatePost } = useMutation({
+        mutationFn: (data: CreatePostReqData) => createPost(data)
+    })
+
+    const handleSubmitForm = async (createPostReqData: CreatePostReqData) => {
+        const { medias } = createPostReqData
+
+        await mutateCreatePost(createPostReqData)
+
+        if (medias.some((media) => media.type === MediaTypes.Video)) {
+            toast('Bài viết của bạn đang được xử lý.\nChúng tôi sẽ thông báo cho bạn khi hoàn tất!')
+        }
     }
 
     return (
@@ -33,7 +63,7 @@ function CreatePost() {
                 </Link>
                 <div
                     className='flex flex-1 cursor-pointer items-center rounded-full bg-[#eff0f2] px-6 py-2 transition-all hover:bg-[#e4e6e9] dark:bg-[#4e4f50]/70 dark:hover:bg-[#4e4f50]'
-                    onClick={handleOpenModal}
+                    onClick={() => handleOpenForm({ showInputFile: false })}
                 >
                     <span className='line-clamp-1 text-sm text-[#65676b] transition-all sm:text-base dark:text-[#b0b3b8]'>
                         Bạn đang nghĩ gì, {user?.name}?
@@ -55,7 +85,7 @@ function CreatePost() {
                         </svg>
                     }
                     className='!w-full'
-                    onClick={handleOpenModal}
+                    onClick={() => handleOpenForm({ showInputFile: true })}
                 >
                     Hình ảnh
                 </Button>
@@ -72,42 +102,20 @@ function CreatePost() {
                         </svg>
                     }
                     className='!w-full'
-                    onClick={handleOpenModal}
+                    onClick={() => handleOpenForm({ showInputFile: true })}
                 >
                     Video
                 </Button>
             </div>
 
-            <Modal
-                title='Tạo bài viết'
-                open={isOpenModal}
-                onOk={() => {}}
-                onCancel={handleCloseModal}
-                okText='Đăng'
-                centered
-                closeIcon={
-                    <svg
-                        className='h-full w-full'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='currentColor'
-                        viewBox='0 0 20 20'
-                    >
-                        <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z' />
-                    </svg>
-                }
-                footer={[
-                    <Button
-                        key={nanoid()}
-                        className='!w-full !bg-[#007bff] hover:!bg-[#007bff]/90 [&>span]:!text-white sm:[&>span]:!text-[15px]'
-                    >
-                        Đăng
-                    </Button>
-                ]}
-                className='!w-full sm:!w-[520px] [&_.ant-modal-close]:right-3 [&_.ant-modal-close]:top-3 [&_.ant-modal-close]:h-[26px] [&_.ant-modal-close]:w-[26px] [&_.ant-modal-close]:hover:bg-transparent sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 [&_.ant-modal-content]:p-2 sm:[&_.ant-modal-content]:p-4 [&_.ant-modal-header]:mb-3 [&_.ant-modal-header]:mt-1 [&_.ant-modal-header]:text-center sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0 [&_.ant-modal-title]:text-xl'
-            >
-                <PostForm />
-            </Modal>
+            <PostForm
+                isOpenForm={isOpenForm}
+                isShowInputFile={isShowInputFile}
+                setIsShowInputFile={setIsShowInputFile}
+                onOpenForm={(medias) => handleOpenForm({ medias })}
+                onCloseForm={handleCloseForm}
+                onSubmitForm={(createPostReqData) => handleSubmitForm(createPostReqData)}
+            />
         </div>
     )
 }

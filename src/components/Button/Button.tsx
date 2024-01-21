@@ -27,6 +27,7 @@ function Button({
     }
 
     if (disabled) {
+        props.disabled = true
         Object.keys(props).forEach((key) => {
             if (key.startsWith('on') && typeof props[key] === 'function') {
                 delete props[key]

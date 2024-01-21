@@ -1,13 +1,8 @@
 import { TokenResponse, User } from '~/types/users.types'
 
-export const getAccessTokenFromLS = () => {
+export const getTokenFromLS = () => {
     const result = localStorage.getItem('token')
-    return result ? (JSON.parse(result) as TokenResponse).access_token : null
-}
-
-export const getRefreshTokenFromLS = () => {
-    const result = localStorage.getItem('token')
-    return result ? (JSON.parse(result) as TokenResponse).refresh_token : null
+    return result ? (JSON.parse(result) as TokenResponse) : null
 }
 
 export const setTokenToLS = (token: TokenResponse) => {

@@ -26,7 +26,8 @@
         "react-dom": "^18.2.0",
         "react-hot-toast": "^2.4.1",
         "react-router-dom": "^6.21.1",
-        "react-top-loading-bar": "^2.3.1"
+        "react-top-loading-bar": "^2.3.1",
+        "socket.io-client": "^4.7.4"
     },
     "devDependencies": {
         "@savvywombat/tailwindcss-grid-areas": "^3.1.0",

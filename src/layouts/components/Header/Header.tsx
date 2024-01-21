@@ -15,25 +15,18 @@ import {
 } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { User } from '~/types/users.types'
-import {
-    getAccessTokenFromLS,
-    getRefreshTokenFromLS,
-    removeTokenFromLS,
-    removeUserFromLS,
-    setDarkModeToLS,
-    setUserToLS
-} from '~/utils/localStorage'
+import { removeTokenFromLS, removeUserFromLS, setDarkModeToLS, setUserToLS } from '~/utils/localStorage'
 import { listenEvent } from '~/utils/event'
 
 function Header() {
     const navigate = useNavigate()
 
-    const { user, setUser, darkMode, setDarkMode } = useContext(AppContext)
+    const { user, setUser, token, setToken, darkMode, setDarkMode } = useContext(AppContext)
     const [showMenu, setShowMenu] = useState<boolean>(false)
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
-    const accessToken = getAccessTokenFromLS()
-    const refreshToken = getRefreshTokenFromLS()
+    const access_token = token?.access_token || null
+    const refresh_token = token?.refresh_token || null
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -73,7 +66,7 @@ function Header() {
     const { data: myProfile } = useQuery({
         queryKey: ['me'],
         queryFn: () => getMe(),
-        enabled: !!accessToken
+        enabled: !!access_token
     })
 
     useEffect(() => {
@@ -89,6 +82,7 @@ function Header() {
 
     const handleLogoutSuccess = () => {
         setUser(null)
+        setToken(null)
         setShowMenu(false)
         removeUserFromLS()
         removeTokenFromLS()
@@ -96,7 +90,7 @@ function Header() {
     }
 
     const handleLogout = () => {
-        mutateLogout(refreshToken as string, {
+        mutateLogout(refresh_token as string, {
             onSuccess: handleLogoutSuccess
         })
     }
@@ -157,8 +151,16 @@ function Header() {
                             onClick={() => setShowMenu(!showMenu)}
                         >
                             {user ? (
-                                <div className='overflow-hidden rounded-full border border-solid border-black'>
-                                    <img src={images.avatar} alt='avatar' className='h-full w-full object-cover' />
+                                <div className='h-[30px] w-[30px] overflow-hidden rounded-full border border-solid border-black'>
+                                    <img
+                                        src={
+                                            user.avatar
+                                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}`
+                                                : images.avatar
+                                        }
+                                        alt='avatar'
+                                        className='h-full w-full object-cover'
+                                    />
                                 </div>
                             ) : (
                                 <svg

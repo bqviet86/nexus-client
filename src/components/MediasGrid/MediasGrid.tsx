@@ -4,19 +4,19 @@ import { nanoid } from 'nanoid'
 
 import Button from '~/components/Button'
 import { MediaTypes } from '~/constants/enums'
-import { MEDIAS_GRID_AREA, MEDIAS_GRID_TEMPLATE_AREAS } from '~/constants/interfaceData'
-import { Media } from '~/types/medias.types'
+import { MEDIAS_GRID_AREA, MEDIAS_GRID_TEMPLATE_AREAS, MEDIAS_MAX_LENGTH } from '~/constants/interfaceData'
+import { MediaWithFile } from '~/types/medias.types'
 
 type MediasGridProps = {
-    medias: Media[]
-    setMedias: React.Dispatch<React.SetStateAction<Media[]>>
+    medias: MediaWithFile[]
+    setMedias: React.Dispatch<React.SetStateAction<MediaWithFile[]>>
     handleUploadFile: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
     const mediasLength = medias.length
 
-    const mediaRef = useRef<HTMLDivElement>(null)
+    const mediasGridRef = useRef<HTMLDivElement>(null)
 
     const handleRemoveMedia = (index: number) => {
         setMedias((prevMedias) => {
@@ -34,7 +34,7 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
                 return
             }
 
-            const videoElements = mediaRef.current?.querySelectorAll('video')
+            const videoElements = mediasGridRef.current?.querySelectorAll('video')
 
             videoElements?.forEach((video) => {
                 video.setAttribute('style', 'object-fit: cover')
@@ -49,7 +49,7 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
     return (
         <>
             <div
-                ref={mediaRef}
+                ref={mediasGridRef}
                 className={`relative grid aspect-[1] grid-cols-medias grid-rows-medias gap-0.5 overflow-hidden rounded-lg ${MEDIAS_GRID_TEMPLATE_AREAS[mediasLength]}`}
             >
                 {medias.map((media, index) => (
@@ -77,7 +77,7 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
                         >
                             <div className='h-full w-full rounded-full bg-[#eee]'>
                                 <svg
-                                    className='absolute -inset-[1px] text-[#7c7e80] transition-all hover:text-[#a7a5a5]'
+                                    className='absolute text-[#7c7e80] transition-all hover:text-[#a7a5a5]'
                                     aria-hidden='true'
                                     xmlns='http://www.w3.org/2000/svg'
                                     fill='currentColor'
@@ -91,31 +91,33 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
                 ))}
             </div>
 
-            <Button
-                icon={
-                    <svg
-                        className='h-[14px] w-[14px] text-[#65676b] dark:text-[#b0b3b8]'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='currentColor'
-                        viewBox='0 0 20 18'
-                    >
-                        <path d='M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z' />
-                    </svg>
-                }
-                className='relative mt-1.5 w-full !bg-[#e4e6e9] hover:!bg-[#cdced1] dark:!bg-[#212223] dark:hover:!bg-[#4e4f50]'
-            >
-                Thêm ảnh/video
-                <label htmlFor='upload-file2' className='absolute inset-0 cursor-pointer' />
-                <input
-                    id='upload-file2'
-                    type='file'
-                    multiple
-                    accept='image/*, video/*'
-                    className='invisible h-0 w-0'
-                    onChange={handleUploadFile}
-                />
-            </Button>
+            {medias.length < MEDIAS_MAX_LENGTH && (
+                <Button
+                    icon={
+                        <svg
+                            className='h-[14px] w-[14px] text-[#65676b] dark:text-[#b0b3b8]'
+                            aria-hidden='true'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='currentColor'
+                            viewBox='0 0 20 18'
+                        >
+                            <path d='M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z' />
+                        </svg>
+                    }
+                    className='relative mt-1.5 w-full !bg-[#e4e6e9] hover:!bg-[#cdced1] dark:!bg-[#212223] dark:hover:!bg-[#4e4f50]'
+                >
+                    Thêm ảnh/video
+                    <label htmlFor='upload-file2' className='absolute inset-0 cursor-pointer' />
+                    <input
+                        id='upload-file2'
+                        type='file'
+                        multiple
+                        accept='image/*, video/*'
+                        className='invisible h-0 w-0'
+                        onChange={handleUploadFile}
+                    />
+                </Button>
+            )}
         </>
     )
 }

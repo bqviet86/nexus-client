@@ -7,10 +7,13 @@ import Wrapper from './Wrapper'
 import { routes as routesConfig, theme } from './config'
 import { UserRole } from './constants/enums'
 import { AppContext } from './contexts/appContext'
+import useSocket from './hooks/useSocket'
 import routes, { Route as RouteType } from './routes'
 
 function App() {
     const { user, darkMode } = useContext(AppContext)
+
+    useSocket({ initSocket: true })
 
     const renderRoutes = (routes: RouteType[]) => {
         return routes.map((route, index) => {
@@ -58,7 +61,13 @@ function App() {
     return (
         <ConfigProvider theme={darkMode ? theme.dark : theme.light}>
             <Router>
-                <Toaster position='top-right' />
+                <Toaster
+                    position='bottom-left'
+                    toastOptions={{
+                        duration: 5000,
+                        style: darkMode ? { background: '#fff', color: '#333' } : { background: '#333', color: '#fff' }
+                    }}
+                />
                 <Wrapper>{renderRoutes(routes)}</Wrapper>
             </Router>
         </ConfigProvider>

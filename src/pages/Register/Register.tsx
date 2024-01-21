@@ -31,7 +31,7 @@ const initialFormData: RegisterReqData = {
 function Register() {
     const navigate = useNavigate()
 
-    const { setUser } = useContext(AppContext)
+    const { setUser, setToken } = useContext(AppContext)
     const [formData, setFormData] = useState<RegisterReqData>(initialFormData)
     const [formError, setFormError] = useState<RegisterResError>(initialFormData)
 
@@ -64,6 +64,7 @@ function Register() {
 
                 setUser(result.user)
                 setUserToLS(result.user)
+                setToken(result.token)
                 setTokenToLS(result.token)
                 navigate(routes.home)
             },

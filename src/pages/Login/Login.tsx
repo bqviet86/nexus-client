@@ -24,7 +24,7 @@ const initialFormData: LoginReqData = {
 function Login() {
     const navigate = useNavigate()
 
-    const { setUser } = useContext(AppContext)
+    const { setUser, setToken } = useContext(AppContext)
     const [formData, setFormData] = useState<LoginReqData>(initialFormData)
     const [formError, setFormError] = useState<LoginResError>(initialFormData)
 
@@ -48,6 +48,7 @@ function Login() {
 
                 setUser(result.user)
                 setUserToLS(result.user)
+                setToken(result.token)
                 setTokenToLS(result.token)
                 navigate(routes.home)
             },

@@ -1,6 +1,14 @@
+import axios, { AxiosRequestConfig } from 'axios'
+
 import { Sex } from '~/constants/enums'
-import { GetMeResponse, LoginResponse, LogoutResponse, RegisterResponse } from '~/types/users.types'
-import http from '~/utils/http'
+import {
+    GetMeResponse,
+    LoginResponse,
+    LogoutResponse,
+    RefreshTokenResponse,
+    RegisterResponse
+} from '~/types/users.types'
+import http, { requestConfig } from '~/utils/http'
 
 export type LoginReqData = {
     email: string
@@ -22,5 +30,8 @@ export const loginUser = (data: LoginReqData) => http.post<LoginResponse>('/user
 export const registerUser = (data: RegisterReqData) => http.post<RegisterResponse>('/users/register', data)
 
 export const logoutUser = (refresh_token: string) => http.post<LogoutResponse>('/users/logout', { refresh_token })
+
+export const refreshToken = (refresh_token: string) =>
+    axios.post<RefreshTokenResponse>('/users/refresh-token', { refresh_token }, requestConfig as AxiosRequestConfig)
 
 export const getMe = () => http.get<GetMeResponse>('/users/me')

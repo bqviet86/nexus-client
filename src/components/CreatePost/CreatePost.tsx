@@ -44,10 +44,14 @@ function CreatePost() {
     const handleSubmitForm = async (createPostReqData: CreatePostReqData) => {
         const { medias } = createPostReqData
 
-        await mutateCreatePost(createPostReqData)
+        try {
+            await mutateCreatePost(createPostReqData)
 
-        if (medias.some((media) => media.type === MediaTypes.Video)) {
-            toast('Bài viết của bạn đang được xử lý.\nChúng tôi sẽ thông báo cho bạn khi hoàn tất!')
+            if (medias.some((media) => media.type === MediaTypes.Video)) {
+                toast('Bài viết của bạn đang được xử lý.\nChúng tôi sẽ thông báo cho bạn khi hoàn tất!')
+            }
+        } catch (error) {
+            toast('Đăng bài viết thất bại')
         }
     }
 
@@ -114,7 +118,7 @@ function CreatePost() {
                 setIsShowInputFile={setIsShowInputFile}
                 onOpenForm={(medias) => handleOpenForm({ medias })}
                 onCloseForm={handleCloseForm}
-                onSubmitForm={(createPostReqData) => handleSubmitForm(createPostReqData)}
+                onSubmitForm={handleSubmitForm}
             />
         </div>
     )

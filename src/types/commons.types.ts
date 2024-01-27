@@ -7,3 +7,8 @@ export type TokenPayload = {
     iat: number
     exp: number
 }
+
+export type Pagination = {
+    page: number
+    total_pages: number
+}

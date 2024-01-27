@@ -15,3 +15,9 @@ export type ErrorObjResponse = {
     type: string
     value: string
 }
+
+export type PaginationResponse<Fields extends Record<string, any>> = Fields & {
+    page: number
+    limit: number
+    total_pages: number
+}

@@ -43,7 +43,7 @@ function Button({
             {(iconPosition === 'left' && icon) || null}
             <span
                 className={`text-sm font-medium text-[#65676b] transition-all dark:text-[#b0b3b8] ${
-                    iconPosition === 'left' ? 'ml-2' : 'mr-2'
+                    icon ? (iconPosition === 'left' ? 'ml-2' : 'mr-2') : ''
                 }`}
             >
                 {children}

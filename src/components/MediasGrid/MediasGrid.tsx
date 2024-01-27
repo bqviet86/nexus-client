@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef } from 'react'
 import { Image } from 'antd'
-import { nanoid } from 'nanoid'
 
 import Button from '~/components/Button'
 import { MediaTypes } from '~/constants/enums'
@@ -54,7 +53,7 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
             >
                 {medias.map((media, index) => (
                     <div
-                        key={nanoid()}
+                        key={index}
                         className={`relative flex items-center justify-center ${MEDIAS_GRID_AREA[index + 1]}`}
                     >
                         {media.type === MediaTypes.Image ? (

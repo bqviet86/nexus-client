@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 import HTTP_STATUS from '~/constants/httpStatus'
-import { TokenPayload } from '~/types/jwt.types'
+import { TokenPayload } from '~/types/commons.types'
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {

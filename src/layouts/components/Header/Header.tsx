@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { nanoid } from 'nanoid'
 
+import Notification from '~/components/Notification'
 import { getMe, logoutUser } from '~/apis/users.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
@@ -23,14 +23,14 @@ function Header() {
 
     const { user, setUser, token, setToken, darkMode, setDarkMode } = useContext(AppContext)
     const [showMenu, setShowMenu] = useState<boolean>(false)
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024)
 
     const access_token = token?.access_token || null
     const refresh_token = token?.refresh_token || null
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
-            if (e.target instanceof HTMLElement && !e.target.closest('header')) {
+            if (e.target instanceof Element && !e.target.closest('.closest-header-menu')) {
                 setShowMenu(false)
             }
         }
@@ -44,8 +44,8 @@ function Header() {
 
     useEffect(() => {
         const handleResize = () => {
-            const isSmallerThanMd = window.innerWidth < 768
-            setIsMobile(isSmallerThanMd)
+            const isSmallerThanLg = window.innerWidth < 1024
+            setIsMobile(isSmallerThanLg)
         }
 
         if (user) {
@@ -108,12 +108,12 @@ function Header() {
                 </Link>
 
                 <ul
-                    className={`absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center justify-evenly md:flex${
-                        user ? ' w-[50%]' : ''
+                    className={`absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center justify-evenly ${
+                        user ? 'w-[50%] lg:flex' : 'md:flex'
                     }`}
                 >
-                    {(user ? HEADER_NAV_ITEMS_LOGGED_IN : HEADER_NAV_ITEMS_NOT_LOGGED_IN).map((item) => (
-                        <li key={nanoid()} className='relative mx-1'>
+                    {(user ? HEADER_NAV_ITEMS_LOGGED_IN : HEADER_NAV_ITEMS_NOT_LOGGED_IN).map((item, index) => (
+                        <li key={index} className='relative mx-1'>
                             <NavLink
                                 to={item.path}
                                 className='flex w-[160px] items-center justify-center rounded-lg px-10 py-3 transition-all hover:bg-[#f0f2f5] dark:hover:bg-[#3A3B3C]'
@@ -135,7 +135,7 @@ function Header() {
                 </ul>
 
                 <div className='flex items-center'>
-                    <div className={`relative mr-3${user ? ' flex items-center' : ' md:hidden'}`}>
+                    <div className={`relative mr-3 ${user ? 'flex items-center' : 'md:hidden'}`}>
                         {user && (
                             <div className='flex max-w-[160px] translate-x-[18px] items-center rounded-s-full border border-solid border-[#3f51b5] bg-[#3f51b5] py-1.5 pl-4 pr-6 text-sm font-medium text-white transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'>
                                 <span className='line-clamp-1 leading-4'>{user.name}</span>
@@ -143,10 +143,10 @@ function Header() {
                         )}
 
                         <div
-                            className={`cursor-pointer${
+                            className={`closest-header-menu cursor-pointer ${
                                 user
-                                    ? ' z-40 h-10 w-10 rounded-full bg-[#3f51b5] p-[5px] transition-all dark:bg-[#cbd5e1]'
-                                    : ' p-2'
+                                    ? 'z-40 h-10 w-10 rounded-full bg-[#3f51b5] p-[5px] transition-all dark:bg-[#cbd5e1]'
+                                    : 'p-2'
                             }`}
                             onClick={() => setShowMenu(!showMenu)}
                         >
@@ -181,7 +181,7 @@ function Header() {
                             )}
                         </div>
                         <ul
-                            className={`absolute right-0 top-[calc(100%+20px)] w-max min-w-[160px] overflow-hidden rounded-md transition-all ${
+                            className={`closest-header-menu absolute right-0 top-[calc(100%+20px)] w-max min-w-[160px] overflow-hidden rounded-md transition-all ${
                                 showMenu ? 'visible opacity-100' : 'invisible opacity-0'
                             }`}
                         >
@@ -190,10 +190,10 @@ function Header() {
                                     ? HEADER_MENU_ITEMS_LOGGED_IN_MOBILE
                                     : HEADER_MENU_ITEMS_LOGGED_IN
                                 : HEADER_MENU_ITEMS_NOT_LOGGED_IN
-                            ).map((item) => {
+                            ).map((item, index) => {
                                 const Comp: React.ElementType<any> = item.path ? Link : 'div'
                                 return (
-                                    <li key={nanoid()} className='p-1' style={{ backgroundColor: item.color }}>
+                                    <li key={index} className='p-1' style={{ backgroundColor: item.color }}>
                                         <Comp
                                             {...(item.path ? { to: item.path } : { onClick: handleLogout })}
                                             className='flex cursor-pointer items-center rounded p-2 transition-all hover:bg-white/10'
@@ -209,8 +209,14 @@ function Header() {
                         </ul>
                     </div>
 
+                    {user && (
+                        <div className='mr-3'>
+                            <Notification />
+                        </div>
+                    )}
+
                     <div
-                        className='relative flex h-[28px] w-[52px] items-center rounded-full border-2 border-black/30 bg-[#333]/10 p-0.5 transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'
+                        className='closest-notification relative flex h-[28px] w-[52px] items-center rounded-full border-2 border-black/30 bg-[#333]/10 p-0.5 transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'
                         onClick={handleToggleDarkMode}
                         role='button'
                     >

@@ -1,4 +1,5 @@
 import { routes } from '~/config'
+import { NotificationTag, NotificationType } from './enums'
 
 type HeaderNavItemType = {
     path: string
@@ -265,4 +266,98 @@ export const MEDIAS_GRID_AREA: Record<number, string> = {
     3: 'grid-in-media-3',
     4: 'grid-in-media-4',
     5: 'grid-in-media-5'
+}
+
+export const NOTIFICATION_TAG_BUTTONS: { title: string; tagname: NotificationTag }[] = [
+    {
+        title: 'Tất cả',
+        tagname: NotificationTag.All
+    },
+    {
+        title: 'Chưa đọc',
+        tagname: NotificationTag.Unread
+    },
+    {
+        title: 'Đã đọc',
+        tagname: NotificationTag.Read
+    }
+]
+
+export const NOTIFICATION_ITEMS: Record<NotificationType, { title: string; icon: JSX.Element; color: string }> = {
+    new_post: {
+        title: 'Bài viết của bạn đã được xử lý xong',
+        icon: (
+            <svg
+                className='h-[20px] w-[20px] text-white'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+            >
+                <path d='M17.1 12.6v-1.8A5.4 5.4 0 0 0 13 5.6V3a1 1 0 0 0-2 0v2.4a5.4 5.4 0 0 0-4 5.5v1.8c0 2.4-1.9 3-1.9 4.2 0 .6 0 1.2.5 1.2h13c.5 0 .5-.6.5-1.2 0-1.2-1.9-1.8-1.9-4.2Zm-13.2-.8a1 1 0 0 1-1-1c0-2.3.9-4.6 2.5-6.4a1 1 0 1 1 1.5 1.4 7.4 7.4 0 0 0-2 5 1 1 0 0 1-1 1Zm16.2 0a1 1 0 0 1-1-1c0-1.8-.7-3.6-2-5a1 1 0 0 1 1.5-1.4c1.6 1.8 2.5 4 2.5 6.4a1 1 0 0 1-1 1ZM8.8 19a3.5 3.5 0 0 0 6.4 0H8.8Z' />
+            </svg>
+        ),
+        color: '#585c61'
+    },
+    like: {
+        title: '{{user_from}} đã thích bài viết của bạn',
+        icon: (
+            <svg
+                className='h-[20px] w-[20px] text-white'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+            >
+                <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+                <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+                <g id='SVGRepo_iconCarrier'>
+                    <path d='M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z' />
+                </g>
+            </svg>
+        ),
+        color: '#f93042'
+    },
+    share: {
+        title: '{{user_from}} đã chia sẻ bài viết của bạn',
+        icon: (
+            <svg
+                className='h-[20px] w-[20px] text-white'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+            >
+                <path
+                    fillRule='evenodd'
+                    d='M4 5a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z'
+                    clipRule='evenodd'
+                />
+                <path
+                    fillRule='evenodd'
+                    d='M5 14c0-.6.4-1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm5 0c0-.6.4-1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z'
+                    clipRule='evenodd'
+                />
+            </svg>
+        ),
+        color: '#138df0'
+    },
+    comment: {
+        title: '{{user_from}} đã bình luận về bài viết của bạn',
+        icon: (
+            <svg
+                className='h-[20px] w-[20px] text-white'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+            >
+                <path
+                    fillRule='evenodd'
+                    d='M3 6c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-6.6l-2.9 2.6c-1 .9-2.5.2-2.5-1.1V17H5a2 2 0 0 1-2-2V6Zm4 2a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H7Zm8 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2Zm-8 3a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H7Zm5 0a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2h-5Z'
+                    clipRule='evenodd'
+                />
+            </svg>
+        ),
+        color: '#44cf67'
+    }
 }

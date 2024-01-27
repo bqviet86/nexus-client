@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Modal, Spin } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Modal } from 'antd'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { nanoid } from 'nanoid'
@@ -9,6 +8,7 @@ import toast from 'react-hot-toast'
 import lodash from 'lodash'
 
 import Button from '~/components/Button'
+import Loading from '~/components/Loading'
 import PostEditor from '~/components/PostEditor'
 import MediasGrid from '~/components/MediasGrid'
 import { uploadImages, uploadVideos } from '~/apis/medias.apis'
@@ -26,7 +26,7 @@ type PostFormProps = {
     setIsShowInputFile: React.Dispatch<React.SetStateAction<boolean>>
     onOpenForm: (medias: MediaWithFile[]) => void
     onCloseForm: () => void
-    onSubmitForm: (createPostReqData: CreatePostReqData) => void
+    onSubmitForm: (createPostReqData: CreatePostReqData) => Promise<void>
 }
 
 function PostForm({
@@ -53,10 +53,7 @@ function PostForm({
 
         setMedias((prevMedias) => {
             const toastFileTooMax = () => {
-                toast(
-                    `Bạn chỉ có thể đăng tối đa ${MEDIAS_MAX_LENGTH} ảnh + video (tối đa 1 video) trong một bài viết`,
-                    { icon: '🚫' }
-                )
+                toast(`Bạn chỉ có thể đăng tối đa ${MEDIAS_MAX_LENGTH} ảnh + video (tối đa 1 video) trong một bài viết`)
                 return prevMedias
             }
 
@@ -113,79 +110,84 @@ function PostForm({
     const handleSubmit = async () => {
         setIsLoading(true)
 
-        let uploadMediasRes: AxiosResponse<UploadMediasResponse, any>[] = []
+        try {
+            let uploadMediasRes: AxiosResponse<UploadMediasResponse, any>[] = []
 
-        if (medias.length) {
-            const imageFormData = new FormData()
-            const videoFormData = new FormData()
-            const imageMedias = medias.filter((media) => media.type === MediaTypes.Image)
-            const videoMedias = medias.filter((media) => media.type === MediaTypes.Video)
-            const uploadMediaRequests: (() => Promise<AxiosResponse<UploadMediasResponse, any>>)[] = []
+            if (medias.length) {
+                const imageFormData = new FormData()
+                const videoFormData = new FormData()
+                const imageMedias = medias.filter((media) => media.type === MediaTypes.Image)
+                const videoMedias = medias.filter((media) => media.type === MediaTypes.Video)
+                const uploadMediaRequests: (() => Promise<AxiosResponse<UploadMediasResponse, any>>)[] = []
 
-            for (const image of imageMedias) {
-                imageFormData.append('image', image.file)
-            }
+                for (const image of imageMedias) {
+                    imageFormData.append('image', image.file)
+                }
 
-            for (const video of videoMedias) {
-                videoFormData.append('video', video.file)
-            }
+                for (const video of videoMedias) {
+                    videoFormData.append('video', video.file)
+                }
 
-            if (imageMedias.length) {
-                uploadMediaRequests.push(
-                    () =>
-                        new Promise((resolve, reject) => {
-                            mutateUploadImages(imageFormData, {
-                                onSuccess: (res) => resolve(res),
-                                onError: (error) => reject(error)
+                if (imageMedias.length) {
+                    uploadMediaRequests.push(
+                        () =>
+                            new Promise((resolve, reject) => {
+                                mutateUploadImages(imageFormData, {
+                                    onSuccess: (res) => resolve(res),
+                                    onError: (error) => reject(error)
+                                })
                             })
-                        })
-                )
-            }
+                    )
+                }
 
-            if (videoMedias.length) {
-                uploadMediaRequests.push(
-                    () =>
-                        new Promise((resolve, reject) => {
-                            mutateUploadVideos(videoFormData, {
-                                onSuccess: (res) => resolve(res),
-                                onError: (error) => reject(error)
+                if (videoMedias.length) {
+                    uploadMediaRequests.push(
+                        () =>
+                            new Promise((resolve, reject) => {
+                                mutateUploadVideos(videoFormData, {
+                                    onSuccess: (res) => resolve(res),
+                                    onError: (error) => reject(error)
+                                })
                             })
-                        })
-                )
+                    )
+                }
+
+                uploadMediasRes = await Promise.all(uploadMediaRequests.map((request) => request()))
             }
 
-            uploadMediasRes = await Promise.all(uploadMediaRequests.map((request) => request()))
+            const hashtagElements = contentEditableRef.current?.querySelectorAll('span.hashtag')
+            const hashtags = hashtagElements
+                ? Array.from(hashtagElements).map((hashtag) => hashtag.textContent as string)
+                : []
+            const mediasRes = lodash.flatMap(
+                uploadMediasRes.map((res) => res.data.result as Media[]),
+                (mediaItems) =>
+                    mediaItems.map((mediaItem) => ({
+                        ...mediaItem,
+                        url: mediaItem.url
+                            .split('/')
+                            .slice(mediaItem.type === MediaTypes.Image ? -1 : -2)
+                            .join('/')
+                    }))
+            )
+            const createPostReqData: CreatePostReqData = {
+                type: PostType.Post,
+                content,
+                parent_id: null,
+                hashtags,
+                medias: mediasRes
+            }
+
+            await onSubmitForm(createPostReqData)
+
+            setContent('<br>')
+            setMedias([])
+            onCloseForm()
+        } catch (error) {
+            console.log(error)
         }
 
-        const hashtagElements = contentEditableRef.current?.querySelectorAll('span.hashtag')
-        const hashtags = hashtagElements
-            ? Array.from(hashtagElements).map((hashtag) => hashtag.textContent as string)
-            : []
-        const mediasRes = lodash.flatMap(
-            uploadMediasRes.map((res) => res.data.result as Media[]),
-            (mediaItems) =>
-                mediaItems.map((mediaItem) => ({
-                    ...mediaItem,
-                    url: mediaItem.url
-                        .split('/')
-                        .slice(mediaItem.type === MediaTypes.Image ? -1 : -2)
-                        .join('/')
-                }))
-        )
-        const createPostReqData: CreatePostReqData = {
-            type: PostType.Post,
-            content,
-            parent_id: null,
-            hashtags,
-            medias: mediasRes
-        }
-
-        await onSubmitForm(createPostReqData)
-
-        setContent('<br>')
-        setMedias([])
         setIsLoading(false)
-        onCloseForm()
     }
 
     return (
@@ -219,7 +221,7 @@ function PostForm({
                     }`}
                     onClick={handleSubmit}
                 >
-                    {isLoading ? <Spin indicator={<LoadingOutlined spin className='text-white' />} /> : 'Đăng'}
+                    {isLoading ? <Loading loaderClassName='!text-white' /> : 'Đăng'}
                 </Button>
             ]}
             className='!w-full sm:!w-[560px] [&_.ant-modal-close]:right-3 [&_.ant-modal-close]:top-3 [&_.ant-modal-close]:h-[26px] [&_.ant-modal-close]:w-[26px] [&_.ant-modal-close]:hover:bg-transparent sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 [&_.ant-modal-content]:p-2 sm:[&_.ant-modal-content]:p-4 [&_.ant-modal-header]:mb-3 [&_.ant-modal-header]:mt-1 [&_.ant-modal-header]:text-center sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0 [&_.ant-modal-title]:text-xl'

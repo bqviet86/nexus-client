@@ -4,8 +4,9 @@ const routes = {
     login: '/login',
     register: '/register',
     chat: '/chat',
-    myProfile: '/my-profile',
-    updateProfile: '/update-profile'
+    profile: '/profile/:profile_id',
+    updateProfile: '/update-profile',
+    postDetail: '/post-detail/:post_id'
 }
 
 export default routes

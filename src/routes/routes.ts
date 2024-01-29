@@ -8,11 +8,12 @@ import Register from '~/pages/Register'
 import Chat from '~/pages/Chat'
 import Profile from '~/pages/Profile'
 import UpdateProfile from '~/pages/UpdateProfile'
+import PostDetail from '~/pages/PostDetail'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
 // Thêm protected: true để báo là route này cần phải đăng nhập mới được truy cập
 // Thêm onlyAdmin: true để báo là route này chỉ có admin mới được truy cập
-// Children: [] chứa các route con của nó
+// Children: [] chứa các route con
 
 export type Route = {
     path: string
@@ -56,7 +57,7 @@ const routes: Route[] = [
         protected: true
     },
     {
-        path: routesConfig.myProfile,
+        path: routesConfig.profile,
         component: Profile,
         layout: DefaultLayout,
         protected: true
@@ -64,6 +65,12 @@ const routes: Route[] = [
     {
         path: routesConfig.updateProfile,
         component: UpdateProfile,
+        layout: DefaultLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.postDetail,
+        component: PostDetail,
         layout: DefaultLayout,
         protected: true
     }

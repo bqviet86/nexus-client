@@ -1,25 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import parse, { DOMNode, Element as ParserElement, HTMLReactParserOptions, domToReact } from 'html-react-parser'
 import { Instance as TippyInstance } from 'tippy.js'
 import Tippy from '@tippyjs/react/headless'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Button from '~/components/Button'
 import Loading from '~/components/Loading'
+import NotificationItem from './NotificationItem'
 import {
     GetAllNotificationsReqQuery,
     getAllNotifications,
     getUnreadNotifications,
     readAllNotifications
 } from '~/apis/notifications.apis'
-import images from '~/assets/images'
 import { NotificationTag } from '~/constants/enums'
-import { NOTIFICATION_ITEMS, NOTIFICATION_TAG_BUTTONS } from '~/constants/interfaceData'
+import { NOTIFICATION_TAG_BUTTONS } from '~/constants/interfaceData'
 import { useSocket } from '~/hooks'
 import { Notification as NotificationResponse } from '~/types/notifications.types'
 import { Pagination } from '~/types/commons.types'
-import { formatTime } from '~/utils/handle'
 
 const LIMIT = 10
 
@@ -43,10 +41,10 @@ function Notification() {
 
     useEffect(() => {
         if (socket) {
-            socket.on('create_post_successfully', handleIncreaseUnreadCount)
+            socket.on('handle_post_success', handleIncreaseUnreadCount)
 
             return () => {
-                socket.off('create_post_successfully', handleIncreaseUnreadCount)
+                socket.off('handle_post_success', handleIncreaseUnreadCount)
             }
         }
     }, [socket])
@@ -149,9 +147,9 @@ function Notification() {
     }
 
     return (
-        <div className='relative'>
+        <div className='closest-notification relative'>
             <div
-                className='closest-notification relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 border-solid border-black/30 bg-[#333]/10 transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'
+                className='relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 border-solid border-black/30 bg-[#333]/10 transition-all dark:border-[#929292] dark:bg-[#3A3B3C]'
                 onClick={handleToggleShowNotification}
             >
                 <div
@@ -180,7 +178,7 @@ function Notification() {
             </div>
 
             <div
-                className={`closest-notification absolute -right-[64px] top-[calc(100%+20px)] flex w-[360px] max-w-[calc(100vw-16px)] cursor-auto flex-col overflow-hidden rounded-lg bg-white p-2 shadow-[0_0_28px_-2px_rgba(0,0,0,.3)] transition-all dark:bg-[#242526] ${
+                className={`absolute -right-[64px] top-[calc(100%+20px)] flex w-[360px] max-w-[calc(100vw-16px)] cursor-auto flex-col overflow-hidden rounded-lg bg-white p-2 shadow-[0_0_28px_-2px_rgba(0,0,0,.3)] transition-all dark:bg-[#242526] ${
                     showNotification ? 'visible opacity-100' : 'invisible opacity-0'
                 }`}
             >
@@ -282,73 +280,13 @@ function Notification() {
                             loader={<Loading className='my-2 w-full' loaderClassName='dark:!text-[#e4e6eb]' />}
                             next={handleFetchMoreNotifications}
                         >
-                            {notifications.map(({ _id, user_from, user_to, post, type, is_read, created_at }) => {
-                                const avatarSuffix = user_from?.avatar ?? user_to.avatar
-                                const avatar = avatarSuffix
-                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${avatarSuffix}`
-                                    : images.avatar
-                                const { title, icon, color } = NOTIFICATION_ITEMS[type]
-
-                                const parseOptions: HTMLReactParserOptions = {
-                                    replace: (domNode) => {
-                                        if (domNode instanceof ParserElement) {
-                                            const { name, attribs, children } = domNode
-
-                                            if (name === 'br') {
-                                                return <> </>
-                                            }
-
-                                            if (name === 'strong') {
-                                                return domToReact(children as DOMNode[], parseOptions)
-                                            }
-
-                                            if (attribs.class === 'hashtag' || 'text') {
-                                                return <>{domToReact(children as DOMNode[], parseOptions)}</>
-                                            }
-                                        }
-                                    }
-                                }
-
-                                return (
-                                    <div
-                                        key={_id}
-                                        className='flex cursor-pointer rounded-lg p-2 transition-all hover:bg-[#f2f2f2] dark:hover:bg-[#3a3b3c]'
-                                    >
-                                        <div className='relative h-[56px] w-[56px] flex-shrink-0 rounded-full'>
-                                            <img
-                                                src={avatar}
-                                                alt='avatar'
-                                                className='h-full w-full rounded-full object-cover'
-                                            />
-                                            <div
-                                                className='absolute -bottom-1.5 -right-1.5 flex h-7 w-7 items-center justify-center rounded-full'
-                                                style={{ backgroundColor: color }}
-                                            >
-                                                {icon}
-                                            </div>
-                                        </div>
-                                        <div className='mx-3 flex flex-col'>
-                                            <span className='line-clamp-3 text-sm transition-all dark:text-[#e4e6eb]'>
-                                                {parse(
-                                                    `${title.replace(
-                                                        '{{user_from}}',
-                                                        `<strong>${user_from?.name || ''}</strong>`
-                                                    )}: ${post.content}`,
-                                                    parseOptions
-                                                )}
-                                            </span>
-                                            <span className='text-xs text-[#0866ff]'>{formatTime(created_at)}</span>
-                                        </div>
-                                        <div className='m-auto flex-shrink-0'>
-                                            <div
-                                                className={`h-3 w-3 rounded-full ${
-                                                    is_read ? 'bg-transparent' : 'bg-[#0866ff]'
-                                                }`}
-                                            />
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                            {notifications.map((notification) => (
+                                <NotificationItem
+                                    key={notification._id}
+                                    notification={notification}
+                                    onClick={() => setShowNotification(false)}
+                                />
+                            ))}
                         </InfiniteScroll>
                     )}
                 </div>

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
@@ -20,4 +21,4 @@ function Loading({ className, loaderClassName }: LoadingProps) {
     )
 }
 
-export default Loading
+export default memo(Loading)

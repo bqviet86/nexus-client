@@ -23,7 +23,7 @@ function Header() {
 
     const { user, setUser, token, setToken, darkMode, setDarkMode } = useContext(AppContext)
     const [showMenu, setShowMenu] = useState<boolean>(false)
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024)
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1024)
 
     const access_token = token?.access_token || null
     const refresh_token = token?.refresh_token || null
@@ -197,6 +197,7 @@ function Header() {
                                         <Comp
                                             {...(item.path ? { to: item.path } : { onClick: handleLogout })}
                                             className='flex cursor-pointer items-center rounded p-2 transition-all hover:bg-white/10'
+                                            onClick={() => setShowMenu(false)}
                                         >
                                             {item.icon}
                                             <span className='ml-2 text-[15px] font-medium text-white'>

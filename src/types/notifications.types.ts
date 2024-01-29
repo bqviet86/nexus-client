@@ -1,20 +1,36 @@
-import { NotificationType } from '~/constants/enums'
+import { NotificationFriendAction, NotificationPostAction, NotificationType } from '~/constants/enums'
 import { PaginationResponse, SuccessResponse } from './response.types'
 import { User } from './users.types'
 import { Post } from './posts.types'
+
+export type NotificationAction = NotificationPostAction | NotificationFriendAction
+
+export type NotificationPostPayload = {
+    post: Post
+}
+
+export type NotificationFriendPayload = {
+    friend: any
+}
+
+export type NotificationPayload = Partial<NotificationPostPayload & NotificationFriendPayload>
 
 export type Notification = {
     _id: string
     user_from: User | null
     user_to: User
-    post: Post
     type: NotificationType
+    action: NotificationAction
+    payload: NotificationPayload
     is_read: boolean
     created_at: string
+    updated_at: Date
 }
 
 export type GetUnreadNotificationsResponse = SuccessResponse<{ notifications: Notification[]; total_unread: number }>
 
 export type GetAllNotificationsResponse = SuccessResponse<PaginationResponse<{ notifications: Notification[] }>>
+
+export type ReadNotificationResponse = SuccessResponse
 
 export type ReadAllNotificationsResponse = SuccessResponse

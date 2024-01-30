@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Routes, useLocation } from 'react-router-dom'
+import { Location, Routes, useLocation } from 'react-router-dom'
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar'
 
 import useScrollToTop from './hooks/useScrollToTop'
 
 function Wrapper({ children }: { children: React.ReactNode }) {
-    const [prevLocation, setPrevLocation] = useState({})
+    const [prevLocation, setPrevLocation] = useState<Location | null>(null)
     const LoadingBarRef = useRef<LoadingBarRef | null>(null)
     const location = useLocation()
 

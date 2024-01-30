@@ -1,6 +1,6 @@
 import { NotificationFriendAction, NotificationPostAction, NotificationType } from '~/constants/enums'
 import { PaginationResponse, SuccessResponse } from './response.types'
-import { User } from './users.types'
+import { Friend, User } from './users.types'
 import { Post } from './posts.types'
 
 export type NotificationAction = NotificationPostAction | NotificationFriendAction
@@ -10,7 +10,7 @@ export type NotificationPostPayload = {
 }
 
 export type NotificationFriendPayload = {
-    friend: any
+    friend: Friend
 }
 
 export type NotificationPayload = Partial<NotificationPostPayload & NotificationFriendPayload>
@@ -31,6 +31,8 @@ export type GetUnreadNotificationsResponse = SuccessResponse<{ notifications: No
 
 export type GetAllNotificationsResponse = SuccessResponse<PaginationResponse<{ notifications: Notification[] }>>
 
-export type ReadNotificationResponse = SuccessResponse
+export type UpdateNotificationResponse = SuccessResponse
 
-export type ReadAllNotificationsResponse = SuccessResponse
+export type UpdateAllNotificationsResponse = SuccessResponse
+
+export type DeleteNotificationResponse = SuccessResponse

@@ -58,7 +58,10 @@ function CreatePost() {
     return (
         <div className='rounded-lg bg-white px-2 pt-2 transition-all sm:px-4 sm:pt-3 dark:bg-[#242526]'>
             <div className='flex border-b border-solid border-b-[#bbb9b9] pb-2 sm:pb-3'>
-                <Link to={routes.myProfile} className='mr-2 overflow-hidden rounded-full sm:mr-4'>
+                <Link
+                    to={routes.profile.replace(':profile_id', user?._id || '')}
+                    className='mr-2 overflow-hidden rounded-full sm:mr-4'
+                >
                     <img
                         src={user?.avatar ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}` : images.avatar}
                         alt='avatar'

@@ -1,7 +1,8 @@
 import { routes } from '~/config'
-import { NotificationTag, NotificationType } from './enums'
+import { NotificationFriendAction, NotificationPostAction, NotificationTag, NotificationType } from './enums'
 import { NotificationAction } from '~/types/notifications.types'
 import { getUserFromLS } from '~/utils/localStorage'
+import { stringEnumToArray } from '~/utils/handle'
 
 type HeaderNavItemType = {
     path: string
@@ -276,6 +277,11 @@ export type NotificationItemType = { title: string; icon: JSX.Element; color: st
 
 export type NotificationItemsType = Partial<Record<NotificationAction, NotificationItemType>>
 
+export const NOTIFICATION_SOCKET_EVENTS: string[] = [
+    ...stringEnumToArray(NotificationPostAction),
+    ...stringEnumToArray(NotificationFriendAction)
+]
+
 export const NOTIFICATION_TAG_BUTTONS: { title: string; tagname: NotificationTag }[] = [
     {
         title: 'Tất cả',
@@ -293,7 +299,7 @@ export const NOTIFICATION_TAG_BUTTONS: { title: string; tagname: NotificationTag
 
 export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType> = {
     post: {
-        like: {
+        like_post: {
             title: '{{user_from}} đã thích bài viết của bạn',
             icon: (
                 <svg
@@ -311,7 +317,7 @@ export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType>
             ),
             color: '#f93042'
         },
-        comment: {
+        comment_post: {
             title: '{{user_from}} đã bình luận về bài viết của bạn',
             icon: (
                 <svg
@@ -330,7 +336,7 @@ export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType>
             ),
             color: '#44cf67'
         },
-        share: {
+        share_post: {
             title: '{{user_from}} đã chia sẻ bài viết của bạn',
             icon: (
                 <svg
@@ -371,21 +377,24 @@ export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType>
         }
     },
     friend: {
-        new_friend_request: {
+        send_friend_request: {
             title: '{{user_from}} đã gửi cho bạn lời mời kết bạn.',
             icon: (
                 <svg
-                    className='h-[22px] w-[22px] text-white'
-                    aria-hidden='true'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='currentColor'
+                    className='h-[20px] w-[20px] text-white'
                     viewBox='0 0 24 24'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
                 >
-                    <path
-                        fillRule='evenodd'
-                        d='M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z'
-                        clipRule='evenodd'
-                    />
+                    <g strokeWidth='0'></g>
+                    <g strokeLinecap='round' strokeLinejoin='round'></g>
+                    <g>
+                        <circle cx='12' cy='6' r='4' fill='currentColor'></circle>
+                        <path
+                            d='M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z'
+                            fill='currentColor'
+                        />
+                    </g>
                 </svg>
             ),
             color: '#138df0'
@@ -394,17 +403,20 @@ export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType>
             title: '{{user_from}} đã chấp nhận lời mời kết bạn của bạn.',
             icon: (
                 <svg
-                    className='h-[22px] w-[22px] text-white'
-                    aria-hidden='true'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='currentColor'
+                    className='h-[20px] w-[20px] text-white'
                     viewBox='0 0 24 24'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
                 >
-                    <path
-                        fillRule='evenodd'
-                        d='M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z'
-                        clipRule='evenodd'
-                    />
+                    <g strokeWidth='0' />
+                    <g strokeLinecap='round' strokeLinejoin='round' />
+                    <g>
+                        <circle cx='12' cy='6' r='4' fill='currentColor' />
+                        <path
+                            d='M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z'
+                            fill='currentColor'
+                        />
+                    </g>
                 </svg>
             ),
             color: '#138df0'

@@ -11,10 +11,10 @@ import {
     GetAllNotificationsReqQuery,
     getAllNotifications,
     getUnreadNotifications,
-    readAllNotifications
+    updateAllNotifications
 } from '~/apis/notifications.apis'
 import { NotificationTag } from '~/constants/enums'
-import { NOTIFICATION_TAG_BUTTONS } from '~/constants/interfaceData'
+import { NOTIFICATION_SOCKET_EVENTS, NOTIFICATION_TAG_BUTTONS } from '~/constants/interfaceData'
 import { useSocket } from '~/hooks'
 import { Notification as NotificationResponse } from '~/types/notifications.types'
 import { Pagination } from '~/types/commons.types'
@@ -41,11 +41,8 @@ function Notification() {
 
     useEffect(() => {
         if (socket) {
-            socket.on('handle_post_success', handleIncreaseUnreadCount)
-
-            return () => {
-                socket.off('handle_post_success', handleIncreaseUnreadCount)
-            }
+            NOTIFICATION_SOCKET_EVENTS.forEach((event) => socket.on(event, handleIncreaseUnreadCount))
+            return () => NOTIFICATION_SOCKET_EVENTS.forEach((event) => socket.off(event, handleIncreaseUnreadCount))
         }
     }, [socket])
 
@@ -111,23 +108,22 @@ function Notification() {
         setPagination((prevPagination) => ({ ...prevPagination, page: 1 }))
     }
 
-    const { mutate: mutateReadAllNotifications } = useMutation({
-        mutationFn: readAllNotifications
+    const { mutate: mutateUpdateAllNotifications } = useMutation({
+        mutationFn: (body: { is_read: boolean }) => updateAllNotifications(body)
     })
 
     const handleReadAllNotifications = (tippy: TippyInstance) => {
-        mutateReadAllNotifications(undefined, {
-            onSuccess: () => {
-                setNotifications((prevNotifications) =>
-                    tag === NotificationTag.All
-                        ? prevNotifications.map((notification) => ({ ...notification, is_read: true }))
-                        : tag === NotificationTag.Unread
-                          ? []
-                          : prevNotifications
-                )
-                tippy.hide()
+        mutateUpdateAllNotifications(
+            { is_read: true },
+            {
+                onSuccess: () => {
+                    setNotifications((prevNotifications) =>
+                        prevNotifications.map((notification) => ({ ...notification, is_read: true }))
+                    )
+                    tippy.hide()
+                }
             }
-        })
+        )
     }
 
     const handleFetchMoreNotifications = () => {
@@ -192,29 +188,33 @@ function Notification() {
                         offset={[0, 8]}
                         render={(attrs, _, tippy) => (
                             <div
-                                className='closest-notification flex cursor-pointer items-center rounded-md bg-white p-2 text-sm shadow-[0_0_28px_-2px_rgba(0,0,0,.3)] transition-all hover:bg-[#f2f2f2] dark:bg-[#242526] dark:hover:bg-[#3a3b3c]'
-                                onClick={() => handleReadAllNotifications(tippy as TippyInstance)}
+                                className='animate-fadeIn rounded-lg bg-white p-1 shadow-[0_0_10px_rgba(0,0,0,.2)] transition-all dark:bg-[#242526]'
                                 tabIndex={-1}
                                 {...attrs}
                             >
-                                <svg
-                                    className='h-[20px] w-[20px] text-gray-800 transition-all dark:text-[#f2f2f2]'
-                                    aria-hidden='true'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    fill='none'
-                                    viewBox='0 0 24 24'
+                                <div
+                                    className='flex cursor-pointer items-center rounded-md bg-white px-1 py-2 text-sm transition-all hover:bg-[#f2f2f2] dark:bg-[#242526] dark:hover:bg-[#3a3b3c]'
+                                    onClick={() => handleReadAllNotifications(tippy as TippyInstance)}
                                 >
-                                    <path
-                                        stroke='currentColor'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2'
-                                        d='m5 12 4.7 4.5 9.3-9'
-                                    />
-                                </svg>
-                                <span className='ml-1 transition-all dark:text-[#f2f2f2]'>
-                                    Đánh dấu tất cả là đã đọc
-                                </span>
+                                    <svg
+                                        className='h-[20px] w-[20px] text-gray-800 transition-all dark:text-[#f2f2f2]'
+                                        aria-hidden='true'
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        fill='none'
+                                        viewBox='0 0 24 24'
+                                    >
+                                        <path
+                                            stroke='currentColor'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth='2'
+                                            d='m5 12 4.7 4.5 9.3-9'
+                                        />
+                                    </svg>
+                                    <span className='ml-1 transition-all dark:text-[#f2f2f2]'>
+                                        Đánh dấu tất cả là đã đọc
+                                    </span>
+                                </div>
                             </div>
                         )}
                     >
@@ -239,7 +239,7 @@ function Notification() {
                     {NOTIFICATION_TAG_BUTTONS.map(({ title, tagname }, index) => (
                         <Button
                             key={index}
-                            className={`closest-notification !h-9 !w-auto !rounded-full ${
+                            className={`!h-9 !w-auto !rounded-full ${
                                 tag === tagname
                                     ? '!bg-[#ebf5ff] dark:!bg-[#213851] [&>span]:!text-[#1d76d6] dark:[&>span]:!text-[#75b6ff]'
                                     : 'dark:hover:!bg-[#3a3b3c] [&>span]:!text-[#333] dark:[&>span]:!text-[#e4e6eb]'
@@ -283,7 +283,9 @@ function Notification() {
                             {notifications.map((notification) => (
                                 <NotificationItem
                                     key={notification._id}
-                                    notification={notification}
+                                    data={notification}
+                                    notifications={notifications}
+                                    setNotifications={setNotifications}
                                     onClick={() => setShowNotification(false)}
                                 />
                             ))}

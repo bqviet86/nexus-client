@@ -3,6 +3,21 @@ module.exports = {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {
+            keyframes: {
+                fadeIn: {
+                    '0%': {
+                        opacity: 0,
+                        visibility: 'hidden'
+                    },
+                    '100%': {
+                        opacity: 1,
+                        visibility: 'visible'
+                    }
+                }
+            },
+            animation: {
+                fadeIn: 'fadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1)'
+            },
             gridTemplateColumns: {
                 medias: 'repeat(6, 1fr)'
             },

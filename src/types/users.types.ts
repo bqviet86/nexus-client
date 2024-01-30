@@ -1,4 +1,4 @@
-import { Sex, UserRole } from '~/constants/enums'
+import { FriendStatus, Sex, UserRole } from '~/constants/enums'
 import { SuccessResponse } from './response.types'
 
 export type User = {
@@ -10,6 +10,15 @@ export type User = {
     phone_number: string
     role: UserRole
     avatar: string
+    created_at: string
+    updated_at: string
+}
+
+export type Friend = {
+    _id: string
+    user_from: User
+    user_to: User
+    status: FriendStatus
     created_at: string
     updated_at: string
 }
@@ -33,3 +42,7 @@ export type LogoutResponse = SuccessResponse
 export type RefreshTokenResponse = SuccessResponse<TokenResponse>
 
 export type GetMeResponse = SuccessResponse<User>
+
+export type SendFriendRequestResponse = SuccessResponse
+
+export type ResponseFriendRequestResponse = SuccessResponse

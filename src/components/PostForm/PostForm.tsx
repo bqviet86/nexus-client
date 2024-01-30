@@ -228,7 +228,10 @@ function PostForm({
         >
             <div className='border-t border-solid border-black/20 dark:border-white/20'>
                 <div className='flex items-center py-2 sm:py-3'>
-                    <Link to={routes.myProfile} className='mr-2 overflow-hidden rounded-full sm:mr-4'>
+                    <Link
+                        to={routes.profile.replace(':profile_id', user?._id || '')}
+                        className='mr-2 overflow-hidden rounded-full sm:mr-4'
+                    >
                         <img
                             src={
                                 user?.avatar ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}` : images.avatar

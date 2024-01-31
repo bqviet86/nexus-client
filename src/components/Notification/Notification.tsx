@@ -179,7 +179,9 @@ function Notification() {
                 }`}
             >
                 <div className='mx-2 flex items-center justify-between'>
-                    <h2 className='text-xl font-semibold transition-all dark:text-[#e4e6eb]'>Thông báo</h2>
+                    <h2 className='text-xl font-semibold text-[#050505] transition-all dark:text-[#e4e6eb]'>
+                        Thông báo
+                    </h2>
                     <Tippy
                         interactive
                         hideOnClick
@@ -197,7 +199,7 @@ function Notification() {
                                     onClick={() => handleReadAllNotifications(tippy as TippyInstance)}
                                 >
                                     <svg
-                                        className='h-[20px] w-[20px] text-gray-800 transition-all dark:text-[#f2f2f2]'
+                                        className='h-[20px] w-[20px] text-[#050505] transition-all dark:text-[#e4e6eb]'
                                         aria-hidden='true'
                                         xmlns='http://www.w3.org/2000/svg'
                                         fill='none'
@@ -211,7 +213,7 @@ function Notification() {
                                             d='m5 12 4.7 4.5 9.3-9'
                                         />
                                     </svg>
-                                    <span className='ml-1 transition-all dark:text-[#f2f2f2]'>
+                                    <span className='ml-1 text-[#050505] transition-all dark:text-[#e4e6eb]'>
                                         Đánh dấu tất cả là đã đọc
                                     </span>
                                 </div>
@@ -220,7 +222,7 @@ function Notification() {
                     >
                         <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all hover:bg-[#f2f2f2] dark:hover:bg-[#3a3b3c]'>
                             <svg
-                                className='h-6 w-6 text-gray-800 transition-all dark:text-[#e4e6eb]'
+                                className='h-6 w-6 text-[#606770] transition-all dark:text-[#a8abaf]'
                                 xmlns='http://www.w3.org/2000/svg'
                                 viewBox='0 0 24 24'
                                 fill='currentColor'
@@ -242,7 +244,7 @@ function Notification() {
                             className={`!h-9 !w-auto !rounded-full ${
                                 tag === tagname
                                     ? '!bg-[#ebf5ff] dark:!bg-[#213851] [&>span]:!text-[#1d76d6] dark:[&>span]:!text-[#75b6ff]'
-                                    : 'dark:hover:!bg-[#3a3b3c] [&>span]:!text-[#333] dark:[&>span]:!text-[#e4e6eb]'
+                                    : 'dark:hover:!bg-[#3a3b3c] [&>span]:!text-[#050505] dark:[&>span]:!text-[#e4e6eb]'
                             }`}
                             onClick={() => handleChangeTag(tagname)}
                         >

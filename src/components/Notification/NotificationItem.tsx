@@ -105,6 +105,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                         )
                     )
                     setIsShowMenu(false)
+                    handleMouseLeaveButton()
                 }
             }
         )
@@ -121,6 +122,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                     prevNotifications.filter((notification) => notification._id !== _id)
                 )
                 setIsShowMenu(false)
+                handleMouseLeaveButton()
             }
         })
     }
@@ -135,8 +137,8 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
             }
             className='relative flex rounded-lg p-2 transition-all hover:bg-[#f2f2f2] dark:hover:bg-[#3a3b3c]'
             onClick={handleClickNotification}
-            onMouseEnter={() => setIsShowMenuButton(true)}
-            onMouseLeave={() => !isShowMenu && setIsShowMenuButton(false)}
+            onMouseOver={() => setIsShowMenuButton(true)}
+            onMouseOut={() => !isShowMenu && setIsShowMenuButton(false)}
             onBlur={() => !isShowMenu && setIsShowMenuButton(false)}
         >
             <div className='relative h-[56px] w-[56px] flex-shrink-0 rounded-full'>
@@ -150,7 +152,11 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
             </div>
 
             <div className='mx-3 flex flex-col'>
-                <span className='line-clamp-3 text-sm transition-all dark:text-[#e4e6eb]'>
+                <span
+                    className={`line-clamp-3 text-sm transition-all ${
+                        is_read ? 'text-[#65676b] dark:text-[#b0b3b8]' : 'text-[#050505] dark:text-[#e4e6eb]'
+                    }`}
+                >
                     {parse(
                         `${title.replace('{{user_from}}', `<strong>${user_from?.name || ''}</strong>`)}${
                             type === NotificationType.Post ? `: ${(payload.post as Post).content}` : ''
@@ -159,7 +165,13 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                     )}
                 </span>
 
-                <span className='mt-0.5 text-xs text-[#0866ff]'>{formatTime(created_at)}</span>
+                <span
+                    className={`mt-0.5 text-xs ${
+                        is_read ? 'text-[#65676b] dark:text-[#b0b3b8]' : 'font-medium text-[#0866ff]'
+                    }`}
+                >
+                    {formatTime(created_at)}
+                </span>
 
                 {type === NotificationType.Friend && action === NotificationFriendAction.SendFriendRequest && (
                     <div className='mt-2 flex w-full'>
@@ -174,7 +186,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                                     Xác nhận
                                 </Button>
                                 <Button
-                                    className='!h-9 !w-auto !flex-1 !bg-[#e4e6eb] hover:!bg-[#dfe0e4] dark:!bg-[#4e4f50]/70 dark:hover:!bg-[#4e4f50] [&>span]:!text-[#333] dark:[&>span]:!text-[#e4e6eb]'
+                                    className='!h-9 !w-auto !flex-1 !bg-[#e4e6eb] hover:!bg-[#dfe0e4] dark:!bg-[#4e4f50]/70 dark:hover:!bg-[#4e4f50] [&>span]:!text-[#050505] dark:[&>span]:!text-[#e4e6eb]'
                                     onMouseEnter={handleMouseEnterButton}
                                     onMouseLeave={handleMouseLeaveButton}
                                     onClick={(e) => handleResponseFriendRequest(e, FriendStatus.Declined)}
@@ -218,7 +230,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                                 onClick={handleReadOrUnreadNotification}
                             >
                                 <svg
-                                    className='h-[20px] w-[20px] text-gray-800 transition-all dark:text-[#f2f2f2]'
+                                    className='h-[20px] w-[20px] text-[#050505] transition-all dark:text-[#e4e6eb]'
                                     aria-hidden='true'
                                     xmlns='http://www.w3.org/2000/svg'
                                     fill='none'
@@ -232,16 +244,17 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                                         d='m5 12 4.7 4.5 9.3-9'
                                     />
                                 </svg>
-                                <span className='ml-1 transition-all dark:text-[#f2f2f2]'>
+                                <span className='ml-1 text-[#050505] transition-all dark:text-[#e4e6eb]'>
                                     {is_read ? 'Đánh dấu là chưa đọc' : 'Đánh dấu là đã đọc'}
                                 </span>
                             </div>
+
                             <div
                                 className='flex cursor-pointer items-center rounded-md bg-white px-1 py-2 text-sm transition-all hover:bg-[#f2f2f2] dark:bg-[#242526] dark:hover:bg-[#3a3b3c]'
                                 onClick={handleDeleteNotification}
                             >
                                 <svg
-                                    className='h-[20px] w-[20px] text-gray-800 transition-all dark:text-[#f2f2f2]'
+                                    className='h-[20px] w-[20px] text-[#050505] transition-all dark:text-[#e4e6eb]'
                                     xmlns='http://www.w3.org/2000/svg'
                                     fill='none'
                                     viewBox='0 0 24 24'
@@ -254,8 +267,9 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                                         d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
                                     />
                                 </svg>
-
-                                <span className='ml-1 transition-all dark:text-[#f2f2f2]'>Gỡ thông báo này</span>
+                                <span className='ml-1 text-[#050505] transition-all dark:text-[#e4e6eb]'>
+                                    Gỡ thông báo này
+                                </span>
                             </div>
                         </div>
                     )}
@@ -272,7 +286,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                         }}
                     >
                         <svg
-                            className='h-6 w-6 text-gray-800 transition-all dark:text-[#e4e6eb]'
+                            className='h-[26px] w-[26px] text-[#606770] transition-all dark:text-[#a8abaf]'
                             xmlns='http://www.w3.org/2000/svg'
                             viewBox='0 0 24 24'
                             fill='currentColor'

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { compareAsc, format, formatDistanceToNow, sub } from 'date-fns'
+import { compareAsc, format, formatDistanceToNowStrict, sub } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
@@ -32,16 +32,14 @@ export const handleUnprocessableEntityError = <FormError>(
 
 export const formatTime: (time: string, extend?: boolean) => string = (time, extend = false) => {
     const date = new Date(time)
-    const subDate = sub(new Date(), { days: 1 })
+    const subDate = sub(new Date(), { months: 1 })
 
-    if (compareAsc(date, subDate) === -1) {
+    if (compareAsc(date, subDate) !== 1) {
         return format(date, (extend ? 'HH:mm ' : '') + 'dd-MM-yyyy')
     }
 
-    return formatDistanceToNow(date, {
+    return formatDistanceToNowStrict(date, {
         addSuffix: true,
         locale: vi
     })
-        .replace('khoảng', '')
-        .trim()
 }

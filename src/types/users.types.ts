@@ -46,3 +46,5 @@ export type GetMeResponse = SuccessResponse<User>
 export type SendFriendRequestResponse = SuccessResponse
 
 export type ResponseFriendRequestResponse = SuccessResponse
+
+export type GetAllFriendRequestsResponse = SuccessResponse<Friend[]>

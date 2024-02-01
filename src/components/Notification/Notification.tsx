@@ -174,7 +174,7 @@ function Notification() {
             </div>
 
             <div
-                className={`absolute -right-[64px] top-[calc(100%+20px)] flex w-[360px] max-w-[calc(100vw-16px)] cursor-auto flex-col overflow-hidden rounded-lg bg-white p-2 shadow-[0_0_28px_-2px_rgba(0,0,0,.3)] transition-all dark:bg-[#242526] ${
+                className={`fixed right-2 top-[70px] flex w-[360px] max-w-[calc(100vw-16px)] cursor-auto flex-col overflow-hidden rounded-lg bg-white p-2 shadow-[0_0_28px_-2px_rgba(0,0,0,.3)] transition-all sm:absolute sm:-right-[64px] sm:top-[calc(100%+20px)] dark:bg-[#242526] ${
                     showNotification ? 'visible opacity-100' : 'invisible opacity-0'
                 }`}
             >

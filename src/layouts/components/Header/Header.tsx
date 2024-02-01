@@ -195,9 +195,9 @@ function Header() {
                                 return (
                                     <li key={index} className='p-1' style={{ backgroundColor: item.color }}>
                                         <Comp
-                                            {...(item.path ? { to: item.path } : { onClick: handleLogout })}
                                             className='flex cursor-pointer items-center rounded p-2 transition-all hover:bg-white/10'
                                             onClick={() => setShowMenu(false)}
+                                            {...(item.path ? { to: item.path } : { onClick: handleLogout })}
                                         >
                                             {item.icon}
                                             <span className='ml-2 text-[15px] font-medium text-white'>

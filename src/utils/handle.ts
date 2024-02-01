@@ -38,8 +38,10 @@ export const formatTime: (time: string, extend?: boolean) => string = (time, ext
         return format(date, (extend ? 'HH:mm ' : '') + 'dd-MM-yyyy')
     }
 
-    return formatDistanceToNowStrict(date, {
+    const result = formatDistanceToNowStrict(date, {
         addSuffix: true,
         locale: vi
     })
+
+    return extend ? result : result.replace('trước', '').trim()
 }

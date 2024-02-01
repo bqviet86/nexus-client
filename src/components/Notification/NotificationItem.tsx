@@ -56,6 +56,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
     const [isShowMenu, setIsShowMenu] = useState<boolean>(false)
 
     const itemRef = useRef<HTMLAnchorElement>(null)
+    const timeRef = useRef<string>(formatTime(created_at, true))
 
     const { mutate: mutateUpdateNotification } = useMutation({
         mutationFn: (data: UpdateNotificationReqData) => updateNotification(data)
@@ -166,11 +167,11 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                 </span>
 
                 <span
-                    className={`mt-0.5 text-xs ${
+                    className={`mt-0.5 text-xs transition-all ${
                         is_read ? 'text-[#65676b] dark:text-[#b0b3b8]' : 'font-medium text-[#0866ff]'
                     }`}
                 >
-                    {formatTime(created_at)}
+                    {timeRef.current}
                 </span>
 
                 {type === NotificationType.Friend && action === NotificationFriendAction.SendFriendRequest && (
@@ -218,7 +219,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                     onClickOutside={() => setIsShowMenu(false)}
                     render={(attrs) => (
                         <div
-                            className='animate-fadeIn rounded-lg bg-white p-1 shadow-[0_0_10px_rgba(0,0,0,.2)] dark:bg-[#242526]'
+                            className='animate-fadeIn rounded-lg bg-white p-1 shadow-[0_0_10px_rgba(0,0,0,.2)] transition-all dark:bg-[#242526]'
                             onMouseEnter={handleMouseEnterButton}
                             onMouseLeave={handleMouseLeaveButton}
                             onClick={handleEventElement}

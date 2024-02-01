@@ -66,6 +66,14 @@ module.exports = {
                     'media-2 media-2 media-2 media-5 media-5 media-5'
                 ]
             }
+        },
+        screens: {
+            sm: '640px',
+            md: '768px',
+            lg: '1024px',
+            'lg-xl': '1200px',
+            xl: '1280px',
+            '2xl': '1536px'
         }
     },
     darkMode: 'class',

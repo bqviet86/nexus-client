@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 
 import { FriendStatus, Sex } from '~/constants/enums'
 import {
+    GetAllFriendRequestsResponse,
     GetMeResponse,
     LoginResponse,
     LogoutResponse,
@@ -48,3 +49,5 @@ export const sendFriendRequest = (user_id: string) =>
 
 export const responseFriendRequest = ({ user_id, status }: ResponseFriendRequestReqData) =>
     http.patch<ResponseFriendRequestResponse>(`/users/friend/response/${user_id}`, { status })
+
+export const getAllFriendRequests = () => http.get<GetAllFriendRequestsResponse>('/users/friend/request')

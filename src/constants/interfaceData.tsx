@@ -220,16 +220,13 @@ export const HEADER_MENU_ITEMS_LOGGED_IN_MOBILE: HeaderMenuItemType[] = [
         color: '#c24269',
         icon: (
             <svg
-                className='h-[18px] w-[18px] text-white'
+                className='mr-[3px] h-[15px] w-[15px] text-white'
+                aria-hidden='true'
                 xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
                 fill='currentColor'
+                viewBox='0 0 20 20'
             >
-                <path
-                    fillRule='evenodd'
-                    d='M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z'
-                    clipRule='evenodd'
-                />
+                <path d='m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z' />
             </svg>
         )
     },
@@ -239,16 +236,13 @@ export const HEADER_MENU_ITEMS_LOGGED_IN_MOBILE: HeaderMenuItemType[] = [
         color: '#26a69a',
         icon: (
             <svg
-                className='h-[18px] w-[18px] text-white'
+                className='mr-[3px] h-[15px] w-[15px] text-white'
+                aria-hidden='true'
                 xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
                 fill='currentColor'
+                viewBox='0 0 20 18'
             >
-                <path
-                    fillRule='evenodd'
-                    d='M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z'
-                    clipRule='evenodd'
-                />
+                <path d='M18 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3.546l3.2 3.659a1 1 0 0 0 1.506 0L13.454 14H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-8 10H5a1 1 0 0 1 0-2h5a1 1 0 1 1 0 2Zm5-4H5a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2Z' />
             </svg>
         )
     },

@@ -9,6 +9,7 @@ import Chat from '~/pages/Chat'
 import Profile from '~/pages/Profile'
 import UpdateProfile from '~/pages/UpdateProfile'
 import PostDetail from '~/pages/PostDetail'
+import HashTag from '~/pages/HashTag'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
 // Thêm protected: true để báo là route này cần phải đăng nhập mới được truy cập
@@ -71,6 +72,12 @@ const routes: Route[] = [
     {
         path: routesConfig.postDetail,
         component: PostDetail,
+        layout: DefaultLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.hashtag,
+        component: HashTag,
         layout: DefaultLayout,
         protected: true
     }

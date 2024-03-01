@@ -27,14 +27,14 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
             }
         })
 
-        setSocket(newSocket)
+        newSocket.on('connect', () => setSocket(newSocket))
 
         return newSocket
     }
 
     const disconnectSocket = (socket: Socket) => {
+        socket.on('disconnect', () => setSocket(null))
         socket.disconnect()
-        setSocket(null)
     }
 
     useEffect(() => {

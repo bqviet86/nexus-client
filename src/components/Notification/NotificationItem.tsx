@@ -42,7 +42,7 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                     return domToReact(children as DOMNode[], parseOptions)
                 }
 
-                if (attribs.class === 'hashtag' || 'text') {
+                if (['hashtag', 'text'].includes(attribs.class)) {
                     return <>{domToReact(children as DOMNode[], parseOptions)}</>
                 }
             }

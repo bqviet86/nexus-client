@@ -1,19 +1,34 @@
-import { memo, useEffect, useRef } from 'react'
-import { Image } from 'antd'
+import { memo, useEffect, useRef, useState } from 'react'
+import { Image as AntdImage } from 'antd'
+import { MediaPlayer, MediaProvider } from '@vidstack/react'
+import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr'
+import ColorThief from 'colorthief'
 
 import Button from '~/components/Button'
 import { MediaTypes } from '~/constants/enums'
 import { MEDIAS_GRID_AREA, MEDIAS_GRID_TEMPLATE_AREAS, MEDIAS_MAX_LENGTH } from '~/constants/interfaceData'
-import { MediaWithFile } from '~/types/medias.types'
+import { Media, MediaWithFile } from '~/types/medias.types'
+import '@vidstack/react/player/styles/base.css'
+import '@vidstack/react/player/styles/plyr/theme.css'
 
 type MediasGridProps = {
-    medias: MediaWithFile[]
-    setMedias: React.Dispatch<React.SetStateAction<MediaWithFile[]>>
-    handleUploadFile: (e: React.ChangeEvent<HTMLInputElement>) => void
+    mode?: 'edit' | 'display'
+    medias: Media[]
+    setMedias?: React.Dispatch<React.SetStateAction<MediaWithFile[]>>
+    handleUploadFile?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
+const defaultFunc = () => {}
+
+function MediasGrid({
+    mode = 'edit',
+    medias,
+    setMedias = defaultFunc,
+    handleUploadFile = defaultFunc
+}: MediasGridProps) {
     const mediasLength = medias.length
+
+    const [bgColor, setBgColor] = useState<string>('black')
 
     const mediasGridRef = useRef<HTMLDivElement>(null)
 
@@ -27,70 +42,114 @@ function MediasGrid({ medias, setMedias, handleUploadFile }: MediasGridProps) {
     }
 
     useEffect(() => {
-        const handleFullScreenChange = () => {
-            if (document.fullscreenElement) {
-                document.fullscreenElement.setAttribute('style', 'object-fit: contain')
-                return
+        if (mode === 'edit') {
+            const handleFullScreenChange = () => {
+                if (document.fullscreenElement) {
+                    document.fullscreenElement.setAttribute('style', 'object-fit: contain')
+                    return
+                }
+
+                const videoElements = mediasGridRef.current?.querySelectorAll('video')
+
+                videoElements?.forEach((video) => {
+                    video.setAttribute('style', 'object-fit: cover')
+                })
             }
 
-            const videoElements = mediasGridRef.current?.querySelectorAll('video')
+            document.addEventListener('fullscreenchange', handleFullScreenChange)
 
-            videoElements?.forEach((video) => {
-                video.setAttribute('style', 'object-fit: cover')
-            })
+            return () => document.removeEventListener('fullscreenchange', handleFullScreenChange)
         }
+    }, [])
 
-        document.addEventListener('fullscreenchange', handleFullScreenChange)
+    useEffect(() => {
+        if (mode === 'display' && mediasLength === 1 && medias[0].type === MediaTypes.Image) {
+            const colorThief = new ColorThief()
+            const image = new Image()
 
-        return () => document.removeEventListener('fullscreenchange', handleFullScreenChange)
+            image.src = `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${medias[0].url}`
+            image.crossOrigin = 'Anonymous' // Ensure the image can be accessed without CORS issues
+            image.onload = () => {
+                const dominantColor = colorThief.getColor(image)
+                dominantColor && setBgColor(`rgb(${dominantColor.join(',')})`)
+            }
+
+            return () => {
+                image.onload = null
+            }
+        }
     }, [])
 
     return (
         <>
             <div
                 ref={mediasGridRef}
-                className={`relative grid aspect-[1] grid-cols-medias grid-rows-medias gap-0.5 overflow-hidden rounded-lg ${MEDIAS_GRID_TEMPLATE_AREAS[mediasLength]}`}
+                className={`relative grid grid-cols-medias grid-rows-medias gap-0.5 overflow-hidden rounded-lg ${
+                    MEDIAS_GRID_TEMPLATE_AREAS[mediasLength]
+                } ${mediasLength === 1 ? 'max-h-[500px]' : 'aspect-[1]'}`}
             >
-                {medias.map((media, index) => (
-                    <div
-                        key={index}
-                        className={`relative flex items-center justify-center ${MEDIAS_GRID_AREA[index + 1]}`}
-                    >
-                        {media.type === MediaTypes.Image ? (
-                            <Image
-                                src={media.url}
-                                alt={`image-${index + 1}`}
-                                wrapperClassName='h-full w-full'
-                                className='!h-full !w-full object-cover'
-                                preview
-                            />
-                        ) : (
-                            <video controls loop playsInline className='h-full w-full' style={{ objectFit: 'cover' }}>
-                                <source src={`${media.url}#t=0.1`} type='video/mp4' />
-                            </video>
-                        )}
-
+                {medias.map((media, index) => {
+                    return (
                         <div
-                            className='absolute right-2 top-2 h-5 w-5 cursor-pointer'
-                            onClick={() => handleRemoveMedia(index)}
+                            key={index}
+                            className={`relative flex items-center justify-center ${MEDIAS_GRID_AREA[index + 1]}`}
+                            style={{ backgroundColor: bgColor }}
                         >
-                            <div className='h-full w-full rounded-full bg-[#eee]'>
-                                <svg
-                                    className='absolute text-[#7c7e80] transition-all hover:text-[#a7a5a5]'
-                                    aria-hidden='true'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    fill='currentColor'
-                                    viewBox='0 0 20 20'
+                            {media.type === MediaTypes.Image ? (
+                                <AntdImage
+                                    src={
+                                        mode === 'edit'
+                                            ? media.url
+                                            : `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${media.url}`
+                                    }
+                                    alt={`image-${index + 1}`}
+                                    wrapperClassName='h-full w-full'
+                                    className={`!h-full !w-full ${
+                                        mode === 'display' && mediasLength === 1 ? 'object-contain' : 'object-cover'
+                                    }`}
+                                    preview
+                                />
+                            ) : mode === 'edit' ? (
+                                <video
+                                    controls
+                                    loop
+                                    playsInline
+                                    className='h-full w-full'
+                                    style={{ objectFit: 'cover' }}
                                 >
-                                    <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z' />
-                                </svg>
-                            </div>
+                                    <source src={`${media.url}#t=0.1`} type='video/mp4' />
+                                </video>
+                            ) : (
+                                <MediaPlayer src={`${import.meta.env.VITE_VIDEO_URL_PREFIX}/${media.url}`}>
+                                    <MediaProvider />
+                                    <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
+                                </MediaPlayer>
+                            )}
+
+                            {mode === 'edit' && (
+                                <div
+                                    className='absolute right-2 top-2 h-5 w-5 cursor-pointer'
+                                    onClick={() => handleRemoveMedia(index)}
+                                >
+                                    <div className='h-full w-full rounded-full bg-[#eee]'>
+                                        <svg
+                                            className='absolute text-[#7c7e80] transition-all hover:text-[#a7a5a5]'
+                                            aria-hidden='true'
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            fill='currentColor'
+                                            viewBox='0 0 20 20'
+                                        >
+                                            <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z' />
+                                        </svg>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
-            {medias.length < MEDIAS_MAX_LENGTH && (
+            {mode === 'edit' && medias.length < MEDIAS_MAX_LENGTH && (
                 <Button
                     icon={
                         <svg

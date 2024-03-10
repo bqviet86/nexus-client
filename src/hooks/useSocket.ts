@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { Socket, io } from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { useMutation } from '@tanstack/react-query'
 
 import { refreshToken } from '~/apis/users.apis'
@@ -7,7 +7,7 @@ import { AppContext } from '~/contexts/appContext'
 import { TokenResponse } from '~/types/users.types'
 import { ErrorResponse } from '~/types/response.types'
 import { isAccessTokenExpired, isAxiosUnauthorizedError } from '~/utils/check'
-import { setTokenToLS } from '~/utils/localStorage'
+import { getTokenFromLS, setTokenToLS } from '~/utils/localStorage'
 import { sendEvent } from '~/utils/event'
 
 type UseSocketProps = {
@@ -18,65 +18,63 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
     const { token, setToken, socket, setSocket, emitEvents, setEmitEvents } = useContext(AppContext)
 
     const access_token = token?.access_token || null
-    const refresh_token = token?.refresh_token || null
-
-    const connectSocket = (accessToken: string) => {
-        const newSocket = io(import.meta.env.VITE_API_URL, {
-            auth: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        })
-
-        newSocket.on('connect', () => setSocket(newSocket))
-
-        return newSocket
-    }
-
-    const disconnectSocket = (socket: Socket) => {
-        socket.on('disconnect', () => setSocket(null))
-        socket.disconnect()
-    }
 
     useEffect(() => {
         if (initSocket && access_token && !isAccessTokenExpired(access_token)) {
-            const newSocket = connectSocket(access_token)
+            const newSocket = io(import.meta.env.VITE_API_URL, {
+                auth: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            })
 
-            if (emitEvents.length) {
-                emitEvents.forEach(({ event, args }) => {
-                    newSocket.emit(event, ...args)
-                })
+            newSocket.on('connect', () => setSocket(newSocket))
+            newSocket.on('disconnect', () => setSocket(null))
 
-                setEmitEvents([])
+            return () => {
+                newSocket.disconnect()
             }
-
-            return () => disconnectSocket(newSocket)
         }
     }, [access_token])
+
+    useEffect(() => {
+        if (initSocket && socket && socket.connected && emitEvents.length) {
+            emitEvents.forEach(({ event, args }) => {
+                socket.emit(event, ...args)
+            })
+            setEmitEvents([])
+        }
+    }, [socket, emitEvents])
 
     const { mutate: mutateRefreshToken } = useMutation({
         mutationFn: (refresh_token: string) => refreshToken(refresh_token)
     })
 
     const emit = (event: string, ...args: any[]) => {
+        const token = getTokenFromLS()
+        const access_token = token?.access_token || null
+        const refresh_token = token?.refresh_token || null
+
         if (socket && access_token && !isAccessTokenExpired(access_token)) {
-            socket.emit(event, ...args)
+            socket.connected ? socket.emit(event, ...args) : setEmitEvents((prev) => [...prev, { event, args }])
             return
         }
 
-        mutateRefreshToken(refresh_token as string, {
-            onSuccess: (response) => {
-                const tokenResponse = response.data.result as TokenResponse
+        if (refresh_token) {
+            mutateRefreshToken(refresh_token, {
+                onSuccess: (response) => {
+                    const tokenResponse = response.data.result as TokenResponse
 
-                setToken(tokenResponse)
-                setTokenToLS(tokenResponse)
-                setEmitEvents((prev) => [...prev, { event, args }])
-            },
-            onError: (error) => {
-                if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
-                    sendEvent('force-logout')
+                    setToken(tokenResponse)
+                    setTokenToLS(tokenResponse)
+                    setEmitEvents((prev) => [...prev, { event, args }])
+                },
+                onError: (error) => {
+                    if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
+                        sendEvent('force-logout')
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     return {

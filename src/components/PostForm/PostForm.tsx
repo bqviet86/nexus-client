@@ -320,9 +320,9 @@ function PostForm({
                                         </div>
                                     </div>
 
-                                    <label htmlFor='upload-file' className='absolute inset-0 cursor-pointer' />
+                                    <label htmlFor='upload-file-post' className='absolute inset-0 cursor-pointer' />
                                     <input
-                                        id='upload-file'
+                                        id='upload-file-post'
                                         type='file'
                                         multiple
                                         accept='image/*, video/*'

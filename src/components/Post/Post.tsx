@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser'
 
 import MediasGrid from '~/components/MediasGrid'
 import Button from '~/components/Button'
+import PostComment from '~/components/PostComment'
 import images from '~/assets/images'
 import { routes } from '~/config'
+import { AppContext } from '~/contexts/appContext'
 import { PostDetail } from '~/types/posts.types'
 import { formatTime } from '~/utils/handle'
 
@@ -14,7 +16,9 @@ type PostProps = {
 }
 
 function Post({ data }: PostProps) {
+    const { user } = useContext(AppContext)
     const [isShowMoreBtn, setIsShowMoreBtn] = useState<boolean>(false)
+    const [isShowComment, setIsShowComment] = useState<boolean>(false)
 
     const contentDivRef = useRef<HTMLDivElement>(null)
 
@@ -53,7 +57,7 @@ function Post({ data }: PostProps) {
     }, [])
 
     return (
-        <div className='post rounded-lg bg-white p-2 sm:px-4 sm:py-3'>
+        <div className='post rounded-lg bg-white px-2 pt-2 sm:px-4 sm:pt-3'>
             <div className='flex items-center'>
                 <Link
                     to={routes.profile.replace(':profile_id', data.user._id)}
@@ -126,7 +130,7 @@ function Post({ data }: PostProps) {
                 </div>
             </div>
 
-            <div className='flex border-y-[1px] border-solid border-[#ddd] py-1'>
+            <div className='flex border-t-[1px] border-solid border-[#ced0d4] py-1'>
                 <Button
                     icon={
                         <svg
@@ -168,32 +172,37 @@ function Post({ data }: PostProps) {
                         </svg>
                     }
                     className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
+                    onClick={() => setIsShowComment(!isShowComment)}
                 >
                     Bình luận
                 </Button>
-                <Button
-                    icon={
-                        <svg
-                            className='h-[20px] w-[20px] text-[#65676b]'
-                            aria-hidden='true'
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                        >
-                            <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='m15.1 6 5.6 5a1 1 0 0 1 0 1.5l-5.7 5m-6-3V16a1 1 0 0 0 1.5.8l5.1-4.2a1.1 1.1 0 0 0 0-1.7l-5-4.2a1 1 0 0 0-1.6.8v1.7c-3.3 0-6 3-6 6.7v1.3a.7.7 0 0 0 1.3.4A5.2 5.2 0 0 1 9 14.4h0Z'
-                            />
-                        </svg>
-                    }
-                    className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
-                >
-                    Chia sẻ
-                </Button>
+                {data.user._id !== user?._id && (
+                    <Button
+                        icon={
+                            <svg
+                                className='h-[20px] w-[20px] text-[#65676b]'
+                                aria-hidden='true'
+                                xmlns='http://www.w3.org/2000/svg'
+                                fill='none'
+                                viewBox='0 0 24 24'
+                            >
+                                <path
+                                    stroke='currentColor'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth='2'
+                                    d='M4.2 19c-1-3.2 1-10.8 8.3-10.8V6.1a1 1 0 0 1 1.6-.9l5.5 4.3a1.1 1.1 0 0 1 0 1.7L14 15.6a1 1 0 0 1-1.6-1v-2c-7.2 1-8.3 6.4-8.3 6.4Z'
+                                />
+                            </svg>
+                        }
+                        className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
+                    >
+                        Chia sẻ
+                    </Button>
+                )}
             </div>
+
+            {isShowComment && <PostComment postId={data._id} />}
         </div>
     )
 }

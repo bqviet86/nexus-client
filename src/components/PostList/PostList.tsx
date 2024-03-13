@@ -5,25 +5,25 @@ import Post from '~/components/Post'
 import { getNewsFeed } from '~/apis/posts.apis'
 import { AppContext } from '~/contexts/appContext'
 import { Pagination } from '~/types/commons.types'
-import { PostDetail } from '~/types/posts.types'
+import { Post as PostType } from '~/types/posts.types'
 
 const LIMIT = 10
 
 function PostList() {
     const { socket } = useContext(AppContext)
 
-    const [posts, setPosts] = useState<PostDetail[]>([])
+    const [posts, setPosts] = useState<PostType[]>([])
     const [queryCount, setQueryCount] = useState<number>(0)
     const [pagination, setPagination] = useState<Pagination>({ page: 1, total_pages: 0 })
 
     useQuery({
-        queryKey: ['posts', { page: pagination.page, limit: LIMIT }],
+        queryKey: ['newsFeed', { page: pagination.page, limit: LIMIT }],
         queryFn: async () => {
             const response = await getNewsFeed({ page: pagination.page, limit: LIMIT })
             const { result } = response.data
 
             setPosts((prevPosts) => {
-                const newPosts = result?.posts as PostDetail[]
+                const newPosts = result?.posts as PostType[]
                 return pagination.page === 1 ? newPosts : [...prevPosts, ...newPosts]
             })
             setQueryCount((prevCount) => prevCount + 1)

@@ -30,9 +30,3 @@ export type Notification = {
 export type GetUnreadNotificationsResponse = SuccessResponse<{ notifications: Notification[]; total_unread: number }>
 
 export type GetAllNotificationsResponse = SuccessResponse<PaginationResponse<{ notifications: Notification[] }>>
-
-export type UpdateNotificationResponse = SuccessResponse
-
-export type UpdateAllNotificationsResponse = SuccessResponse
-
-export type DeleteNotificationResponse = SuccessResponse

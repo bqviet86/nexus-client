@@ -7,7 +7,7 @@ import Loading from '~/components/Loading'
 import { uploadImages } from '~/apis/medias.apis'
 import { UpdateCommentReqData, updateComment } from '~/apis/comments.apis'
 import assetImages from '~/assets/images'
-import { MediaTypes } from '~/constants/enums'
+import { MediaTypes, NotificationPostAction } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
 import { Comment, CommentDetail } from '~/types/comments.types'
@@ -40,7 +40,7 @@ function CommentForm({
     replyInputRefs
 }: CommentFormProps) {
     const Wrapper = showInput && parentId ? CommentLine : Fragment
-    const { emit } = useSocket()
+    const { instance: socket, emit } = useSocket()
 
     const { user } = useContext(AppContext)
     const [content, setContent] = useState<string>(editContent)
@@ -158,10 +158,21 @@ function CommentForm({
             await handleCreateComment()
         } else {
             await handleUpdateComment()
+            setIsLoading(false)
         }
-
-        setIsLoading(false)
     }
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleOffLoading = () => setIsLoading(false)
+
+            socket.on(NotificationPostAction.CommentPost, handleOffLoading)
+
+            return () => {
+                socket.off(NotificationPostAction.CommentPost, handleOffLoading)
+            }
+        }
+    }, [socket])
 
     return (
         user && (
@@ -229,7 +240,7 @@ function CommentForm({
                                             id={`upload-image-comment-${parentId}`}
                                             type='file'
                                             accept='image/*'
-                                            className='invisible h-0 w-0'
+                                            className='invisible block h-0 w-0'
                                             onChange={handleUploadImage}
                                         />
 

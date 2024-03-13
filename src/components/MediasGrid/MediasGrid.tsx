@@ -84,9 +84,9 @@ function MediasGrid({
         <>
             <div
                 ref={mediasGridRef}
-                className={`relative grid grid-cols-medias grid-rows-medias gap-0.5 overflow-hidden rounded-lg ${
+                className={`relative grid grid-cols-medias grid-rows-medias gap-0.5 overflow-hidden ${
                     MEDIAS_GRID_TEMPLATE_AREAS[mediasLength]
-                } ${mediasLength === 1 ? 'max-h-[500px]' : 'aspect-[1]'}`}
+                } ${mediasLength === 1 ? 'max-h-[500px]' : 'aspect-[1]'}${mode === 'edit' ? ' rounded-lg' : ''}`}
             >
                 {medias.map((media, index) => {
                     return (

@@ -1,24 +1,41 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
 import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser'
 
 import MediasGrid from '~/components/MediasGrid'
 import Button from '~/components/Button'
+import PostForm from '~/components/PostForm'
 import PostComment from '~/components/PostComment'
+import { likePost, unlikePost } from '~/apis/likes.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
+import { NotificationPostAction, PostType } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
-import { PostDetail } from '~/types/posts.types'
+import { useSocket } from '~/hooks'
+import { ParentPost, Post as PostDataType } from '~/types/posts.types'
+import { User } from '~/types/users.types'
+import { Comment } from '~/types/comments.types'
 import { formatTime } from '~/utils/handle'
 
 type PostProps = {
-    data: PostDetail
+    data: PostDataType | ParentPost
+    isParentPost?: boolean
 }
 
-function Post({ data }: PostProps) {
+function Post({ data, isParentPost = false }: PostProps) {
+    const postData = data as PostDataType
+    const { instance: socket } = useSocket()
+
     const { user } = useContext(AppContext)
     const [isShowMoreBtn, setIsShowMoreBtn] = useState<boolean>(false)
     const [isShowComment, setIsShowComment] = useState<boolean>(false)
+    const [isLiked, setIsLiked] = useState<boolean>(isParentPost ? false : postData.is_liked)
+    const [likeCount, setLikeCount] = useState<number>(postData.like_count)
+    const [commentCount, setCommentCount] = useState<number>(postData.comment_count)
+    const [shareCount, setShareCount] = useState<number>(postData.share_count)
+    const [isDisabledLikeBtn, setIsDisabledLikeBtn] = useState<boolean>(false)
+    const [isOpenShareModal, setIsOpenShareModal] = useState<boolean>(false)
 
     const contentDivRef = useRef<HTMLDivElement>(null)
 
@@ -56,151 +73,315 @@ function Post({ data }: PostProps) {
         }
     }, [])
 
+    const { mutate: mutateLikePost } = useMutation({
+        mutationFn: (post_id: string) => likePost(post_id)
+    })
+
+    const { mutate: mutateUnlikePost } = useMutation({
+        mutationFn: (post_id: string) => unlikePost(post_id)
+    })
+
+    const handleLikeOrUnlikePost = () => {
+        if (isDisabledLikeBtn) return
+
+        isLiked ? mutateUnlikePost(data._id) : mutateLikePost(data._id)
+        setIsDisabledLikeBtn(true)
+    }
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleLikePost = ({ user_id, post_id }: { user_id: string; post_id: string }) => {
+                if (post_id === data._id) {
+                    user_id === (user as User)._id && setIsLiked(true)
+                    setLikeCount((prevCount) => prevCount + 1)
+                    setIsDisabledLikeBtn(false)
+                }
+            }
+            const handleUnlikePost = ({ user_id, post_id }: { user_id: string; post_id: string }) => {
+                if (post_id === data._id) {
+                    user_id === (user as User)._id && setIsLiked(false)
+                    setLikeCount((prevCount) => prevCount - 1)
+                    setIsDisabledLikeBtn(false)
+                }
+            }
+
+            socket.on(NotificationPostAction.LikePost, handleLikePost)
+            socket.on('unlike_post', handleUnlikePost)
+
+            return () => {
+                socket.off(NotificationPostAction.LikePost, handleLikePost)
+                socket.off('unlike_post', handleUnlikePost)
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleCommentPost = ({ comment }: { comment: Comment }) => {
+                if (comment.post_id === data._id) {
+                    setCommentCount((prevCount) => prevCount + 1)
+                }
+            }
+
+            socket.on(NotificationPostAction.CommentPost, handleCommentPost)
+
+            return () => {
+                socket.off(NotificationPostAction.CommentPost, handleCommentPost)
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleDeleteComment = ({ comment, delete_count }: { comment: Comment; delete_count: number }) => {
+                if (comment.post_id === data._id) {
+                    setCommentCount((prevCount) => prevCount - delete_count)
+                }
+            }
+
+            socket.on('delete_comment', handleDeleteComment)
+
+            return () => {
+                socket.off('delete_comment', handleDeleteComment)
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleSharePost = ({ post_id }: { post_id: string }) => {
+                if (post_id === data._id) {
+                    setShareCount((prevCount) => prevCount + 1)
+                }
+            }
+
+            socket.on(NotificationPostAction.SharePost, handleSharePost)
+
+            return () => {
+                socket.off(NotificationPostAction.SharePost, handleSharePost)
+            }
+        }
+    }, [socket])
+
     return (
-        <div className='post rounded-lg bg-white px-2 pt-2 sm:px-4 sm:pt-3'>
-            <div className='flex items-center'>
-                <Link
-                    to={routes.profile.replace(':profile_id', data.user._id)}
-                    className='h-10 w-10 overflow-hidden rounded-full'
-                >
-                    <img
-                        src={
-                            data.user.avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.user.avatar}`
-                                : images.avatar
-                        }
-                        alt='avatar'
-                        className='h-full w-full rounded-full object-cover'
-                    />
-                </Link>
-                <div className='ml-2 flex flex-col'>
+        <div
+            className={`post flex bg-white ${
+                isParentPost
+                    ? 'flex-col-reverse rounded-xl border border-solid border-[#ced0d4]'
+                    : 'flex-col rounded-lg px-2 pt-2 sm:px-4 sm:pt-3'
+            }`}
+        >
+            <div className={isParentPost ? 'p-2 sm:px-4 sm:py-3' : 'mb-3'}>
+                <div className='flex items-center'>
                     <Link
                         to={routes.profile.replace(':profile_id', data.user._id)}
-                        className='w-max text-sm font-medium sm:text-[15px]'
+                        className='h-10 w-10 overflow-hidden rounded-full'
                     >
-                        {data.user.name}
+                        <img
+                            src={
+                                data.user.avatar
+                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.user.avatar}`
+                                    : images.avatar
+                            }
+                            alt='avatar'
+                            className='h-full w-full rounded-full object-cover'
+                        />
                     </Link>
-                    <span className='text-xs sm:mt-0.5 sm:text-[13px]'>{formatTime(data.created_at, true)}</span>
+
+                    <div className='ml-2 flex flex-col'>
+                        <Link
+                            to={routes.profile.replace(':profile_id', data.user._id)}
+                            className='w-max text-sm font-medium sm:text-[15px]'
+                        >
+                            {data.user.name}
+                        </Link>
+                        <span className='text-xs sm:mt-0.5 sm:text-[13px]'>{formatTime(data.created_at, true)}</span>
+                    </div>
                 </div>
+
+                {data.content !== '<br>' && (
+                    <div ref={contentDivRef} className={`leading-6 mt-3${isShowMoreBtn ? ' line-clamp-5' : ''}`}>
+                        {parse(data.content, parseOptions)}
+                    </div>
+                )}
+
+                {isShowMoreBtn && (
+                    <span
+                        className='cursor-pointer text-sm font-medium leading-6 text-[#333] hover:underline dark:text-[#e4e6eb]'
+                        onClick={() => setIsShowMoreBtn(false)}
+                    >
+                        Xem thêm
+                    </span>
+                )}
             </div>
 
-            {data.content !== '<br>' && (
-                <div ref={contentDivRef} className={`leading-6 mt-3${isShowMoreBtn ? ' line-clamp-5' : ''}`}>
-                    {parse(data.content, parseOptions)}
-                </div>
-            )}
-
-            {isShowMoreBtn && (
-                <span
-                    className='cursor-pointer text-sm font-medium leading-6 text-[#333] hover:underline dark:text-[#e4e6eb]'
-                    onClick={() => setIsShowMoreBtn(false)}
-                >
-                    Xem thêm
-                </span>
-            )}
-
             {data.medias.length ? (
-                <div className='mt-3'>
+                <div className={`overflow-hidden ${isParentPost ? 'rounded-t-xl' : 'rounded-lg'}`}>
                     <MediasGrid mode='display' medias={data.medias} />
                 </div>
             ) : null}
 
-            <div className='flex justify-between py-2.5'>
-                <div className='flex items-center gap-1'>
-                    <svg
-                        className='h-[20px] w-[20px] text-[#65676b]'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                    >
-                        <path
-                            stroke='currentColor'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth='2'
-                            d='M7 11c.9 0 1.4-.5 2.2-1a33.3 33.3 0 0 0 4.5-5.8 1.5 1.5 0 0 1 2 .3 1.6 1.6 0 0 1 .4 1.3L14.7 10M7 11H4v6.5c0 .8.7 1.5 1.5 1.5v0c.8 0 1.5-.7 1.5-1.5V11Zm6.5-1h5l.5.1a1.8 1.8 0 0 1 1 1.4l-.1.9-2.1 6.4c-.3.7-.4 1.2-1.7 1.2-2.3 0-4.8-1-6.7-1.5'
-                        />
-                    </svg>
-                    <span className='text-sm text-[#65676b]'>18 luợt thích</span>
-                </div>
-                <div className='flex items-center gap-2'>
-                    <span className='text-sm text-[#65676b]'>453 bình luận</span>
-                    <span className='text-sm text-[#65676b]'>12 lượt chia sẻ</span>
-                </div>
-            </div>
+            {data.type === PostType.Share && <Post data={postData.parent_post as ParentPost} isParentPost />}
 
-            <div className='flex border-t-[1px] border-solid border-[#ced0d4] py-1'>
-                <Button
-                    icon={
-                        <svg
-                            className='h-[20px] w-[20px] text-[#65676b]'
-                            aria-hidden='true'
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
+            {!isParentPost && (
+                <>
+                    <div className='flex justify-between py-2.5'>
+                        <div className='flex items-center gap-1'>
+                            {likeCount > 0 ? (
+                                <svg
+                                    className='h-[20px] w-[20px] text-[#0566ff]'
+                                    aria-hidden='true'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    fill='currentColor'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        fillRule='evenodd'
+                                        d='M15 9.7h4a2 2 0 0 1 1.6.9 2 2 0 0 1 .3 1.8l-2.4 7.2c-.3.9-.5 1.4-1.9 1.4-2 0-4.2-.7-6.1-1.3L9 19.3V9.5A32 32 0 0 0 13.2 4c.1-.4.5-.7.9-.9h1.2c.4.1.7.4 1 .7l.2 1.3L15 9.7ZM4.2 10H7v8a2 2 0 1 1-4 0v-6.8c0-.7.5-1.2 1.2-1.2Z'
+                                        clipRule='evenodd'
+                                    />
+                                </svg>
+                            ) : (
+                                <svg
+                                    className='h-[20px] w-[20px] text-[#65676b]'
+                                    aria-hidden='true'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        stroke='currentColor'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        strokeWidth='2'
+                                        d='M7 11c.9 0 1.4-.5 2.2-1a33.3 33.3 0 0 0 4.5-5.8 1.5 1.5 0 0 1 2 .3 1.6 1.6 0 0 1 .4 1.3L14.7 10M7 11H4v6.5c0 .8.7 1.5 1.5 1.5v0c.8 0 1.5-.7 1.5-1.5V11Zm6.5-1h5l.5.1a1.8 1.8 0 0 1 1 1.4l-.1.9-2.1 6.4c-.3.7-.4 1.2-1.7 1.2-2.3 0-4.8-1-6.7-1.5'
+                                    />
+                                </svg>
+                            )}
+                            <span className='text-sm text-[#65676b]'>
+                                {isLiked
+                                    ? likeCount > 1
+                                        ? `Bạn và ${likeCount - 1} người khác`
+                                        : 'Bạn'
+                                    : `${likeCount} lượt thích`}
+                            </span>
+                        </div>
+
+                        <div className='flex items-center gap-2'>
+                            <span className='text-sm text-[#65676b]'>{commentCount} bình luận</span>
+                            {data.type !== PostType.Share && (
+                                <span className='text-sm text-[#65676b]'>{shareCount} lượt chia sẻ</span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className='flex border-t-[1px] border-solid border-[#ced0d4] py-1'>
+                        <Button
+                            icon={
+                                isLiked ? (
+                                    <svg
+                                        className='h-[20px] w-[20px] text-[#0566ff]'
+                                        aria-hidden='true'
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        fill='currentColor'
+                                        viewBox='0 0 24 24'
+                                    >
+                                        <path
+                                            fillRule='evenodd'
+                                            d='M15 9.7h4a2 2 0 0 1 1.6.9 2 2 0 0 1 .3 1.8l-2.4 7.2c-.3.9-.5 1.4-1.9 1.4-2 0-4.2-.7-6.1-1.3L9 19.3V9.5A32 32 0 0 0 13.2 4c.1-.4.5-.7.9-.9h1.2c.4.1.7.4 1 .7l.2 1.3L15 9.7ZM4.2 10H7v8a2 2 0 1 1-4 0v-6.8c0-.7.5-1.2 1.2-1.2Z'
+                                            clipRule='evenodd'
+                                        />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        className='h-[20px] w-[20px] text-[#65676b]'
+                                        aria-hidden='true'
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        fill='none'
+                                        viewBox='0 0 24 24'
+                                    >
+                                        <path
+                                            stroke='currentColor'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth='2'
+                                            d='M7 11c.9 0 1.4-.5 2.2-1a33.3 33.3 0 0 0 4.5-5.8 1.5 1.5 0 0 1 2 .3 1.6 1.6 0 0 1 .4 1.3L14.7 10M7 11H4v6.5c0 .8.7 1.5 1.5 1.5v0c.8 0 1.5-.7 1.5-1.5V11Zm6.5-1h5l.5.1a1.8 1.8 0 0 1 1 1.4l-.1.9-2.1 6.4c-.3.7-.4 1.2-1.7 1.2-2.3 0-4.8-1-6.7-1.5'
+                                        />
+                                    </svg>
+                                )
+                            }
+                            className={`!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1${
+                                isLiked ? ' [&>span]:!text-[#0566ff]' : ''
+                            }`}
+                            onClick={handleLikeOrUnlikePost}
                         >
-                            <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M7 11c.9 0 1.4-.5 2.2-1a33.3 33.3 0 0 0 4.5-5.8 1.5 1.5 0 0 1 2 .3 1.6 1.6 0 0 1 .4 1.3L14.7 10M7 11H4v6.5c0 .8.7 1.5 1.5 1.5v0c.8 0 1.5-.7 1.5-1.5V11Zm6.5-1h5l.5.1a1.8 1.8 0 0 1 1 1.4l-.1.9-2.1 6.4c-.3.7-.4 1.2-1.7 1.2-2.3 0-4.8-1-6.7-1.5'
-                            />
-                        </svg>
-                    }
-                    className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
-                >
-                    Thích
-                </Button>
-                <Button
-                    icon={
-                        <svg
-                            className='h-[20px] w-[20px] text-[#65676b]'
-                            aria-hidden='true'
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
+                            Thích
+                        </Button>
+
+                        <Button
+                            icon={
+                                <svg
+                                    className='h-[20px] w-[20px] text-[#65676b]'
+                                    aria-hidden='true'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        stroke='currentColor'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        strokeWidth='2'
+                                        d='M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z'
+                                    />
+                                </svg>
+                            }
+                            className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
+                            onClick={() => setIsShowComment(!isShowComment)}
                         >
-                            <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z'
-                            />
-                        </svg>
-                    }
-                    className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
-                    onClick={() => setIsShowComment(!isShowComment)}
-                >
-                    Bình luận
-                </Button>
-                {data.user._id !== user?._id && (
-                    <Button
-                        icon={
-                            <svg
-                                className='h-[20px] w-[20px] text-[#65676b]'
-                                aria-hidden='true'
-                                xmlns='http://www.w3.org/2000/svg'
-                                fill='none'
-                                viewBox='0 0 24 24'
-                            >
-                                <path
-                                    stroke='currentColor'
-                                    strokeLinecap='round'
-                                    strokeLinejoin='round'
-                                    strokeWidth='2'
-                                    d='M4.2 19c-1-3.2 1-10.8 8.3-10.8V6.1a1 1 0 0 1 1.6-.9l5.5 4.3a1.1 1.1 0 0 1 0 1.7L14 15.6a1 1 0 0 1-1.6-1v-2c-7.2 1-8.3 6.4-8.3 6.4Z'
-                                />
-                            </svg>
-                        }
-                        className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
-                    >
-                        Chia sẻ
-                    </Button>
-                )}
-            </div>
+                            Bình luận
+                        </Button>
+
+                        {user &&
+                            (data.type === PostType.Post
+                                ? data.user._id !== user._id
+                                : (postData.parent_post as ParentPost).user._id !== user._id) && (
+                                <>
+                                    <Button
+                                        icon={
+                                            <svg
+                                                className='h-[20px] w-[20px] text-[#65676b]'
+                                                aria-hidden='true'
+                                                xmlns='http://www.w3.org/2000/svg'
+                                                fill='none'
+                                                viewBox='0 0 24 24'
+                                            >
+                                                <path
+                                                    stroke='currentColor'
+                                                    strokeLinecap='round'
+                                                    strokeLinejoin='round'
+                                                    strokeWidth='2'
+                                                    d='M4.2 19c-1-3.2 1-10.8 8.3-10.8V6.1a1 1 0 0 1 1.6-.9l5.5 4.3a1.1 1.1 0 0 1 0 1.7L14 15.6a1 1 0 0 1-1.6-1v-2c-7.2 1-8.3 6.4-8.3 6.4Z'
+                                                />
+                                            </svg>
+                                        }
+                                        className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
+                                        onClick={() => setIsOpenShareModal(true)}
+                                    >
+                                        Chia sẻ
+                                    </Button>
+
+                                    <PostForm
+                                        formType='share_post'
+                                        isOpenForm={isOpenShareModal}
+                                        onCloseForm={() => setIsOpenShareModal(false)}
+                                        postShared={data.type === PostType.Post ? data : postData.parent_post}
+                                    />
+                                </>
+                            )}
+                    </div>
+                </>
+            )}
 
             {isShowComment && <PostComment postId={data._id} />}
         </div>

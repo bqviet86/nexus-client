@@ -1,14 +1,10 @@
 import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 
 import Button from '~/components/Button'
 import PostForm from '~/components/PostForm'
-import { CreatePostReqData, createPost } from '~/apis/posts.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
-import { MediaTypes } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { MediaWithFile } from '~/types/medias.types'
 
@@ -35,24 +31,6 @@ function CreatePost() {
 
     const handleCloseForm = () => {
         setIsOpenForm(false)
-    }
-
-    const { mutateAsync: mutateCreatePost } = useMutation({
-        mutationFn: (data: CreatePostReqData) => createPost(data)
-    })
-
-    const handleSubmitForm = async (createPostReqData: CreatePostReqData) => {
-        const { medias } = createPostReqData
-
-        try {
-            await mutateCreatePost(createPostReqData)
-
-            if (medias.some((media) => media.type === MediaTypes.Video)) {
-                toast('Bài viết của bạn đang được xử lý.\nChúng tôi sẽ thông báo cho bạn khi hoàn tất!')
-            }
-        } catch (error) {
-            toast('Đăng bài viết thất bại')
-        }
     }
 
     return (
@@ -116,12 +94,12 @@ function CreatePost() {
             </div>
 
             <PostForm
+                formType='create_post'
                 isOpenForm={isOpenForm}
                 isShowInputFile={isShowInputFile}
                 setIsShowInputFile={setIsShowInputFile}
                 onOpenForm={(medias) => handleOpenForm({ medias })}
                 onCloseForm={handleCloseForm}
-                onSubmitForm={handleSubmitForm}
             />
         </div>
     )

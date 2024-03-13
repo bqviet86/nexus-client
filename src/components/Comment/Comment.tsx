@@ -1,7 +1,7 @@
 import { Fragment, useContext, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import { Image, Modal } from 'antd'
+import { Image } from 'antd'
 import { Instance as TippyInstance } from 'tippy.js'
 import Tippy from '@tippyjs/react/headless'
 import { MediaPlayer, MediaProvider } from '@vidstack/react'
@@ -9,6 +9,7 @@ import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr
 
 import CommentLine from '~/components/CommentLine'
 import CommentForm from '~/components/CommentForm'
+import Modal from '~/components/Modal'
 import { deleteComment } from '~/apis/comments.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
@@ -47,21 +48,6 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
 
         setIsFetchingDeleteComment(false)
         setIsOpenDeleteModal(false)
-
-        if (data.parent_id) {
-            setComments((prevComments) =>
-                prevComments.map((comment) =>
-                    comment._id === data.parent_id
-                        ? {
-                              ...comment,
-                              children: comment.children.filter((child) => child._id !== data._id)
-                          }
-                        : comment
-                )
-            )
-        } else {
-            setComments((prevComments) => prevComments.filter((comment) => comment._id !== data._id))
-        }
     }
 
     return isEditMode ? (
@@ -226,7 +212,7 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                                         className: 'bg-[#007bff]'
                                     }}
                                 >
-                                    <p>Bạn có chắc chắn muốn xóa bình luận này không?</p>
+                                    <p className='my-3'>Bạn có chắc chắn muốn xóa bình luận này không?</p>
                                 </Modal>
                             </>
                         )}

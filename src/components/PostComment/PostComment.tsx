@@ -6,6 +6,7 @@ import CommentForm from '~/components/CommentForm'
 import CommentLine from '~/components/CommentLine'
 import Loading from '~/components/Loading'
 import { getCommentsOfPost, getRepliesOfComment } from '~/apis/comments.apis'
+import { NotificationPostAction } from '~/constants/enums'
 import { useSocket } from '~/hooks'
 import { Comment as CommentType, CommentDetail, CommentWithChildrenCount } from '~/types/comments.types'
 
@@ -82,7 +83,7 @@ function PostComment({ postId }: PostCommentProps) {
 
     useEffect(() => {
         if (socket && socket.connected) {
-            const handleReceiveComment = (comment: CommentType) => {
+            const handleCommentPost = ({ comment }: { comment: CommentType }) => {
                 if (comment.post_id === postId) {
                     if (comment.parent_id) {
                         setComments((prevComments) =>
@@ -105,10 +106,42 @@ function PostComment({ postId }: PostCommentProps) {
                 }
             }
 
-            socket.on('receive_comment', handleReceiveComment)
+            socket.on(NotificationPostAction.CommentPost, handleCommentPost)
 
             return () => {
-                socket.off('receive_comment', handleReceiveComment)
+                socket.off(NotificationPostAction.CommentPost, handleCommentPost)
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleDeleteComment = ({ comment }: { comment: CommentType }) => {
+                if (comment.post_id === postId) {
+                    if (comment.parent_id) {
+                        setComments((prevComments) =>
+                            prevComments.map((prevComment) =>
+                                prevComment._id === comment.parent_id
+                                    ? {
+                                          ...prevComment,
+                                          children: prevComment.children.filter((child) => child._id !== comment._id),
+                                          children_count: prevComment.children_count - 1
+                                      }
+                                    : prevComment
+                            )
+                        )
+                    } else {
+                        setComments((prevComments) =>
+                            prevComments.filter((prevComment) => prevComment._id !== comment._id)
+                        )
+                    }
+                }
+            }
+
+            socket.on('delete_comment', handleDeleteComment)
+
+            return () => {
+                socket.off('delete_comment', handleDeleteComment)
             }
         }
     }, [socket])

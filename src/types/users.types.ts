@@ -37,14 +37,8 @@ export type LoginResponse = SuccessResponse<AuthResponse>
 
 export type RegisterResponse = SuccessResponse<AuthResponse>
 
-export type LogoutResponse = SuccessResponse
-
 export type RefreshTokenResponse = SuccessResponse<TokenResponse>
 
 export type GetMeResponse = SuccessResponse<User>
-
-export type SendFriendRequestResponse = SuccessResponse
-
-export type ResponseFriendRequestResponse = SuccessResponse
 
 export type GetAllFriendRequestsResponse = SuccessResponse<Friend[]>

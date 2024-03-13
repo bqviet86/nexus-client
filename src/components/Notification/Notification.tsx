@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Instance as TippyInstance } from 'tippy.js'
 import Tippy from '@tippyjs/react/headless'
@@ -15,6 +15,7 @@ import {
 } from '~/apis/notifications.apis'
 import { NotificationTag } from '~/constants/enums'
 import { NOTIFICATION_SOCKET_EVENTS, NOTIFICATION_TAG_BUTTONS } from '~/constants/interfaceData'
+import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
 import { Notification as NotificationResponse } from '~/types/notifications.types'
 import { Pagination } from '~/types/commons.types'
@@ -25,18 +26,25 @@ function Notification() {
     const queryClient = useQueryClient()
     const { instance: socket } = useSocket()
 
+    const { user } = useContext(AppContext)
     const [notifications, setNotifications] = useState<NotificationResponse[]>([])
     const [unreadNotificationCount, setUnreadNotificationCount] = useState<number>(0)
     const [showNotification, setShowNotification] = useState<boolean>(false)
     const [tag, setTag] = useState<NotificationTag>(NotificationTag.All)
     const [pagination, setPagination] = useState<Pagination>({ page: 1, total_pages: 0 })
 
-    const handleIncreaseUnreadCount = (data: NotificationResponse) => {
-        if (showNotification && tag !== NotificationTag.Read) {
-            setNotifications((prevNotifications) => [data, ...prevNotifications])
-        }
+    const handleIncreaseUnreadCount = ({ notification }: { notification: NotificationResponse }) => {
+        if (user && notification.user_to._id === user._id) {
+            if (
+                showNotification &&
+                tag !== NotificationTag.Read &&
+                !notifications.some((n) => n._id === notification._id)
+            ) {
+                setNotifications((prevNotifications) => [notification, ...prevNotifications])
+            }
 
-        setUnreadNotificationCount((prevUnreadNotificationCount) => prevUnreadNotificationCount + 1)
+            setUnreadNotificationCount((prevUnreadNotificationCount) => prevUnreadNotificationCount + 1)
+        }
     }
 
     useEffect(() => {

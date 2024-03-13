@@ -1,15 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios'
 
 import { FriendStatus, Sex } from '~/constants/enums'
+import { SuccessResponse } from '~/types/response.types'
 import {
     GetAllFriendRequestsResponse,
     GetMeResponse,
     LoginResponse,
-    LogoutResponse,
     RefreshTokenResponse,
-    RegisterResponse,
-    ResponseFriendRequestResponse,
-    SendFriendRequestResponse
+    RegisterResponse
 } from '~/types/users.types'
 import http, { requestConfig } from '~/utils/http'
 
@@ -37,17 +35,16 @@ export const loginUser = (data: LoginReqData) => http.post<LoginResponse>('/user
 
 export const registerUser = (data: RegisterReqData) => http.post<RegisterResponse>('/users/register', data)
 
-export const logoutUser = (refresh_token: string) => http.post<LogoutResponse>('/users/logout', { refresh_token })
+export const logoutUser = (refresh_token: string) => http.post<SuccessResponse>('/users/logout', { refresh_token })
 
 export const refreshToken = (refresh_token: string) =>
     axios.post<RefreshTokenResponse>('/users/refresh-token', { refresh_token }, requestConfig as AxiosRequestConfig)
 
 export const getMe = () => http.get<GetMeResponse>('/users/me')
 
-export const sendFriendRequest = (user_id: string) =>
-    http.post<SendFriendRequestResponse>(`/users/friend/request/${user_id}`)
+export const sendFriendRequest = (user_id: string) => http.post<SuccessResponse>(`/users/friend/request/${user_id}`)
 
 export const responseFriendRequest = ({ user_id, status }: ResponseFriendRequestReqData) =>
-    http.patch<ResponseFriendRequestResponse>(`/users/friend/response/${user_id}`, { status })
+    http.patch<SuccessResponse>(`/users/friend/response/${user_id}`, { status })
 
 export const getAllFriendRequests = () => http.get<GetAllFriendRequestsResponse>('/users/friend/request')

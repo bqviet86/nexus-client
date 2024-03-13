@@ -27,5 +27,3 @@ export type GetCommentsOfPostResponse = SuccessResponse<CommentWithChildrenCount
 export type GetRepliesOfCommentResponse = SuccessResponse<Comment[]>
 
 export type UpdateCommentResponse = SuccessResponse<Comment>
-
-export type DeleteCommentResponse = SuccessResponse

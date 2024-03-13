@@ -59,7 +59,13 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
     const timeRef = useRef<string>(formatTime(created_at, true))
 
     const { mutate: mutateUpdateNotification } = useMutation({
-        mutationFn: (data: UpdateNotificationReqData) => updateNotification(data)
+        mutationFn: (data: UpdateNotificationReqData) => updateNotification(data),
+        onSuccess: (_, { is_read }) =>
+            setNotifications((prevNotifications) =>
+                prevNotifications.map((notification) =>
+                    notification._id === _id ? { ...notification, is_read } : notification
+                )
+            )
     })
 
     const handleClickNotification = () => {
@@ -93,6 +99,10 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
             { user_id: (user_from as User)._id, status },
             { onSuccess: () => setFriendStatus(status) }
         )
+
+        if (!is_read) {
+            mutateUpdateNotification({ notification_id: _id, is_read: true })
+        }
     }
 
     const handleReadOrUnreadNotification = () => {
@@ -100,11 +110,6 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
             { notification_id: _id, is_read: !is_read },
             {
                 onSuccess: () => {
-                    setNotifications((prevNotifications) =>
-                        prevNotifications.map((notification) =>
-                            notification._id === _id ? { ...notification, is_read: !is_read } : notification
-                        )
-                    )
                     setIsShowMenu(false)
                     handleMouseLeaveButton()
                 }
@@ -160,7 +165,9 @@ function NotificationItem({ data, notifications, setNotifications, onClick }: No
                 >
                     {parse(
                         `${title.replace('{{user_from}}', `<strong>${user_from?.name || ''}</strong>`)}${
-                            type === NotificationType.Post ? `: ${(payload.post as Post).content}` : ''
+                            type === NotificationType.Post && !['', '<br>'].includes((payload.post as Post).content)
+                                ? `: ${(payload.post as Post).content}`
+                                : ''
                         }`,
                         parseOptions
                     )}

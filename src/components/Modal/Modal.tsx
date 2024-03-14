@@ -20,6 +20,12 @@ function Modal(props: ModalProps) {
             className={`[&_.ant-modal-close]:right-3 [&_.ant-modal-close]:top-3 [&_.ant-modal-close]:h-[26px] [&_.ant-modal-close]:w-[26px] [&_.ant-modal-close]:hover:bg-transparent sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 [&_.ant-modal-content]:p-2 sm:[&_.ant-modal-content]:p-4 [&_.ant-modal-header]:mb-3 [&_.ant-modal-header]:mt-1 [&_.ant-modal-header]:text-center sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0 [&_.ant-modal-title]:text-xl ${
                 props.className || ''
             }`}
+            cancelButtonProps={{
+                className: 'border-[#d9d9d9] hover:!text-[#2997ff] hover:!border-[#2997ff]'
+            }}
+            okButtonProps={{
+                className: 'bg-[#007bff] hover:!bg-[#2997ff] dark:shadow-[0_2px_0_rgb(0,0,0,0.1)]'
+            }}
         >
             <div className='border-t border-solid border-black/20 dark:border-white/20'>{props.children}</div>
         </AntdModal>

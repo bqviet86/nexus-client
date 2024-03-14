@@ -86,15 +86,17 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
 
                 <div className='ml-2 flex w-full flex-col items-start'>
                     <div className='flex max-w-full items-center gap-1'>
-                        <div className='rounded-xl bg-[#f0f2f5] px-3 py-2'>
+                        <div className='rounded-xl bg-[#f0f2f5] px-3 py-2 transition-all dark:bg-[#3a3b3c]'>
                             <Link
                                 to={routes.profile.replace(':profile_id', data.user._id)}
-                                className='line-clamp-1 w-max text-[13px] font-medium'
+                                className='line-clamp-1 w-max text-[13px] font-medium transition-all dark:text-[#e4e6eb]'
                             >
                                 {data.user.name}
                             </Link>
 
-                            {data.content && <p className='break-all text-sm'>{data.content}</p>}
+                            {data.content && (
+                                <p className='break-all text-sm transition-all dark:text-[#e4e6eb]'>{data.content}</p>
+                            )}
 
                             {data.media && (
                                 <div className='relative mt-1 aspect-[16/9] max-w-[260px] overflow-hidden rounded-lg bg-black'>
@@ -208,9 +210,6 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                                     okText='Xoá'
                                     cancelText='Không'
                                     confirmLoading={isFetchingDeleteComment}
-                                    okButtonProps={{
-                                        className: 'bg-[#007bff]'
-                                    }}
                                 >
                                     <p className='my-3'>Bạn có chắc chắn muốn xóa bình luận này không?</p>
                                 </Modal>
@@ -219,10 +218,12 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                     </div>
 
                     <div className='mt-1 flex items-center'>
-                        <div className='mx-2 text-xs text-[#65676b]'>{timeRef.current}</div>
+                        <div className='mx-2 text-xs text-[#65676b] transition-all dark:text-[#b0b3b8]'>
+                            {timeRef.current}
+                        </div>
 
                         <div
-                            className='mx-2 cursor-pointer text-xs text-[#65676b] hover:underline'
+                            className='mx-2 cursor-pointer text-xs text-[#65676b] transition-all hover:underline dark:text-[#b0b3b8]'
                             onClick={handleClickReplyCommentBtn}
                         >
                             Phản hồi
@@ -230,7 +231,9 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                     </div>
                 </div>
 
-                {isHasOverlay && <div className='absolute right-full z-10 h-full w-11 bg-white' />}
+                {isHasOverlay && (
+                    <div className='absolute right-full z-10 h-full w-11 bg-white transition-all dark:bg-[#242526]' />
+                )}
             </div>
         </Wrapper>
     )

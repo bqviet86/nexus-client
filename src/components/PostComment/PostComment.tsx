@@ -147,7 +147,7 @@ function PostComment({ postId }: PostCommentProps) {
     }, [socket])
 
     return (
-        <div className='border-t-[1px] border-solid border-[#ced0d4] py-2 sm:py-3'>
+        <div className='border-t-[1px] border-solid border-[#ced0d4] py-2 transition-all sm:py-3 dark:border-[#3e4042]'>
             {isFetchingComments ? (
                 <Loading className='w-full' loaderClassName='!text-[#65676b] dark:!text-[#e4e6eb]' />
             ) : (
@@ -172,11 +172,11 @@ function PostComment({ postId }: PostCommentProps) {
                                 {comment.children_count > 0 && (
                                     <CommentLine>
                                         <div
-                                            className='mt-1 flex h-5 w-max cursor-pointer items-center hover:underline'
+                                            className='mt-1 flex h-5 w-max cursor-pointer items-center text-[#65676b] transition-all hover:underline dark:text-[#b0b3b8]'
                                             onClick={() => handleShowOrHideReplies(comment._id)}
                                         >
                                             <svg
-                                                className='h-[22px] w-[22px] text-[#65676b]'
+                                                className='h-[22px] w-[22px]'
                                                 viewBox='0 0 24.00 24.00'
                                                 fill='none'
                                                 xmlns='http://www.w3.org/2000/svg'
@@ -199,7 +199,7 @@ function PostComment({ postId }: PostCommentProps) {
                                                 </g>
                                             </svg>
 
-                                            <span className='text-[13px] font-medium text-[#65676b]'>
+                                            <span className='text-[13px] font-medium'>
                                                 {isShowReplies && !isFetchingChildComments
                                                     ? showReplyInputText
                                                     : notShowReplyInputText}
@@ -238,7 +238,7 @@ function PostComment({ postId }: PostCommentProps) {
 
                                 {(comment.children_count > 0 || isShowReplyInput) && (
                                     <div
-                                        className={`absolute left-[17px] top-10 w-[1.6px] bg-[#f0f2f5] ${lineHeight}`}
+                                        className={`absolute left-[17px] top-10 w-[1.6px] bg-[#f0f2f5] transition-all dark:bg-[#3a3b3c] ${lineHeight}`}
                                     />
                                 )}
                             </div>

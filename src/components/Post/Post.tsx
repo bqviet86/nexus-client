@@ -46,7 +46,7 @@ function Post({ data, isParentPost = false }: PostProps) {
 
                 if (attribs.class === 'text') {
                     return (
-                        <span className='text-sm text-[#333] sm:text-[15px] dark:text-[#e4e6eb]'>
+                        <span className='text-sm text-[#333] transition-all sm:text-[15px] dark:text-[#e4e6eb]'>
                             {domToReact(children as DOMNode[], parseOptions)}
                         </span>
                     )
@@ -57,7 +57,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                     return (
                         <Link
                             to={routes.hashtag.replace(':hashtag_name', hashtagName.slice(1))}
-                            className='text-sm text-[#1da1f2] hover:underline sm:text-[15px]'
+                            className='text-sm text-[#1da1f2] transition-all hover:underline sm:text-[15px]'
                         >
                             {hashtagName}
                         </Link>
@@ -165,9 +165,9 @@ function Post({ data, isParentPost = false }: PostProps) {
 
     return (
         <div
-            className={`post flex bg-white ${
+            className={`post flex bg-white transition-all dark:bg-[#242526] ${
                 isParentPost
-                    ? 'flex-col-reverse rounded-xl border border-solid border-[#ced0d4]'
+                    ? 'flex-col-reverse rounded-xl border border-solid border-[#ced0d4] dark:border-[#3e4042]'
                     : 'flex-col rounded-lg px-2 pt-2 sm:px-4 sm:pt-3'
             }`}
         >
@@ -191,11 +191,13 @@ function Post({ data, isParentPost = false }: PostProps) {
                     <div className='ml-2 flex flex-col'>
                         <Link
                             to={routes.profile.replace(':profile_id', data.user._id)}
-                            className='w-max text-sm font-medium sm:text-[15px]'
+                            className='w-max text-sm font-medium transition-all sm:text-[15px] dark:text-[#e4e6eb]'
                         >
                             {data.user.name}
                         </Link>
-                        <span className='text-xs sm:mt-0.5 sm:text-[13px]'>{formatTime(data.created_at, true)}</span>
+                        <span className='text-xs transition-all sm:mt-0.5 sm:text-[13px] dark:text-[#b0b3b8]'>
+                            {formatTime(data.created_at, true)}
+                        </span>
                     </div>
                 </div>
 
@@ -207,7 +209,7 @@ function Post({ data, isParentPost = false }: PostProps) {
 
                 {isShowMoreBtn && (
                     <span
-                        className='cursor-pointer text-sm font-medium leading-6 text-[#333] hover:underline dark:text-[#e4e6eb]'
+                        className='cursor-pointer text-sm font-medium leading-6 text-[#333] transition-all hover:underline dark:text-[#e4e6eb]'
                         onClick={() => setIsShowMoreBtn(false)}
                     >
                         Xem thêm
@@ -227,9 +229,9 @@ function Post({ data, isParentPost = false }: PostProps) {
                 <>
                     <div className='flex justify-between py-2.5'>
                         <div className='flex items-center gap-1'>
-                            {likeCount > 0 ? (
+                            <div className='flex h-5 w-5 items-center justify-center rounded-full bg-[#138df0]'>
                                 <svg
-                                    className='h-[20px] w-[20px] text-[#0566ff]'
+                                    className='h-[14px] w-[14px] text-white'
                                     aria-hidden='true'
                                     xmlns='http://www.w3.org/2000/svg'
                                     fill='currentColor'
@@ -241,24 +243,8 @@ function Post({ data, isParentPost = false }: PostProps) {
                                         clipRule='evenodd'
                                     />
                                 </svg>
-                            ) : (
-                                <svg
-                                    className='h-[20px] w-[20px] text-[#65676b]'
-                                    aria-hidden='true'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    fill='none'
-                                    viewBox='0 0 24 24'
-                                >
-                                    <path
-                                        stroke='currentColor'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2'
-                                        d='M7 11c.9 0 1.4-.5 2.2-1a33.3 33.3 0 0 0 4.5-5.8 1.5 1.5 0 0 1 2 .3 1.6 1.6 0 0 1 .4 1.3L14.7 10M7 11H4v6.5c0 .8.7 1.5 1.5 1.5v0c.8 0 1.5-.7 1.5-1.5V11Zm6.5-1h5l.5.1a1.8 1.8 0 0 1 1 1.4l-.1.9-2.1 6.4c-.3.7-.4 1.2-1.7 1.2-2.3 0-4.8-1-6.7-1.5'
-                                    />
-                                </svg>
-                            )}
-                            <span className='text-sm text-[#65676b]'>
+                            </div>
+                            <span className='text-sm text-[#65676b] transition-all dark:text-[#b0b3b8]'>
                                 {isLiked
                                     ? likeCount > 1
                                         ? `Bạn và ${likeCount - 1} người khác`
@@ -268,14 +254,18 @@ function Post({ data, isParentPost = false }: PostProps) {
                         </div>
 
                         <div className='flex items-center gap-2'>
-                            <span className='text-sm text-[#65676b]'>{commentCount} bình luận</span>
+                            <span className='text-sm text-[#65676b] transition-all dark:text-[#b0b3b8]'>
+                                {commentCount} bình luận
+                            </span>
                             {data.type !== PostType.Share && (
-                                <span className='text-sm text-[#65676b]'>{shareCount} lượt chia sẻ</span>
+                                <span className='text-sm text-[#65676b] transition-all dark:text-[#b0b3b8]'>
+                                    {shareCount} lượt chia sẻ
+                                </span>
                             )}
                         </div>
                     </div>
 
-                    <div className='flex border-t-[1px] border-solid border-[#ced0d4] py-1'>
+                    <div className='flex border-t-[1px] border-solid border-[#ced0d4] py-1 transition-all dark:border-[#3e4042]'>
                         <Button
                             icon={
                                 isLiked ? (
@@ -294,7 +284,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                                     </svg>
                                 ) : (
                                     <svg
-                                        className='h-[20px] w-[20px] text-[#65676b]'
+                                        className='h-[20px] w-[20px] text-[#65676b] transition-all dark:text-[#b0b3b8]'
                                         aria-hidden='true'
                                         xmlns='http://www.w3.org/2000/svg'
                                         fill='none'
@@ -321,7 +311,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                         <Button
                             icon={
                                 <svg
-                                    className='h-[20px] w-[20px] text-[#65676b]'
+                                    className='h-[20px] w-[20px] text-[#65676b] transition-all dark:text-[#b0b3b8]'
                                     aria-hidden='true'
                                     xmlns='http://www.w3.org/2000/svg'
                                     fill='none'
@@ -350,7 +340,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                                     <Button
                                         icon={
                                             <svg
-                                                className='h-[20px] w-[20px] text-[#65676b]'
+                                                className='h-[20px] w-[20px] text-[#65676b] transition-all dark:text-[#b0b3b8]'
                                                 aria-hidden='true'
                                                 xmlns='http://www.w3.org/2000/svg'
                                                 fill='none'

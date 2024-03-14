@@ -191,7 +191,10 @@ function CommentForm({
                     </div>
 
                     <div className='ml-2 flex-1'>
-                        <form className='flex h-9 rounded-full bg-[#f0f2f5] pr-3' onSubmit={handleSubmit}>
+                        <form
+                            className='flex h-9 rounded-full bg-[#f0f2f5] pr-3 transition-all dark:bg-[#3a3b3c]'
+                            onSubmit={handleSubmit}
+                        >
                             <input
                                 {...(parentId && replyInputRefs
                                     ? { ref: (ref) => (replyInputRefs.current[parentId] = ref) }
@@ -199,7 +202,7 @@ function CommentForm({
                                 placeholder='Viết phản hồi...'
                                 spellCheck='false'
                                 autoFocus={mode === 'edit' && !replyInputRefs}
-                                className='h-full flex-[1] rounded-full bg-inherit px-3 py-2 text-sm'
+                                className='h-full flex-[1] rounded-full bg-[#f0f2f5] px-3 py-2 text-sm transition-all dark:bg-[#3a3b3c] dark:text-[#e4e6eb]'
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                             />
@@ -248,7 +251,7 @@ function CommentForm({
                                             <svg
                                                 className={`h-[20px] w-[20px] rotate-90 ${
                                                     content || image
-                                                        ? 'text-[#007bff] hover:text-[#2997ff]'
+                                                        ? 'text-[#007bff] transition-all hover:text-[#2997ff]'
                                                         : 'cursor-not-allowed text-[#bec3c9]'
                                                 }`}
                                                 aria-hidden='true'
@@ -298,10 +301,10 @@ function CommentForm({
                         )}
 
                         {mode === 'edit' && (
-                            <div className='ml-3 mt-2 text-xs'>
+                            <div className='ml-3 mt-2 text-xs transition-all dark:text-[#b0b3b8]'>
                                 Nhấn Esc để{' '}
                                 <span
-                                    className='cursor-pointer text-[#ab2b3a] hover:underline'
+                                    className='cursor-pointer text-[#ab2b3a] transition-all hover:underline'
                                     onClick={() => setIsEditMode(false)}
                                 >
                                     hủy
@@ -310,7 +313,9 @@ function CommentForm({
                         )}
                     </div>
 
-                    {mode === 'create' && parentId && <div className='absolute right-full z-10 h-full w-11 bg-white' />}
+                    {mode === 'create' && parentId && (
+                        <div className='absolute right-full z-10 h-full w-11 bg-white transition-all dark:bg-[#242526]' />
+                    )}
                 </div>
             </Wrapper>
         )

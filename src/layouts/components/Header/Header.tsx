@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import Notification from '~/components/Notification'
@@ -19,9 +19,7 @@ import { removeTokenFromLS, removeUserFromLS, setDarkModeToLS, setUserToLS } fro
 import { listenEvent } from '~/utils/event'
 
 function Header() {
-    const navigate = useNavigate()
-
-    const { user, setUser, token, setToken, darkMode, setDarkMode } = useContext(AppContext)
+    const { user, setUser, token, darkMode, setDarkMode } = useContext(AppContext)
     const [showMenu, setShowMenu] = useState<boolean>(false)
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1024)
 
@@ -81,12 +79,9 @@ function Header() {
     })
 
     const handleLogoutSuccess = () => {
-        setUser(null)
-        setToken(null)
-        setShowMenu(false)
         removeUserFromLS()
         removeTokenFromLS()
-        navigate(routes.welcome)
+        window.location.href = routes.welcome
     }
 
     const handleLogout = () => {

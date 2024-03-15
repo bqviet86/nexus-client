@@ -4,6 +4,7 @@ import { FriendStatus, Sex } from '~/constants/enums'
 import { SuccessResponse } from '~/types/response.types'
 import {
     GetAllFriendRequestsResponse,
+    GetAllFriendSuggestionsResponse,
     GetMeResponse,
     LoginResponse,
     RefreshTokenResponse,
@@ -48,3 +49,5 @@ export const responseFriendRequest = ({ user_id, status }: ResponseFriendRequest
     http.patch<SuccessResponse>(`/users/friend/response/${user_id}`, { status })
 
 export const getAllFriendRequests = () => http.get<GetAllFriendRequestsResponse>('/users/friend/request')
+
+export const getAllFriendSuggestions = () => http.get<GetAllFriendSuggestionsResponse>('/users/friend/suggestion')

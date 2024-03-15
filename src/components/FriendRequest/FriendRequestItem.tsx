@@ -49,7 +49,15 @@ function FriendRequestItem({ friend }: FriendRequestItemProps) {
             className='flex items-center rounded-lg p-2 transition-all hover:bg-[#f2f2f2] dark:hover:bg-[#3a3b3c]'
         >
             <div className='flex items-center'>
-                <img src={friend.user_from.avatar || images.avatar} alt='avatar' className='h-10 w-10 rounded-full' />
+                <img
+                    src={
+                        friend.user_from.avatar
+                            ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${friend.user_from.avatar}`
+                            : images.avatar
+                    }
+                    alt='avatar'
+                    className='h-10 w-10 rounded-full'
+                />
             </div>
 
             <div className='ml-3 flex-1'>

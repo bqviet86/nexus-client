@@ -1,13 +1,16 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { AxiosResponse } from 'axios'
+import { flatMap } from 'lodash'
 
 import Post from '~/components/Post'
 import Loading from '~/components/Loading'
 import { GetNewsFeedReqQuery, getNewsFeed } from '~/apis/posts.apis'
 import { AppContext } from '~/contexts/appContext'
 import { Pagination } from '~/types/commons.types'
-import { Post as PostType } from '~/types/posts.types'
+import { GetNewsFeedResponse, Post as PostType } from '~/types/posts.types'
+import { PaginationResponse } from '~/types/response.types'
 
 const LIMIT = 10
 
@@ -37,12 +40,38 @@ function PostList() {
     useQuery({
         queryKey: ['newsFeed', { page: pagination.page, limit: LIMIT }],
         queryFn: () => getNewsFeedQueryFn({ page: pagination.page, limit: LIMIT }),
+        gcTime: Infinity,
         enabled:
             !!socket &&
             socket.connected &&
             (pagination.page === 1 || pagination.page < pagination.total_pages) &&
-            posts.length < pagination.page * LIMIT
+            posts.length < pagination.page * LIMIT &&
+            queryClient.getQueryData(['newsFeed', { page: pagination.page, limit: LIMIT }]) === undefined
     })
+
+    useEffect(() => {
+        const dataCaches = queryClient
+            .getQueriesData({
+                queryKey: ['newsFeed']
+            })
+            .filter(([_, dataCache]) => dataCache !== undefined)
+            .map(
+                ([_, dataCache]) =>
+                    (dataCache as AxiosResponse<GetNewsFeedResponse, any>).data.result as PaginationResponse<{
+                        posts: PostType[]
+                    }>
+            )
+
+        if (dataCaches.length) {
+            const posts = flatMap(dataCaches, (dataCache) => dataCache.posts)
+
+            setPosts(posts)
+            setPagination({
+                page: dataCaches[dataCaches.length - 1].page,
+                total_pages: dataCaches[dataCaches.length - 1].total_pages
+            })
+        }
+    }, [])
 
     const handleFetchMorePosts = () => {
         const nextPage = pagination.page + 1

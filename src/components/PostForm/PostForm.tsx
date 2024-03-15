@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
-import lodash from 'lodash'
+import { difference, flatMap } from 'lodash'
 
 import Modal from '~/components/Modal'
 import Button from '~/components/Button'
@@ -88,7 +88,7 @@ function PostForm({
     }, [])
 
     useEffect(() => {
-        const mediasRemoved = lodash.difference(mediasRef.current, medias)
+        const mediasRemoved = difference(mediasRef.current, medias)
 
         mediasRemoved.forEach((media) => URL.revokeObjectURL(media.url))
         mediasRef.current = medias
@@ -158,7 +158,7 @@ function PostForm({
             uploadMediasRes = await Promise.all(uploadMediaRequests.map((request) => request()))
         }
 
-        const mediasRes = lodash.flatMap(
+        const mediasRes = flatMap(
             uploadMediasRes.map((res) => res.data.result as Media[]),
             (mediaItems) =>
                 mediaItems.map(

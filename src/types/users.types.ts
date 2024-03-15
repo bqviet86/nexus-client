@@ -42,3 +42,5 @@ export type RefreshTokenResponse = SuccessResponse<TokenResponse>
 export type GetMeResponse = SuccessResponse<User>
 
 export type GetAllFriendRequestsResponse = SuccessResponse<Friend[]>
+
+export type GetAllFriendSuggestionsResponse = SuccessResponse<User[]>

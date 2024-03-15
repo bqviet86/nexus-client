@@ -1,6 +1,7 @@
 import CreatePost from '~/components/CreatePost'
 import PostList from '~/components/PostList'
 import FriendRequest from '~/components/FriendRequest'
+import FriendSuggestion from '~/components/FriendSuggestion'
 
 function Home() {
     return (
@@ -13,8 +14,9 @@ function Home() {
                     <PostList />
                 </div>
 
-                <div className='sticky top-20 mx-2.5 hidden w-[calc(300px-20px)] md:block lg-xl:w-[calc(25%-20px)]'>
+                <div className='sticky top-20 mx-2.5 hidden h-[calc(100vh-100px)] w-[calc(300px-20px)] gap-5 md:flex md:flex-col lg-xl:w-[calc(25%-20px)]'>
                     <FriendRequest />
+                    <FriendSuggestion />
                 </div>
             </div>
         </div>

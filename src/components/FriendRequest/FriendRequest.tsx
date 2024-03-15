@@ -18,14 +18,20 @@ function FriendRequest() {
     })
 
     return (
-        <div className='rounded-lg bg-white px-4 py-3 transition-all dark:bg-[#242526]'>
+        <div className='flex max-h-[50%] flex-col rounded-lg bg-white px-4 py-3 transition-all dark:bg-[#242526]'>
             <h3 className='font-medium text-[#65676b] transition-all dark:text-[#b0b3b8]'>Lời mời kết bạn</h3>
 
-            <div className='mt-3'>
-                {friendRequests.map((friend) => (
-                    <FriendRequestItem key={friend._id} friend={friend} />
-                ))}
-            </div>
+            {friendRequests.length ? (
+                <div
+                    className={`mt-3 overflow-y-auto [&::-webkit-scrollbar-track]:!bg-transparent [&::-webkit-scrollbar]:!w-1.5${
+                        friendRequests.length > 2 ? ' -mr-[11px] pr-[5px]' : ''
+                    }`}
+                >
+                    {friendRequests.map((friend) => (
+                        <FriendRequestItem key={friend._id} friend={friend} />
+                    ))}
+                </div>
+            ) : null}
         </div>
     )
 }

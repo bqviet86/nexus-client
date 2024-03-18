@@ -1,5 +1,5 @@
 import { routes as routesConfig } from '~/config'
-import DefaultLayout from '~/layouts'
+import DefaultLayout, { FullScreenLayout } from '~/layouts'
 
 import Home from '~/pages/Home'
 import Welcome from '~/pages/Welcome'
@@ -60,7 +60,7 @@ const routes: Route[] = [
     {
         path: routesConfig.profile,
         component: Profile,
-        layout: DefaultLayout,
+        layout: FullScreenLayout,
         protected: true
     },
     {

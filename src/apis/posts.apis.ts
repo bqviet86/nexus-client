@@ -1,6 +1,6 @@
 import { PostType } from '~/constants/enums'
 import { Media } from '~/types/medias.types'
-import { CreatePostResponse, GetNewsFeedResponse } from '~/types/posts.types'
+import { CreatePostResponse, GetPostListResponse } from '~/types/posts.types'
 import http from '~/utils/http'
 
 export type CreatePostReqData = {
@@ -11,12 +11,15 @@ export type CreatePostReqData = {
     medias: Media[]
 }
 
-export type GetNewsFeedReqQuery = {
+export type GetPostListReqQuery = {
     page: number
     limit: number
 }
 
 export const createPost = (data: CreatePostReqData) => http.post<CreatePostResponse>('/posts', data)
 
-export const getNewsFeed = (query: GetNewsFeedReqQuery) =>
-    http.get<GetNewsFeedResponse>('/posts/news-feed', { params: query })
+export const getNewsFeed = (query: GetPostListReqQuery) =>
+    http.get<GetPostListResponse>('/posts/news-feed', { params: query })
+
+export const getProfilePosts = (profile_id: string, query: GetPostListReqQuery) =>
+    http.get<GetPostListResponse>(`/posts/profile/${profile_id}`, { params: query })

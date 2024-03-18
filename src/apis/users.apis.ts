@@ -5,7 +5,9 @@ import { SuccessResponse } from '~/types/response.types'
 import {
     GetAllFriendRequestsResponse,
     GetAllFriendSuggestionsResponse,
+    GetAllFriendsResponse,
     GetMeResponse,
+    GetProfileResponse,
     LoginResponse,
     RefreshTokenResponse,
     RegisterResponse
@@ -48,6 +50,12 @@ export const sendFriendRequest = (user_id: string) => http.post<SuccessResponse>
 export const responseFriendRequest = ({ user_id, status }: ResponseFriendRequestReqData) =>
     http.patch<SuccessResponse>(`/users/friend/response/${user_id}`, { status })
 
+export const cancelFriendRequest = (user_id: string) => http.delete<SuccessResponse>(`/users/friend/request/${user_id}`)
+
 export const getAllFriendRequests = () => http.get<GetAllFriendRequestsResponse>('/users/friend/request')
 
 export const getAllFriendSuggestions = () => http.get<GetAllFriendSuggestionsResponse>('/users/friend/suggestion')
+
+export const getProfile = (profile_id: string) => http.get<GetProfileResponse>(`/users/${profile_id}`)
+
+export const getAllFriends = (user_id: string) => http.get<GetAllFriendsResponse>(`/users/friend/all/${user_id}`)

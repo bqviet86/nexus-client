@@ -6,23 +6,27 @@ import { flatMap } from 'lodash'
 
 import Post from '~/components/Post'
 import Loading from '~/components/Loading'
-import { GetNewsFeedReqQuery, getNewsFeed } from '~/apis/posts.apis'
+import { GetPostListReqQuery, getNewsFeed, getProfilePosts } from '~/apis/posts.apis'
 import { AppContext } from '~/contexts/appContext'
 import { Pagination } from '~/types/commons.types'
-import { GetNewsFeedResponse, Post as PostType } from '~/types/posts.types'
+import { GetPostListResponse, Post as PostType } from '~/types/posts.types'
 import { PaginationResponse } from '~/types/response.types'
+
+type PostListProps = {
+    profile_id?: string
+}
 
 const LIMIT = 10
 
-function PostList() {
+function PostList({ profile_id = '' }: PostListProps) {
     const queryClient = useQueryClient()
 
     const { socket } = useContext(AppContext)
     const [posts, setPosts] = useState<PostType[]>([])
     const [pagination, setPagination] = useState<Pagination>({ page: 1, total_pages: 0 })
 
-    const getNewsFeedQueryFn = async (query: GetNewsFeedReqQuery) => {
-        const response = await getNewsFeed(query)
+    const getPostListQueryFn = async (query: GetPostListReqQuery) => {
+        const response = profile_id ? await getProfilePosts(profile_id, query) : await getNewsFeed(query)
         const { result } = response.data
 
         setPosts((prevPosts) => {
@@ -38,26 +42,36 @@ function PostList() {
     }
 
     useQuery({
-        queryKey: ['newsFeed', { page: pagination.page, limit: LIMIT }],
-        queryFn: () => getNewsFeedQueryFn({ page: pagination.page, limit: LIMIT }),
+        queryKey: profile_id
+            ? ['postList', { profile_id, page: pagination.page, limit: LIMIT }]
+            : ['newsFeed', { page: pagination.page, limit: LIMIT }],
+        queryFn: () => getPostListQueryFn({ page: pagination.page, limit: LIMIT }),
         gcTime: Infinity,
         enabled:
             !!socket &&
             socket.connected &&
             (pagination.page === 1 || pagination.page < pagination.total_pages) &&
             posts.length < pagination.page * LIMIT &&
-            queryClient.getQueryData(['newsFeed', { page: pagination.page, limit: LIMIT }]) === undefined
+            queryClient.getQueryData(
+                profile_id
+                    ? ['postList', { profile_id, page: pagination.page, limit: LIMIT }]
+                    : ['newsFeed', { page: pagination.page, limit: LIMIT }]
+            ) === undefined
     })
 
     useEffect(() => {
         const dataCaches = queryClient
             .getQueriesData({
-                queryKey: ['newsFeed']
+                predicate: (query) =>
+                    profile_id
+                        ? query.queryKey[0] === 'postList' &&
+                          (query.queryKey[1] as { profile_id: string }).profile_id === profile_id
+                        : query.queryKey[0] === 'newsFeed'
             })
             .filter(([_, dataCache]) => dataCache !== undefined)
             .map(
                 ([_, dataCache]) =>
-                    (dataCache as AxiosResponse<GetNewsFeedResponse, any>).data.result as PaginationResponse<{
+                    (dataCache as AxiosResponse<GetPostListResponse, any>).data.result as PaginationResponse<{
                         posts: PostType[]
                     }>
             )
@@ -71,7 +85,7 @@ function PostList() {
                 total_pages: dataCaches[dataCaches.length - 1].total_pages
             })
         }
-    }, [])
+    }, [profile_id])
 
     const handleFetchMorePosts = () => {
         const nextPage = pagination.page + 1
@@ -83,8 +97,10 @@ function PostList() {
             }))
         } else {
             queryClient.fetchQuery({
-                queryKey: ['newsFeed', { page: nextPage, limit: LIMIT }],
-                queryFn: () => getNewsFeedQueryFn({ page: nextPage, limit: LIMIT })
+                queryKey: profile_id
+                    ? ['postList', { profile_id, page: nextPage, limit: LIMIT }]
+                    : ['newsFeed', { page: nextPage, limit: LIMIT }],
+                queryFn: () => getPostListQueryFn({ page: nextPage, limit: LIMIT })
             })
         }
     }

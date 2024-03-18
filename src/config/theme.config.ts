@@ -23,6 +23,11 @@ const darkThemeConfig: ThemeConfig = {
         DatePicker: {
             colorTextDisabled: '#9ca3afb3',
             algorithm: true
+        },
+        Tooltip: {
+            colorBgSpotlight: '#3a3b3c',
+            colorText: '#e4e6eb',
+            algorithm: true
         }
     }
 }

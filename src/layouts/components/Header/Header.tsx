@@ -15,7 +15,13 @@ import {
 } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { User } from '~/types/users.types'
-import { removeTokenFromLS, removeUserFromLS, setDarkModeToLS, setUserToLS } from '~/utils/localStorage'
+import {
+    removeDatingProfileFromLS,
+    removeTokenFromLS,
+    removeUserFromLS,
+    setDarkModeToLS,
+    setUserToLS
+} from '~/utils/localStorage'
 import { listenEvent } from '~/utils/event'
 
 function Header() {
@@ -81,6 +87,7 @@ function Header() {
     const handleLogoutSuccess = () => {
         removeUserFromLS()
         removeTokenFromLS()
+        removeDatingProfileFromLS()
         window.location.href = routes.welcome
     }
 

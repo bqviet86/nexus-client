@@ -1,5 +1,3 @@
-import axios, { AxiosRequestConfig } from 'axios'
-
 import { FriendStatus, Sex } from '~/constants/enums'
 import { SuccessResponse } from '~/types/response.types'
 import {
@@ -12,7 +10,7 @@ import {
     RefreshTokenResponse,
     RegisterResponse
 } from '~/types/users.types'
-import http, { requestConfig } from '~/utils/http'
+import http from '~/utils/http'
 
 export type LoginReqData = {
     email: string
@@ -41,7 +39,7 @@ export const registerUser = (data: RegisterReqData) => http.post<RegisterRespons
 export const logoutUser = (refresh_token: string) => http.post<SuccessResponse>('/users/logout', { refresh_token })
 
 export const refreshToken = (refresh_token: string) =>
-    axios.post<RefreshTokenResponse>('/users/refresh-token', { refresh_token }, requestConfig as AxiosRequestConfig)
+    http.post<RefreshTokenResponse>('/users/refresh-token', { refresh_token })
 
 export const getMe = () => http.get<GetMeResponse>('/users/me')
 

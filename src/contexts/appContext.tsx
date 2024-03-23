@@ -2,8 +2,9 @@ import { createContext, useEffect, useState } from 'react'
 import { Socket } from 'socket.io-client'
 
 import { TokenResponse, User } from '~/types/users.types'
+import { DatingProfile } from '~/types/datingUsers.types'
 import { listenEvent } from '~/utils/event'
-import { getDarkModeFromLS, getTokenFromLS, getUserFromLS } from '~/utils/localStorage'
+import { getDarkModeFromLS, getDatingProfileFromLS, getTokenFromLS, getUserFromLS } from '~/utils/localStorage'
 
 type EmitEvent = {
     event: string
@@ -21,6 +22,8 @@ type AppContextType = {
     setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
     emitEvents: EmitEvent[]
     setEmitEvents: React.Dispatch<React.SetStateAction<EmitEvent[]>>
+    datingProfile: DatingProfile | null | undefined
+    setDatingProfile: React.Dispatch<React.SetStateAction<DatingProfile | null | undefined>>
 }
 
 const initialAppContext: AppContextType = {
@@ -33,7 +36,9 @@ const initialAppContext: AppContextType = {
     socket: null,
     setSocket: () => {},
     emitEvents: [],
-    setEmitEvents: () => {}
+    setEmitEvents: () => {},
+    datingProfile: getDatingProfileFromLS() ?? undefined,
+    setDatingProfile: () => {}
 }
 
 export const AppContext = createContext<AppContextType>(initialAppContext)
@@ -48,8 +53,9 @@ function AppProvider({
     const [user, setUser] = useState<User | null>(defaultValue.user)
     const [token, setToken] = useState<TokenResponse | null>(defaultValue.token)
     const [darkMode, setDarkMode] = useState<boolean>(defaultValue.darkMode)
-    const [socket, setSocket] = useState<Socket | null>(null)
-    const [emitEvents, setEmitEvents] = useState<EmitEvent[]>([])
+    const [socket, setSocket] = useState<Socket | null>(defaultValue.socket)
+    const [emitEvents, setEmitEvents] = useState<EmitEvent[]>(defaultValue.emitEvents)
+    const [datingProfile, setDatingProfile] = useState<DatingProfile | null | undefined>(defaultValue.datingProfile)
 
     useEffect(() => {
         const remove = listenEvent<TokenResponse>('refresh-token-success', ({ detail }) =>
@@ -74,7 +80,9 @@ function AppProvider({
                 socket,
                 setSocket,
                 emitEvents,
-                setEmitEvents
+                setEmitEvents,
+                datingProfile,
+                setDatingProfile
             }}
         >
             {children}

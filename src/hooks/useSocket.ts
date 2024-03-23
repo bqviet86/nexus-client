@@ -54,26 +54,28 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
         const access_token = token?.access_token || null
         const refresh_token = token?.refresh_token || null
 
-        if (socket && access_token && !isAccessTokenExpired(access_token)) {
-            socket.connected ? socket.emit(event, ...args) : setEmitEvents((prev) => [...prev, { event, args }])
-            return
-        }
+        if (access_token) {
+            if (socket && !isAccessTokenExpired(access_token)) {
+                socket.connected ? socket.emit(event, ...args) : setEmitEvents((prev) => [...prev, { event, args }])
+                return
+            }
 
-        if (refresh_token) {
-            mutateRefreshToken(refresh_token, {
-                onSuccess: (response) => {
-                    const tokenResponse = response.data.result as TokenResponse
+            if (refresh_token && isAccessTokenExpired(access_token)) {
+                mutateRefreshToken(refresh_token, {
+                    onSuccess: (response) => {
+                        const tokenResponse = response.data.result as TokenResponse
 
-                    setToken(tokenResponse)
-                    setTokenToLS(tokenResponse)
-                    setEmitEvents((prev) => [...prev, { event, args }])
-                },
-                onError: (error) => {
-                    if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
-                        sendEvent('force-logout')
+                        setToken(tokenResponse)
+                        setTokenToLS(tokenResponse)
+                        setEmitEvents((prev) => [...prev, { event, args }])
+                    },
+                    onError: (error) => {
+                        if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
+                            sendEvent('force-logout')
+                        }
                     }
-                }
-            })
+                })
+            }
         }
     }
 

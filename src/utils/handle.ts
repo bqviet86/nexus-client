@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { compareAsc, format, formatDistanceToNowStrict, sub } from 'date-fns'
+import { compareAsc, differenceInYears, format, formatDistanceToNowStrict, parseISO, sub } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
@@ -73,4 +73,12 @@ export function renderCommentUpdated<T>({
                   : { content: newContent, media: newMedia })
           }
         : comment
+}
+
+export function calculateAge(date_of_birth: string) {
+    const currentDate = new Date()
+    const birthDate = parseISO(date_of_birth)
+    const age = differenceInYears(currentDate, birthDate)
+
+    return age
 }

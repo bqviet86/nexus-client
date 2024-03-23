@@ -34,23 +34,29 @@ class Http {
                 if (access_token) {
                     if (isAccessTokenExpired(access_token)) {
                         if (!this.isRefreshing) {
-                            this.isRefreshing = true
+                            if (config.url !== '/users/refresh-token') {
+                                this.isRefreshing = true
 
-                            const tokenRes = await this.callRefreshToken(refresh_token as string)
-                            const new_access_token = tokenRes?.access_token || null
+                                const tokenRes = await this.callRefreshToken(refresh_token as string)
+                                const new_access_token = tokenRes?.access_token || null
 
-                            if (tokenRes) {
-                                if (config.url === '/users/logout') {
-                                    config.data = { refresh_token: tokenRes.refresh_token }
+                                if (tokenRes) {
+                                    if (config.url === '/users/logout') {
+                                        config.data = { refresh_token: tokenRes.refresh_token }
+                                    }
+
+                                    setAuthorization(tokenRes.access_token)
                                 }
 
-                                setAuthorization(tokenRes.access_token)
+                                this.onRefreshed(new_access_token)
+                                this.isRefreshing = false
                             }
 
-                            this.onRefreshed(new_access_token)
-                            this.isRefreshing = false
-
                             return config
+                        }
+
+                        if (config.url === '/users/refresh-token') {
+                            return Promise.reject(new Error('Refresh token is expired'))
                         }
 
                         return new Promise((resolve) => {

@@ -1,3 +1,4 @@
+import { DatingProfile } from '~/types/datingUsers.types'
 import { TokenResponse, User } from '~/types/users.types'
 
 export const getTokenFromLS = () => {
@@ -33,4 +34,17 @@ export const getDarkModeFromLS = () => {
 
 export const setDarkModeToLS = (darkMode: boolean) => {
     localStorage.setItem('darkMode', JSON.stringify(darkMode))
+}
+
+export const getDatingProfileFromLS = () => {
+    const result = localStorage.getItem('datingProfile')
+    return result ? (JSON.parse(result) as DatingProfile) : null
+}
+
+export const setDatingProfileToLS = (datingProfile: DatingProfile) => {
+    localStorage.setItem('datingProfile', JSON.stringify(datingProfile))
+}
+
+export const removeDatingProfileFromLS = () => {
+    localStorage.removeItem('datingProfile')
 }

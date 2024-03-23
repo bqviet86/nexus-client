@@ -10,6 +10,7 @@ import cloud_under from './cloud-under.png'
 import alien from './alien.png'
 import avatar from './avatar.png'
 import cover from './cover.png'
+import dating_heart from './dating_heart.gif'
 
 const images = {
     logo,
@@ -23,7 +24,8 @@ const images = {
     cloud_under,
     alien,
     avatar,
-    cover
+    cover,
+    dating_heart
 }
 
 export default images

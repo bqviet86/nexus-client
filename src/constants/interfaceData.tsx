@@ -1,5 +1,5 @@
 import { routes } from '~/config'
-import { NotificationFriendAction, NotificationPostAction, NotificationTag, NotificationType } from './enums'
+import { MBTIType, NotificationFriendAction, NotificationPostAction, NotificationTag, NotificationType } from './enums'
 import { NotificationAction } from '~/types/notifications.types'
 import { getUserFromLS } from '~/utils/localStorage'
 import { stringEnumToArray } from '~/utils/handle'
@@ -724,3 +724,70 @@ export const DATING_FOOTER_ITEMS: DatingFooterItemType[] = [
         )
     }
 ]
+
+export const MBTI_TYPES: Record<MBTIType, { title: string; path: string }> = {
+    ESTJ: {
+        title: 'Người điều hành',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estj'
+    },
+    ESTP: {
+        title: 'Người doanh nhân',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estp'
+    },
+    ESFJ: {
+        title: 'Người lãnh sự',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfj'
+    },
+    ESFP: {
+        title: 'Nguời trình diễn',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfp'
+    },
+    ENTJ: {
+        title: 'Người chỉ huy',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entj'
+    },
+    ENTP: {
+        title: 'Người đàm phán',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entp'
+    },
+    ENFJ: {
+        title: 'Người hướng dẫn',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfj'
+    },
+    ENFP: {
+        title: 'Người truyền cảm hứng',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfp'
+    },
+    ISTJ: {
+        title: 'Nhà suy luận',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istj'
+    },
+    ISTP: {
+        title: 'Nghệ sĩ bậc thầy',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istp'
+    },
+    ISFJ: {
+        title: 'Người bảo vệ',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfj'
+    },
+    ISFP: {
+        title: 'Nhà phiêu lưu',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfp'
+    },
+    INTJ: {
+        title: 'Nguời kiến tạo',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intj'
+    },
+    INTP: {
+        title: 'Nhà tư duy',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intp'
+    },
+    INFJ: {
+        title: 'Người cố vấn',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infj'
+    },
+    INFP: {
+        title: 'Người hoà giải',
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infp'
+    }
+}

@@ -48,7 +48,7 @@ function Notification() {
     }
 
     useEffect(() => {
-        if (socket) {
+        if (socket && socket.connected) {
             NOTIFICATION_SOCKET_EVENTS.forEach((event) => socket.on(event, handleIncreaseUnreadCount))
             return () => NOTIFICATION_SOCKET_EVENTS.forEach((event) => socket.off(event, handleIncreaseUnreadCount))
         }

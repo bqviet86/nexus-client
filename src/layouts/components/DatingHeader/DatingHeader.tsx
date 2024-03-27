@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { Instance as TippyInstance } from 'tippy.js'
 import Tippy from '@tippyjs/react/headless'
@@ -12,7 +12,13 @@ import { AppContext } from '~/contexts/appContext'
 import { removeDatingProfileFromLS, removeTokenFromLS, removeUserFromLS } from '~/utils/localStorage'
 import { listenEvent } from '~/utils/event'
 
-function DatingHeader() {
+type DatingHeaderProps = {
+    backBtn?: boolean
+}
+
+function DatingHeader({ backBtn = false }: DatingHeaderProps) {
+    const navigate = useNavigate()
+
     const { token, datingProfile } = useContext(AppContext)
 
     const refresh_token = token?.refresh_token || null
@@ -42,10 +48,30 @@ function DatingHeader() {
     return (
         datingProfile && (
             <div className='absolute left-0 top-0 flex w-full items-center justify-between bg-[#242526] px-4 py-2 shadow-md'>
-                <Link to={routes.home} className='flex items-center gap-1'>
-                    <img src={images.logo_dark} alt='logo' className='h-10' />
-                    <span className='text-xl font-bold'>Nexus</span>
-                </Link>
+                {backBtn ? (
+                    <button className='flex h-8 w-8 items-center justify-center p-1' onClick={() => navigate(-1)}>
+                        <svg
+                            className='h-full w-full'
+                            aria-hidden='true'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                        >
+                            <path
+                                stroke='currentColor'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth='2'
+                                d='m15 19-7-7 7-7'
+                            />
+                        </svg>
+                    </button>
+                ) : (
+                    <Link to={routes.home} className='flex items-center gap-1'>
+                        <img src={images.logo_dark} alt='logo' className='h-10' />
+                        <span className='text-xl font-bold'>Nexus</span>
+                    </Link>
+                )}
 
                 <Tippy
                     interactive

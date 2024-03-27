@@ -1,5 +1,10 @@
 import { routes as routesConfig } from '~/config'
-import DefaultLayout, { DatingLayout, DatingNoHeaderFooterLayout, FullScreenLayout } from '~/layouts'
+import DefaultLayout, {
+    DatingLayout,
+    DatingNoFooterLayout,
+    DatingNoHeaderFooterLayout,
+    FullScreenLayout
+} from '~/layouts'
 
 import Home from '~/pages/Home'
 import Welcome from '~/pages/Welcome'
@@ -17,6 +22,7 @@ import DatingNotification from '~/pages/DatingNotification'
 import DatingProfile from '~/pages/DatingProfile'
 import DatingUpdateProfile from '~/pages/DatingUpdateProfile'
 import DatingPersonalityTest from '~/pages/DatingPersonalityTest'
+import DatingPersonalityTestDetail from '~/pages/DatingPersonalityTestDetail'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
 // Thêm protected: true để báo là route này cần phải đăng nhập mới được truy cập
@@ -125,6 +131,12 @@ const routes: Route[] = [
     {
         path: routesConfig.datingPersonalityTest,
         component: DatingPersonalityTest,
+        layout: DatingNoFooterLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.datingPersonalityTestDetail,
+        component: DatingPersonalityTestDetail,
         layout: DatingNoHeaderFooterLayout,
         protected: true
     }

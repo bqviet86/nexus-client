@@ -15,7 +15,7 @@ import { setDarkModeToLS, setDatingProfileToLS } from '~/utils/localStorage'
 
 function Dating() {
     const { pathname } = useLocation()
-    const { instance: socket } = useSocket()
+    const { instance: socket, emit } = useSocket()
 
     const { user, darkMode, setDarkMode, datingProfile, setDatingProfile } = useContext(AppContext)
     const [onlineAmount, setOnlineAmount] = useState<number>(0)
@@ -30,7 +30,8 @@ function Dating() {
             result && setDatingProfileToLS(result)
 
             return result
-        }
+        },
+        enabled: datingProfile === undefined
     })
 
     useEffect(() => {
@@ -46,11 +47,12 @@ function Dating() {
     }, [])
 
     useEffect(() => {
-        if (socket) {
+        if (socket && socket.connected) {
             const handleDatingRoomUpdated = (onlAmount: number) => {
                 setOnlineAmount(onlAmount)
             }
 
+            emit('get_dating_room_online_amount')
             socket.on('dating_room_updated', handleDatingRoomUpdated)
 
             return () => {

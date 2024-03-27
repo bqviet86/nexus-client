@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Image } from 'antd'
@@ -7,6 +7,7 @@ import Button from '~/components/Button'
 import { getDatingProfile } from '~/apis/datingUsers.apis'
 import images from '~/assets/images'
 import { Sex } from '~/constants/enums'
+import { AppContext } from '~/contexts/appContext'
 import { DatingProfile as DatingProfileType } from '~/types/datingUsers.types'
 
 function DatingProfile() {
@@ -15,6 +16,7 @@ function DatingProfile() {
 
     const { profile_id } = useParams()
 
+    const { datingProfile } = useContext(AppContext)
     const [profile, setProfile] = useState<DatingProfileType | null>(null)
     const [tab, setTab] = useState<'images' | 'callHistory'>('images')
 
@@ -178,45 +180,53 @@ function DatingProfile() {
                     </svg>
                 </Button>
 
-                <Button
-                    className={`!w-28 !bg-transparent [&>span]:hover:!text-white hover:!bg-[#454647]${
-                        tab === 'callHistory' ? ` ${activeBtnClasses}` : ''
-                    }`}
-                    onClick={() => setTab('callHistory')}
-                >
-                    <svg
-                        className='h-6 w-6'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
+                {profile._id !== (datingProfile as DatingProfileType)._id && (
+                    <Button
+                        className={`!w-28 !bg-transparent [&>span]:hover:!text-white hover:!bg-[#454647]${
+                            tab === 'callHistory' ? ` ${activeBtnClasses}` : ''
+                        }`}
+                        onClick={() => setTab('callHistory')}
                     >
-                        <path
-                            stroke='currentColor'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth='2'
-                            d='M18.427 14.768 17.2 13.542a1.733 1.733 0 0 0-2.45 0l-.613.613a1.732 1.732 0 0 1-2.45 0l-1.838-1.84a1.735 1.735 0 0 1 0-2.452l.612-.613a1.735 1.735 0 0 0 0-2.452L9.237 5.572a1.6 1.6 0 0 0-2.45 0c-3.223 3.2-1.702 6.896 1.519 10.117 3.22 3.221 6.914 4.745 10.12 1.535a1.601 1.601 0 0 0 0-2.456Z'
-                        />
-                    </svg>
-                </Button>
+                        <svg
+                            className='h-6 w-6'
+                            aria-hidden='true'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                        >
+                            <path
+                                stroke='currentColor'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth='2'
+                                d='M18.427 14.768 17.2 13.542a1.733 1.733 0 0 0-2.45 0l-.613.613a1.732 1.732 0 0 1-2.45 0l-1.838-1.84a1.735 1.735 0 0 1 0-2.452l.612-.613a1.735 1.735 0 0 0 0-2.452L9.237 5.572a1.6 1.6 0 0 0-2.45 0c-3.223 3.2-1.702 6.896 1.519 10.117 3.22 3.221 6.914 4.745 10.12 1.535a1.601 1.601 0 0 0 0-2.456Z'
+                            />
+                        </svg>
+                    </Button>
+                )}
             </div>
 
-            <div className='mt-4 grid grid-cols-3 gap-1 overflow-hidden rounded-lg'>
-                {profile.images.length ? (
-                    profile.images.map((image, index) => (
-                        <div key={index} className='aspect-[1]'>
-                            <Image
-                                src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
-                                alt={`image-${index}`}
-                                wrapperClassName='h-full w-full'
-                                className='!h-full !w-full !object-cover'
-                                preview
-                            />
+            <div className='mt-4'>
+                {tab === 'images' ? (
+                    profile.images.length ? (
+                        <div className='grid grid-cols-3 gap-1 overflow-hidden rounded-lg'>
+                            {profile.images.map((image, index) => (
+                                <div key={index} className='flex aspect-[1]'>
+                                    <Image
+                                        src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
+                                        alt={`image-${index}`}
+                                        wrapperClassName='h-full w-full'
+                                        className='!h-full !w-full !object-cover'
+                                        preview
+                                    />
+                                </div>
+                            ))}
                         </div>
-                    ))
+                    ) : (
+                        <p className='text-center text-sm'>Chưa có ảnh nào</p>
+                    )
                 ) : (
-                    <div></div>
+                    <div>Lich su cuoc goi</div>
                 )}
             </div>
         </div>

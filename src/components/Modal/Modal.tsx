@@ -4,7 +4,6 @@ import { ModalProps } from 'antd/lib/modal'
 function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) {
     return (
         <AntdModal
-            {...props}
             centered
             closeIcon={
                 <svg
@@ -18,17 +17,22 @@ function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) 
                 </svg>
             }
             {...(dating ? { wrapClassName: 'mx-auto h-screen aspect-[9/16] max-w-full' } : {})}
+            okButtonProps={{
+                className: `dark:shadow-[0_2px_0_rgb(0,0,0,0.1)] ${
+                    dating ? 'bg-teal-500 hover:!bg-teal-500/80' : 'bg-[#007bff] hover:!bg-[#2997ff]'
+                }`
+            }}
+            cancelButtonProps={{
+                className: dating
+                    ? 'border-[#e4e6eb] hover:!text-teal-500 hover:!border-teal-500'
+                    : 'border-[#d9d9d9] hover:!text-[#2997ff] hover:!border-[#2997ff]'
+            }}
+            {...props}
             className={`[&_.ant-modal-close]:right-3 [&_.ant-modal-close]:top-3 [&_.ant-modal-close]:h-[26px] [&_.ant-modal-close]:w-[26px] [&_.ant-modal-close]:hover:bg-transparent [&_.ant-modal-content]:p-2 [&_.ant-modal-header]:mb-3 [&_.ant-modal-header]:mt-1 [&_.ant-modal-header]:text-center [&_.ant-modal-title]:text-xl ${
                 dating
                     ? '!w-[calc(100%-32px)]'
                     : 'sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 sm:[&_.ant-modal-content]:p-4 sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0'
             } ${props.className || ''}`}
-            cancelButtonProps={{
-                className: 'border-[#d9d9d9] hover:!text-[#2997ff] hover:!border-[#2997ff]'
-            }}
-            okButtonProps={{
-                className: 'bg-[#007bff] hover:!bg-[#2997ff] dark:shadow-[0_2px_0_rgb(0,0,0,0.1)]'
-            }}
         >
             <div className='border-t border-solid border-black/20 dark:border-white/20'>{props.children}</div>
         </AntdModal>

@@ -7,7 +7,7 @@ import { useScrollToTop, useSocket } from './hooks'
 
 function Wrapper({ children }: { children: React.ReactNode }) {
     const location = useLocation()
-    const { emit } = useSocket()
+    const { instance: socket, emit } = useSocket()
 
     const { datingProfile } = useContext(AppContext)
     const [prevLocation, setPrevLocation] = useState<Location | null>(null)
@@ -27,7 +27,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
     }, [prevLocation])
 
     useEffect(() => {
-        if (datingProfile) {
+        if (socket && socket.connected && datingProfile) {
             if (!isInDatingRoom.current && location.pathname.startsWith('/dating')) {
                 isInDatingRoom.current = true
                 emit('join_dating_room')
@@ -38,7 +38,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
                 emit('leave_dating_room')
             }
         }
-    }, [location, datingProfile])
+    }, [socket, location, datingProfile])
 
     return (
         <>

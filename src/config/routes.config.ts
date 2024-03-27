@@ -14,7 +14,8 @@ const routes = {
     datingNotification: '/dating/notification',
     datingProfile: '/dating/profile/:profile_id',
     datingUpdateProfile: '/dating/update-profile',
-    datingPersonalityTest: '/dating/personality-test'
+    datingPersonalityTest: '/dating/personality-test',
+    datingPersonalityTestDetail: '/dating/personality-test/:test_id'
 }
 
 export default routes

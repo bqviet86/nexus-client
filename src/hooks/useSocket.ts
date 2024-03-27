@@ -18,6 +18,7 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
     const { token, setToken, socket, setSocket, emitEvents, setEmitEvents } = useContext(AppContext)
 
     const access_token = token?.access_token || null
+    const refresh_token = token?.refresh_token || null
 
     useEffect(() => {
         if (initSocket && access_token && !isAccessTokenExpired(access_token)) {
@@ -46,8 +47,25 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
     }, [socket, emitEvents])
 
     const { mutate: mutateRefreshToken } = useMutation({
-        mutationFn: (refresh_token: string) => refreshToken(refresh_token)
+        mutationFn: (refresh_token: string) => refreshToken(refresh_token),
+        onSuccess: (response) => {
+            const tokenResponse = response.data.result as TokenResponse
+
+            setToken(tokenResponse)
+            setTokenToLS(tokenResponse)
+        },
+        onError: (error) => {
+            if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
+                sendEvent('force-logout')
+            }
+        }
     })
+
+    useEffect(() => {
+        if (initSocket && access_token && isAccessTokenExpired(access_token) && refresh_token) {
+            mutateRefreshToken(refresh_token)
+        }
+    }, [])
 
     const emit = (event: string, ...args: any[]) => {
         const token = getTokenFromLS()
@@ -62,18 +80,7 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
 
             if (refresh_token && isAccessTokenExpired(access_token)) {
                 mutateRefreshToken(refresh_token, {
-                    onSuccess: (response) => {
-                        const tokenResponse = response.data.result as TokenResponse
-
-                        setToken(tokenResponse)
-                        setTokenToLS(tokenResponse)
-                        setEmitEvents((prev) => [...prev, { event, args }])
-                    },
-                    onError: (error) => {
-                        if (isAxiosUnauthorizedError<ErrorResponse>(error)) {
-                            sendEvent('force-logout')
-                        }
-                    }
+                    onSuccess: () => setEmitEvents((prev) => [...prev, { event, args }])
                 })
             }
         }

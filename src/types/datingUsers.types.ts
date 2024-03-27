@@ -1,4 +1,4 @@
-import { Language, Sex } from '~/constants/enums'
+import { Language, MBTIType, Sex } from '~/constants/enums'
 import { Media } from './medias.types'
 import { SuccessResponse } from './response.types'
 
@@ -12,6 +12,7 @@ export type DatingProfile = {
     language: Language
     avatar: string
     images: Media[]
+    mbti_type: MBTIType | ''
     created_at: string
     updated_at: string
 }

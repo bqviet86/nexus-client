@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
@@ -9,16 +9,13 @@ import images from '~/assets/images'
 import { routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
-import { useSocket } from '~/hooks'
 import { DatingProfile } from '~/types/datingUsers.types'
 import { setDarkModeToLS, setDatingProfileToLS } from '~/utils/localStorage'
 
 function Dating() {
     const { pathname } = useLocation()
-    const { instance: socket, emit } = useSocket()
 
-    const { user, darkMode, setDarkMode, datingProfile, setDatingProfile } = useContext(AppContext)
-    const [onlineAmount, setOnlineAmount] = useState<number>(0)
+    const { user, darkMode, setDarkMode, datingProfile, setDatingProfile, datingOnlineAmount } = useContext(AppContext)
 
     useQuery({
         queryKey: ['datingProfile'],
@@ -46,28 +43,13 @@ function Dating() {
         }
     }, [])
 
-    useEffect(() => {
-        if (socket && socket.connected) {
-            const handleDatingRoomUpdated = (onlAmount: number) => {
-                setOnlineAmount(onlAmount)
-            }
-
-            emit('get_dating_room_online_amount')
-            socket.on('dating_room_updated', handleDatingRoomUpdated)
-
-            return () => {
-                socket.off('dating_room_updated', handleDatingRoomUpdated)
-            }
-        }
-    }, [socket])
-
     return datingProfile !== undefined ? (
         datingProfile === null ? (
             <DatingWelcome />
         ) : pathname === routes.dating ? (
             <div className='flex h-full flex-col justify-evenly'>
                 <div className='flex flex-col gap-2'>
-                    <p className='text-center text-sm'>Hiện tại đang có {onlineAmount} thành viên trực tuyến.</p>
+                    <p className='text-center text-sm'>Hiện tại đang có {datingOnlineAmount} thành viên trực tuyến.</p>
 
                     <div className='flex aspect-[2/1] overflow-hidden rounded-2xl bg-[#e5e2e5] text-[#333]'>
                         <div className='aspect-[3/4] h-full'>

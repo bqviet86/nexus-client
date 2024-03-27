@@ -56,7 +56,7 @@ class Http {
                         }
 
                         if (config.url === '/users/refresh-token') {
-                            return Promise.reject(new Error('Refresh token is expired'))
+                            return Promise.reject(new Error('Refresh token is calling'))
                         }
 
                         return new Promise((resolve) => {

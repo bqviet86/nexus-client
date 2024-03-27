@@ -9,7 +9,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
     const location = useLocation()
     const { instance: socket, emit } = useSocket()
 
-    const { datingProfile } = useContext(AppContext)
+    const { datingProfile, setDatingOnlineAmount } = useContext(AppContext)
     const [prevLocation, setPrevLocation] = useState<Location | null>(null)
 
     const LoadingBarRef = useRef<LoadingBarRef | null>(null)
@@ -39,6 +39,20 @@ function Wrapper({ children }: { children: React.ReactNode }) {
             }
         }
     }, [socket, location, datingProfile])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
+            const handleDatingRoomUpdated = (onlAmount: number) => {
+                setDatingOnlineAmount(onlAmount)
+            }
+
+            socket.on('dating_room_updated', handleDatingRoomUpdated)
+
+            return () => {
+                socket.off('dating_room_updated', handleDatingRoomUpdated)
+            }
+        }
+    }, [socket])
 
     return (
         <>

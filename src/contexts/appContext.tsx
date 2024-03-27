@@ -24,21 +24,26 @@ type AppContextType = {
     setEmitEvents: React.Dispatch<React.SetStateAction<EmitEvent[]>>
     datingProfile: DatingProfile | null | undefined
     setDatingProfile: React.Dispatch<React.SetStateAction<DatingProfile | null | undefined>>
+    datingOnlineAmount: number
+    setDatingOnlineAmount: React.Dispatch<React.SetStateAction<number>>
 }
 
+const defaultFunction = () => {}
 const initialAppContext: AppContextType = {
     user: getUserFromLS(),
-    setUser: () => {},
+    setUser: defaultFunction,
     token: getTokenFromLS(),
-    setToken: () => {},
+    setToken: defaultFunction,
     darkMode: Boolean(getDarkModeFromLS()),
-    setDarkMode: () => {},
+    setDarkMode: defaultFunction,
     socket: null,
-    setSocket: () => {},
+    setSocket: defaultFunction,
     emitEvents: [],
-    setEmitEvents: () => {},
+    setEmitEvents: defaultFunction,
     datingProfile: getDatingProfileFromLS() ?? undefined,
-    setDatingProfile: () => {}
+    setDatingProfile: defaultFunction,
+    datingOnlineAmount: 0,
+    setDatingOnlineAmount: defaultFunction
 }
 
 export const AppContext = createContext<AppContextType>(initialAppContext)
@@ -56,6 +61,7 @@ function AppProvider({
     const [socket, setSocket] = useState<Socket | null>(defaultValue.socket)
     const [emitEvents, setEmitEvents] = useState<EmitEvent[]>(defaultValue.emitEvents)
     const [datingProfile, setDatingProfile] = useState<DatingProfile | null | undefined>(defaultValue.datingProfile)
+    const [datingOnlineAmount, setDatingOnlineAmount] = useState<number>(defaultValue.datingOnlineAmount)
 
     useEffect(() => {
         const remove = listenEvent<TokenResponse>('refresh-token-success', ({ detail }) =>
@@ -82,7 +88,9 @@ function AppProvider({
                 emitEvents,
                 setEmitEvents,
                 datingProfile,
-                setDatingProfile
+                setDatingProfile,
+                datingOnlineAmount,
+                setDatingOnlineAmount
             }}
         >
             {children}

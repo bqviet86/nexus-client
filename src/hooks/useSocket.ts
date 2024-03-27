@@ -38,13 +38,20 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
     }, [access_token])
 
     useEffect(() => {
-        if (initSocket && socket && socket.connected && emitEvents.length) {
+        if (
+            initSocket &&
+            socket &&
+            socket.connected &&
+            access_token &&
+            !isAccessTokenExpired(access_token) &&
+            emitEvents.length
+        ) {
             emitEvents.forEach(({ event, args }) => {
                 socket.emit(event, ...args)
             })
             setEmitEvents([])
         }
-    }, [socket, emitEvents])
+    }, [socket, access_token, emitEvents])
 
     const { mutate: mutateRefreshToken } = useMutation({
         mutationFn: (refresh_token: string) => refreshToken(refresh_token),
@@ -80,7 +87,14 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
 
             if (refresh_token && isAccessTokenExpired(access_token)) {
                 mutateRefreshToken(refresh_token, {
-                    onSuccess: () => setEmitEvents((prev) => [...prev, { event, args }])
+                    onSuccess: () => {
+                        setEmitEvents((prev) => [...prev, { event, args }])
+                    },
+                    onError: (error) => {
+                        if (error.message === 'Refresh token is calling') {
+                            setEmitEvents((prev) => [...prev, { event, args }])
+                        }
+                    }
                 })
             }
         }

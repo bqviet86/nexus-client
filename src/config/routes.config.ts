@@ -14,6 +14,7 @@ const routes = {
     datingNotification: '/dating/notification',
     datingProfile: '/dating/profile/:profile_id',
     datingUpdateProfile: '/dating/update-profile',
+    datingUpdateCriteria: '/dating/update-criteria',
     datingPersonalityTest: '/dating/personality-test',
     datingPersonalityTestDetail: '/dating/personality-test/:test_id'
 }

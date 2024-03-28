@@ -21,6 +21,7 @@ import DatingChat from '~/pages/DatingChat'
 import DatingNotification from '~/pages/DatingNotification'
 import DatingProfile from '~/pages/DatingProfile'
 import DatingUpdateProfile from '~/pages/DatingUpdateProfile'
+import DatingUpdateCriteria from '~/pages/DatingUpdateCriteria'
 import DatingPersonalityTest from '~/pages/DatingPersonalityTest'
 import DatingPersonalityTestDetail from '~/pages/DatingPersonalityTestDetail'
 
@@ -125,7 +126,13 @@ const routes: Route[] = [
     {
         path: routesConfig.datingUpdateProfile,
         component: DatingUpdateProfile,
-        layout: DatingNoHeaderFooterLayout,
+        layout: DatingNoFooterLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.datingUpdateCriteria,
+        component: DatingUpdateCriteria,
+        layout: DatingNoFooterLayout,
         protected: true
     },
     {

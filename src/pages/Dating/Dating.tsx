@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import DatingWelcome from '~/components/DatingWelcome'
@@ -157,12 +157,17 @@ function Dating() {
                 <div>
                     <p className='text-center text-sm'>
                         Bạn có thể tùy chỉnh cuộc gọi trước khi bắt đầu tìm kiếm người bạn phù hợp.{` `}
-                        <span className='cursor-pointer text-teal-500'>Tìm hiểu thêm</span>
+                        <Link to={routes.datingUpdateCriteria} className='cursor-pointer text-teal-500 hover:underline'>
+                            Tìm hiểu thêm
+                        </Link>
                     </p>
                 </div>
 
                 <div className='flex flex-col items-center gap-2'>
-                    <Button className='!w-60 !bg-teal-500 hover:!bg-teal-500/80 [&>span]:!text-[#fff]'>
+                    <Button
+                        to={routes.datingUpdateCriteria}
+                        className='!w-60 !bg-teal-500 hover:!bg-teal-500/80 [&>span]:!text-[#fff]'
+                    >
                         Tuỳ chỉnh cuộc gọi
                     </Button>
 

@@ -65,7 +65,10 @@ function App() {
                     position='bottom-left'
                     toastOptions={{
                         duration: 5000,
-                        style: darkMode ? { background: '#fff', color: '#333' } : { background: '#333', color: '#fff' }
+                        style:
+                            darkMode || window.location.pathname.startsWith('/dating')
+                                ? { background: '#fff', color: '#333' }
+                                : { background: '#333', color: '#fff' }
                     }}
                 />
                 <Wrapper>{renderRoutes(routes)}</Wrapper>

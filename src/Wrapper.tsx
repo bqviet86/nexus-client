@@ -2,18 +2,22 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Location, Routes, useLocation } from 'react-router-dom'
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar'
 
+import { routes } from './config'
 import { AppContext } from './contexts/appContext'
 import { useScrollToTop, useSocket } from './hooks'
+import { User } from './types/users.types'
+import { setDarkModeToLS } from './utils/localStorage'
 
 function Wrapper({ children }: { children: React.ReactNode }) {
     const location = useLocation()
     const { instance: socket, emit } = useSocket()
 
-    const { datingProfile, setDatingOnlineAmount } = useContext(AppContext)
+    const { user, setDarkMode, datingProfile, setDatingOnlineAmount } = useContext(AppContext)
     const [prevLocation, setPrevLocation] = useState<Location | null>(null)
 
     const LoadingBarRef = useRef<LoadingBarRef | null>(null)
     const isInDatingRoom = useRef<boolean>(false)
+    const isInDatingCall = useRef<boolean>(false)
 
     useScrollToTop()
 
@@ -28,14 +32,28 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (socket && socket.connected && datingProfile) {
-            if (!isInDatingRoom.current && location.pathname.startsWith('/dating')) {
-                isInDatingRoom.current = true
-                emit('join_dating_room')
-            }
+            if (location.pathname.startsWith('/dating')) {
+                setDarkModeToLS(true)
+                setDarkMode(true)
+                document.documentElement.classList.add('dark')
 
-            if (isInDatingRoom.current && !location.pathname.startsWith('/dating')) {
+                if (!isInDatingRoom.current) {
+                    isInDatingRoom.current = true
+                    emit('join_dating_room')
+                }
+            } else if (isInDatingRoom.current) {
                 isInDatingRoom.current = false
                 emit('leave_dating_room')
+            }
+
+            if (!isInDatingCall.current && location.pathname === routes.datingCall) {
+                isInDatingCall.current = true
+                emit('find_call_user', { user_id: (user as User)._id })
+            }
+
+            if (isInDatingCall.current && location.pathname !== routes.datingCall) {
+                isInDatingCall.current = false
+                emit('leave_call', { user_id: (user as User)._id })
             }
         }
     }, [socket, location, datingProfile])

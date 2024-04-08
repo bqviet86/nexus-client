@@ -725,69 +725,112 @@ export const DATING_FOOTER_ITEMS: DatingFooterItemType[] = [
     }
 ]
 
-export const MBTI_TYPES: Record<MBTIType, { title: string; path: string }> = {
+export const MBTI_TYPES: Record<MBTIType, { title: string; path: string; color: string }> = {
     ESTJ: {
         title: 'Người điều hành',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estj',
+        color: '#4298b4'
     },
     ESTP: {
         title: 'Người doanh nhân',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-estp',
+        color: '#d8a537'
     },
     ESFJ: {
         title: 'Người lãnh sự',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfj',
+        color: '#4298b4'
     },
     ESFP: {
         title: 'Nguời trình diễn',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-esfp',
+        color: '#d8a537'
     },
     ENTJ: {
         title: 'Người chỉ huy',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entj',
+        color: '#88619a'
     },
     ENTP: {
         title: 'Người đàm phán',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-entp',
+        color: '#88619a'
     },
     ENFJ: {
         title: 'Người hướng dẫn',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfj',
+        color: '#33a474'
     },
     ENFP: {
         title: 'Người truyền cảm hứng',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-enfp',
+        color: '#33a474'
     },
     ISTJ: {
         title: 'Nhà suy luận',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istj',
+        color: '#4298b4'
     },
     ISTP: {
         title: 'Nghệ sĩ bậc thầy',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-istp',
+        color: '#d8a537'
     },
     ISFJ: {
         title: 'Người bảo vệ',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfj',
+        color: '#4298b4'
     },
     ISFP: {
         title: 'Nhà phiêu lưu',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-isfp',
+        color: '#d8a537'
     },
     INTJ: {
         title: 'Nguời kiến tạo',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intj',
+        color: '#88619a'
     },
     INTP: {
         title: 'Nhà tư duy',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-intp',
+        color: '#88619a'
     },
     INFJ: {
         title: 'Người cố vấn',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infj'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infj',
+        color: '#33a474'
     },
     INFP: {
         title: 'Người hoà giải',
-        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infp'
+        path: 'https://www.16personalities.com/vi/lo%E1%BA%A1i-t%C3%ADnh-c%C3%A1ch-infp',
+        color: '#33a474'
     }
 }
+
+export const DATING_CALL_REVIEWS: string[] = [
+    'hiểu biết',
+    'trưởng thành',
+    'tinh tế',
+    'thú vị',
+    'tự tin',
+    'dễ thương',
+    'dịu dàng',
+    'giọng hay',
+    'hài hước',
+    'thân thiện',
+    'ít nói',
+    'nói quá nhiều',
+    'chưa trưởng thành',
+    'ít chủ động',
+    'ngại ngùng',
+    'chưa có chính kiến',
+    'không thoải mái',
+    'nhạt nhẽo',
+    'lạnh lùng',
+    'khó chịu',
+    'thô lỗ',
+    'quấy rối',
+    'khoe khoang',
+    'bất lịch sự'
+]

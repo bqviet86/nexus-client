@@ -1,4 +1,5 @@
 import { routes as routesConfig } from '~/config'
+// import DatingCallProvider from '~/contexts/datingCallContext'
 import DefaultLayout, {
     DatingLayout,
     DatingNoFooterLayout,
@@ -16,6 +17,7 @@ import UpdateProfile from '~/pages/UpdateProfile'
 import PostDetail from '~/pages/PostDetail'
 import HashTag from '~/pages/HashTag'
 import Dating from '~/pages/Dating'
+import DatingCall from '~/pages/DatingCall'
 import DatingCallHistory from '~/pages/DatingCallHistory'
 import DatingChat from '~/pages/DatingChat'
 import DatingNotification from '~/pages/DatingNotification'
@@ -122,6 +124,16 @@ const routes: Route[] = [
                 protected: true
             }
         ]
+    },
+    {
+        path: routesConfig.datingCall,
+        component: DatingCall,
+        layout: ({ children }) => (
+            <DatingNoFooterLayout backBtn={false} linkLogo={false}>
+                {children}
+            </DatingNoFooterLayout>
+        ),
+        protected: true
     },
     {
         path: routesConfig.datingUpdateProfile,

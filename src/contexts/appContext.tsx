@@ -26,6 +26,8 @@ type AppContextType = {
     setDatingProfile: React.Dispatch<React.SetStateAction<DatingProfile | null | undefined>>
     datingOnlineAmount: number
     setDatingOnlineAmount: React.Dispatch<React.SetStateAction<number>>
+    stream: MediaStream | null
+    setStream: React.Dispatch<React.SetStateAction<MediaStream | null>>
 }
 
 const defaultFunction = () => {}
@@ -43,7 +45,9 @@ const initialAppContext: AppContextType = {
     datingProfile: getDatingProfileFromLS() ?? undefined,
     setDatingProfile: defaultFunction,
     datingOnlineAmount: 0,
-    setDatingOnlineAmount: defaultFunction
+    setDatingOnlineAmount: defaultFunction,
+    stream: null,
+    setStream: defaultFunction
 }
 
 export const AppContext = createContext<AppContextType>(initialAppContext)
@@ -62,6 +66,7 @@ function AppProvider({
     const [emitEvents, setEmitEvents] = useState<EmitEvent[]>(defaultValue.emitEvents)
     const [datingProfile, setDatingProfile] = useState<DatingProfile | null | undefined>(defaultValue.datingProfile)
     const [datingOnlineAmount, setDatingOnlineAmount] = useState<number>(defaultValue.datingOnlineAmount)
+    const [stream, setStream] = useState<MediaStream | null>(defaultValue.stream)
 
     useEffect(() => {
         const remove = listenEvent<TokenResponse>('refresh-token-success', ({ detail }) =>
@@ -90,7 +95,9 @@ function AppProvider({
                 datingProfile,
                 setDatingProfile,
                 datingOnlineAmount,
-                setDatingOnlineAmount
+                setDatingOnlineAmount,
+                stream,
+                setStream
             }}
         >
             {children}

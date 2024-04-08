@@ -9,6 +9,7 @@ const routes = {
     postDetail: '/post-detail/:post_id',
     hashtag: '/hashtag/:hashtag_name',
     dating: '/dating',
+    datingCall: '/dating/call',
     datingCallHistory: '/dating/call-history',
     datingChat: '/dating/chat',
     datingNotification: '/dating/notification',

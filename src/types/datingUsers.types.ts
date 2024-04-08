@@ -17,6 +17,10 @@ export type DatingProfile = {
     updated_at: string
 }
 
+export type DatingProfileDetail = DatingProfile & {
+    user_id: string
+}
+
 export type GetDatingProfileResponse = SuccessResponse<DatingProfile | null>
 
 export type CreateDatingProfileResponse = SuccessResponse<DatingProfile>

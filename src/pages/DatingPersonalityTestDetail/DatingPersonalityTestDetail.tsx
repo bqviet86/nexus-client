@@ -156,7 +156,7 @@ function DatingPersonalityTestDetail() {
 
                             <ConfigProvider
                                 theme={{
-                                    token: { colorPrimary: '#07e1ff' },
+                                    token: { colorPrimary: '#07e1ff', colorTextBase: '#e4e6eb' },
                                     components: {
                                         Radio: {
                                             colorBgBase: '#2e2b2e',
@@ -181,7 +181,7 @@ function DatingPersonalityTestDetail() {
                                         <Radio.Button
                                             key={nanoid()}
                                             value={dimension_value}
-                                            className='!flex !h-auto !min-h-10 !w-full !items-center !justify-center !rounded-full !border !py-1 !text-center !leading-6 before:!hidden hover:!border-[#07e1ff] [&+label]:!mt-4'
+                                            className='!flex !h-auto !min-h-10 !w-full !items-center !justify-center !rounded-full !border !bg-transparent !py-1 !text-center !leading-6 before:!hidden hover:!border-[#07e1ff] [&+label]:!mt-4'
                                         >
                                             {option}
                                         </Radio.Button>

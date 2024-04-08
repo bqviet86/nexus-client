@@ -14,14 +14,16 @@ import { listenEvent } from '~/utils/event'
 
 type DatingHeaderProps = {
     backBtn?: boolean
+    linkLogo?: boolean
 }
 
-function DatingHeader({ backBtn = false }: DatingHeaderProps) {
+function DatingHeader({ backBtn = false, linkLogo = true }: DatingHeaderProps) {
     const navigate = useNavigate()
 
     const { token, datingProfile } = useContext(AppContext)
 
     const refresh_token = token?.refresh_token || null
+    const Logo = linkLogo ? Link : 'div'
 
     const { mutate: mutateLogout } = useMutation({
         mutationFn: (refresh_token: string) => logoutUser(refresh_token)
@@ -67,10 +69,10 @@ function DatingHeader({ backBtn = false }: DatingHeaderProps) {
                         </svg>
                     </button>
                 ) : (
-                    <Link to={routes.home} className='flex items-center gap-1'>
+                    <Logo to={routes.home} className='flex cursor-pointer items-center gap-1'>
                         <img src={images.logo_dark} alt='logo' className='h-10' />
                         <span className='text-xl font-bold'>Nexus</span>
-                    </Link>
+                    </Logo>
                 )}
 
                 <Tippy

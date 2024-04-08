@@ -1,5 +1,5 @@
 import { Fragment, useContext, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Image } from 'antd'
 
@@ -7,6 +7,7 @@ import Button from '~/components/Button'
 import { getDatingProfile } from '~/apis/datingUsers.apis'
 import images from '~/assets/images'
 import { Sex } from '~/constants/enums'
+import { MBTI_TYPES } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { DatingProfile as DatingProfileType } from '~/types/datingUsers.types'
 
@@ -35,7 +36,7 @@ function DatingProfile() {
 
     return profile ? (
         <div className='flex min-h-full flex-col py-2'>
-            <div className='flex items-center py-2'>
+            <div className='flex items-start py-2'>
                 <div className='aspect-[1] w-1/3 overflow-hidden rounded-lg'>
                     <Image
                         src={
@@ -120,6 +121,15 @@ function DatingProfile() {
                             </svg>
                         )}
                     </div>
+                    {profile.mbti_type && (
+                        <Link
+                            to={MBTI_TYPES[profile.mbti_type].path}
+                            className='mt-1 inline-block h-5 rounded-full px-2 text-xs leading-5 text-white'
+                            style={{ backgroundColor: MBTI_TYPES[profile.mbti_type].color }}
+                        >
+                            {profile.mbti_type} - {MBTI_TYPES[profile.mbti_type].title}
+                        </Link>
+                    )}
                     <p className='mt-1 text-sm'>
                         <span className='font-medium'>Tuổi: </span>
                         {profile.age}
@@ -139,7 +149,7 @@ function DatingProfile() {
                 </div>
             </div>
 
-            <div className='mt-8 flex items-center justify-center'>
+            <div className='relative mt-4 flex items-center justify-center before:absolute before:bottom-full before:h-px before:w-3/4 before:bg-[#5a5a5a] before:content-[""]'>
                 <Button
                     className={`!w-28 !bg-transparent [&>span]:hover:!text-white hover:!bg-[#454647]${
                         tab === 'images' ? ` ${activeBtnClasses}` : ''

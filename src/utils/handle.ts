@@ -1,5 +1,14 @@
 import { AxiosError } from 'axios'
-import { compareAsc, differenceInYears, format, formatDistanceToNowStrict, parseISO, sub } from 'date-fns'
+import {
+    compareAsc,
+    differenceInYears,
+    format,
+    formatDistanceToNowStrict,
+    parseISO,
+    secondsToHours,
+    secondsToMinutes,
+    sub
+} from 'date-fns'
 import { vi } from 'date-fns/locale'
 
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
@@ -75,10 +84,22 @@ export function renderCommentUpdated<T>({
         : comment
 }
 
-export function calculateAge(date_of_birth: string) {
+export function calculateAge(date_of_birth: string): number {
     const currentDate = new Date()
     const birthDate = parseISO(date_of_birth)
     const age = differenceInYears(currentDate, birthDate)
 
     return age
+}
+
+export function formatDuration(seconds: number): string {
+    const hours = secondsToHours(seconds)
+    const minutes = secondsToMinutes(seconds % 3600)
+    const remainingSeconds = seconds % 60
+
+    const hoursStr = hours < 10 ? `0${hours}` : `${hours}`
+    const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`
+    const secondsStr = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`
+
+    return `${hours > 0 ? `${hoursStr}:` : ''}${minutesStr}:${secondsStr}`
 }

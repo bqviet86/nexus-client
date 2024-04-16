@@ -12,7 +12,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
     const location = useLocation()
     const { instance: socket, emit } = useSocket()
 
-    const { user, setDarkMode, datingProfile, setDatingOnlineAmount } = useContext(AppContext)
+    const { user, setDarkMode, setDatingOnlineAmount } = useContext(AppContext)
     const [prevLocation, setPrevLocation] = useState<Location | null>(null)
 
     const LoadingBarRef = useRef<LoadingBarRef | null>(null)
@@ -31,7 +31,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
     }, [prevLocation])
 
     useEffect(() => {
-        if (socket && socket.connected && datingProfile) {
+        if (socket && socket.connected) {
             if (location.pathname.startsWith('/dating')) {
                 setDarkModeToLS(true)
                 setDarkMode(true)
@@ -56,7 +56,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
                 emit('leave_call', { user_id: (user as User)._id })
             }
         }
-    }, [socket, location, datingProfile])
+    }, [socket, location])
 
     useEffect(() => {
         if (socket && socket.connected) {

@@ -43,9 +43,12 @@ export const handleUnprocessableEntityError = <FormError>(
 
 export const formatTime: (time: string, extend?: boolean) => string = (time, extend = false) => {
     const date = new Date(time)
-    const subDate = sub(new Date(), { months: 1 })
 
-    if (compareAsc(date, subDate) !== 1) {
+    if (compareAsc(date, sub(new Date(), { seconds: 30 })) === 1) {
+        return 'Vừa xong'
+    }
+
+    if (compareAsc(date, sub(new Date(), { months: 1 })) !== 1) {
         return format(date, (extend ? 'HH:mm ' : '') + 'dd-MM-yyyy')
     }
 
@@ -92,7 +95,7 @@ export function calculateAge(date_of_birth: string): number {
     return age
 }
 
-export function formatDuration(seconds: number): string {
+export function formatDuration(seconds: number, detail: boolean = false): string {
     const hours = secondsToHours(seconds)
     const minutes = secondsToMinutes(seconds % 3600)
     const remainingSeconds = seconds % 60
@@ -101,5 +104,7 @@ export function formatDuration(seconds: number): string {
     const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`
     const secondsStr = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`
 
-    return `${hours > 0 ? `${hoursStr}:` : ''}${minutesStr}:${secondsStr}`
+    return `${hours > 0 ? `${hoursStr}${detail ? 'h ' : ':'}` : ''}${minutesStr}${detail ? 'm ' : ':'}${secondsStr}${
+        detail ? 's' : ''
+    }`
 }

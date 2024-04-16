@@ -11,4 +11,5 @@ export type CreateDatingCallReqData = {
 export const createDatingCall = (data: CreateDatingCallReqData) =>
     http.post<CreateDatingCallResponse>('/dating-calls', data)
 
-export const getAllDatingCalls = () => http.get<GetAllDatingCallsResponse>('/dating-calls')
+export const getAllDatingCalls = (dating_profile_id?: string) =>
+    http.get<GetAllDatingCallsResponse>(`/dating-calls`, { params: { dating_profile_id } })

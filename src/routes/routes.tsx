@@ -1,5 +1,4 @@
 import { routes as routesConfig } from '~/config'
-// import DatingCallProvider from '~/contexts/datingCallContext'
 import DefaultLayout, {
     DatingLayout,
     DatingNoFooterLayout,
@@ -20,6 +19,7 @@ import Dating from '~/pages/Dating'
 import DatingCall from '~/pages/DatingCall'
 import DatingCallHistory from '~/pages/DatingCallHistory'
 import DatingChat from '~/pages/DatingChat'
+import DatingChatDetail from '~/pages/DatingChatDetail'
 import DatingNotification from '~/pages/DatingNotification'
 import DatingProfile from '~/pages/DatingProfile'
 import DatingUpdateProfile from '~/pages/DatingUpdateProfile'
@@ -157,6 +157,12 @@ const routes: Route[] = [
         path: routesConfig.datingPersonalityTestDetail,
         component: DatingPersonalityTestDetail,
         layout: DatingNoHeaderFooterLayout,
+        protected: true
+    },
+    {
+        path: routesConfig.datingChatDetail,
+        component: DatingChatDetail,
+        layout: DatingNoFooterLayout,
         protected: true
     }
 ]

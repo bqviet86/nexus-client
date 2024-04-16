@@ -4,6 +4,7 @@ import {
     GetDatingProfileResponse,
     UpdateDatingProfileResponse
 } from '~/types/datingUsers.types'
+import { Media } from '~/types/medias.types'
 import http from '~/utils/http'
 
 export type CreateDatingProfileReqBody = Pick<
@@ -11,7 +12,7 @@ export type CreateDatingProfileReqBody = Pick<
     'name' | 'sex' | 'age' | 'height' | 'hometown' | 'language'
 >
 
-export type UpdateDatingProfileReqBody = Partial<CreateDatingProfileReqBody>
+export type UpdateDatingProfileReqBody = Partial<CreateDatingProfileReqBody & { avatar: string; images: Media[] }>
 
 export const getDatingProfile = (profile_id: string, checkId: 'user_id' | 'dating_user_id') =>
     http.get<GetDatingProfileResponse>(`/dating-users/${profile_id}`, { params: { checkId } })

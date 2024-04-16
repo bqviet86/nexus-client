@@ -12,6 +12,7 @@ const routes = {
     datingCall: '/dating/call',
     datingCallHistory: '/dating/call-history',
     datingChat: '/dating/chat',
+    datingChatDetail: '/dating/chat/:profile_id',
     datingNotification: '/dating/notification',
     datingProfile: '/dating/profile/:profile_id',
     datingUpdateProfile: '/dating/update-profile',

@@ -118,7 +118,7 @@ function DatingHeader({ backBtn = false, linkLogo = true }: DatingHeaderProps) {
                                     : images.avatar
                             }
                             alt='avatar'
-                            className='h-10 w-10 cursor-pointer rounded-full'
+                            className='h-10 w-10 cursor-pointer rounded-full object-cover'
                         />
                     </div>
                 </Tippy>

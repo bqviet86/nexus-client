@@ -1,15 +1,21 @@
 import { Fragment, useContext, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Image } from 'antd'
 
 import Button from '~/components/Button'
-import { getDatingProfile } from '~/apis/datingUsers.apis'
+import DatingCallHistoryItem from '~/components/DatingCallHistoryItem'
+import { UpdateDatingProfileReqBody, getDatingProfile, updateDatingProfile } from '~/apis/datingUsers.apis'
+import { getAllDatingCalls } from '~/apis/datingCalls.apis'
+import { uploadImages } from '~/apis/medias.apis'
 import images from '~/assets/images'
+import { routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { MBTI_TYPES } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { DatingProfile as DatingProfileType } from '~/types/datingUsers.types'
+import { Media } from '~/types/medias.types'
+import { DatingCall } from '~/types/datingCalls.types'
 
 function DatingProfile() {
     const activeBtnClasses =
@@ -17,9 +23,10 @@ function DatingProfile() {
 
     const { profile_id } = useParams()
 
-    const { datingProfile } = useContext(AppContext)
+    const { datingProfile, setDatingProfile } = useContext(AppContext)
     const [profile, setProfile] = useState<DatingProfileType | null>(null)
     const [tab, setTab] = useState<'images' | 'callHistory'>('images')
+    const [callOpened, setCallOpened] = useState<string>('')
 
     useQuery({
         queryKey: ['datingProfile', profile_id],
@@ -34,10 +41,71 @@ function DatingProfile() {
         enabled: !!profile_id
     })
 
+    const { mutateAsync: mutateUploadImage } = useMutation({
+        mutationFn: (data: FormData) => uploadImages(data)
+    })
+
+    const { mutate: mutateUpdateDatingProfile } = useMutation({
+        mutationFn: (data: UpdateDatingProfileReqBody) => updateDatingProfile(data),
+        onSuccess: (response) => {
+            const result = response.data.result as DatingProfileType
+
+            setProfile(result)
+            setDatingProfile(result)
+        }
+    })
+
+    const handleUploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+
+        if (!file) return
+
+        const formData = new FormData()
+
+        formData.append('image', file)
+
+        const response = await mutateUploadImage(formData)
+        const avatar = (response.data.result as Media[])[0]?.url.split('/').slice(-1)[0]
+
+        mutateUpdateDatingProfile({ avatar })
+    }
+
+    const handleUploadImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+
+        if (!files) return
+
+        const formData = new FormData()
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('image', files[i])
+        }
+
+        const response = await mutateUploadImage(formData)
+        const images = [
+            ...(response.data.result as Media[]).map((media) => ({
+                ...media,
+                url: media.url.split('/').slice(-1)[0]
+            })),
+            ...(profile as DatingProfileType).images
+        ]
+
+        mutateUpdateDatingProfile({ images })
+    }
+
+    const { data: datingCalls } = useQuery({
+        queryKey: ['datingCalls'],
+        queryFn: async () => {
+            const response = await getAllDatingCalls(profile_id)
+            return response.data.result as DatingCall[]
+        },
+        enabled: !!profile_id && tab === 'callHistory'
+    })
+
     return profile ? (
         <div className='flex min-h-full flex-col py-2'>
             <div className='flex items-start py-2'>
-                <div className='aspect-[1] w-1/3 overflow-hidden rounded-lg'>
+                <div className='relative flex aspect-[1] w-1/3 rounded-lg'>
                     <Image
                         src={
                             profile.avatar
@@ -46,9 +114,31 @@ function DatingProfile() {
                         }
                         alt='avatar'
                         wrapperClassName='h-full w-full'
-                        className='!h-full !w-full !object-cover'
+                        className='!h-full !w-full rounded-lg !object-cover'
                         preview
                     />
+
+                    {profile._id === (datingProfile as DatingProfileType)._id && (
+                        <div className='absolute -bottom-2 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-solid border-white bg-[#333]'>
+                            <svg
+                                className='h-6 w-6 text-white'
+                                xmlns='http://www.w3.org/2000/svg'
+                                viewBox='0 0 20 20'
+                                fill='currentColor'
+                            >
+                                <path d='M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z' />
+                            </svg>
+
+                            <label htmlFor='upload-avatar-dating' className='absolute inset-0 cursor-pointer' />
+                            <input
+                                id='upload-avatar-dating'
+                                type='file'
+                                accept='image/*'
+                                className='invisible block h-0 w-0'
+                                onChange={handleUploadAvatar}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <div className='ml-2 flex-[1]'>
@@ -124,6 +214,7 @@ function DatingProfile() {
                     {profile.mbti_type && (
                         <Link
                             to={MBTI_TYPES[profile.mbti_type].path}
+                            target='_blank'
                             className='mt-1 inline-block h-5 rounded-full px-2 text-xs leading-5 text-white'
                             style={{ backgroundColor: MBTI_TYPES[profile.mbti_type].color }}
                         >
@@ -149,7 +240,18 @@ function DatingProfile() {
                 </div>
             </div>
 
-            <div className='relative mt-4 flex items-center justify-center before:absolute before:bottom-full before:h-px before:w-3/4 before:bg-[#5a5a5a] before:content-[""]'>
+            <Button
+                to={
+                    profile._id === (datingProfile as DatingProfileType)._id
+                        ? routes.datingUpdateProfile
+                        : routes.datingChatDetail.replace(':profile_id', profile._id)
+                }
+                className='!my-2 !h-9 !w-full !border !border-solid !border-[#e4e6eb] !bg-transparent !py-0 [&>span]:!text-[#e4e6eb]'
+            >
+                {profile._id === (datingProfile as DatingProfileType)._id ? 'Cập nhật hồ sơ hẹn hò' : 'Nhắn tin'}
+            </Button>
+
+            <div className='relative mt-2 flex items-center justify-center pt-2 before:absolute before:bottom-full before:h-px before:w-3/4 before:bg-[#5a5a5a] before:content-[""]'>
                 <Button
                     className={`!w-28 !bg-transparent [&>span]:hover:!text-white hover:!bg-[#454647]${
                         tab === 'images' ? ` ${activeBtnClasses}` : ''
@@ -218,25 +320,68 @@ function DatingProfile() {
 
             <div className='mt-4'>
                 {tab === 'images' ? (
-                    profile.images.length ? (
-                        <div className='grid grid-cols-3 gap-1 overflow-hidden rounded-lg'>
-                            {profile.images.map((image, index) => (
-                                <div key={index} className='flex aspect-[1]'>
-                                    <Image
-                                        src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
-                                        alt={`image-${index}`}
-                                        wrapperClassName='h-full w-full'
-                                        className='!h-full !w-full !object-cover'
-                                        preview
+                    <div className='grid grid-cols-3 gap-1 overflow-hidden rounded-lg'>
+                        {profile._id === (datingProfile as DatingProfileType)._id && (
+                            <div className='relative flex aspect-[1] cursor-pointer flex-col items-center justify-center bg-[#4a4b4c] transition-all hover:bg-[#4a4b4c]/80'>
+                                <svg
+                                    className='h-6 w-6 text-white'
+                                    aria-hidden='true'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        stroke='currentColor'
+                                        strokeLinejoin='round'
+                                        strokeWidth='2'
+                                        d='M4 18V8a1 1 0 0 1 1-1h1.5l1.707-1.707A1 1 0 0 1 8.914 5h6.172a1 1 0 0 1 .707.293L17.5 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z'
                                     />
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className='text-center text-sm'>Chưa có ảnh nào</p>
-                    )
+                                    <path
+                                        stroke='currentColor'
+                                        strokeLinejoin='round'
+                                        strokeWidth='2'
+                                        d='M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+                                    />
+                                </svg>
+                                <span className='text-[13px]'>Tải ảnh</span>
+
+                                <label htmlFor='upload-image-dating' className='absolute inset-0 cursor-pointer' />
+                                <input
+                                    id='upload-image-dating'
+                                    type='file'
+                                    multiple
+                                    accept='image/*'
+                                    className='invisible block h-0 w-0'
+                                    onChange={handleUploadImages}
+                                />
+                            </div>
+                        )}
+
+                        {profile.images.map((image, index) => (
+                            <div key={index} className='flex aspect-[1]'>
+                                <Image
+                                    src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
+                                    alt={`image-${index}`}
+                                    wrapperClassName='h-full w-full'
+                                    className='!h-full !w-full !object-cover'
+                                    preview
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : datingCalls && datingCalls.length ? (
+                    <div className='flex flex-col gap-2'>
+                        {datingCalls.map((datingCall) => (
+                            <DatingCallHistoryItem
+                                key={datingCall._id}
+                                datingCall={datingCall}
+                                callOpened={callOpened}
+                                setCallOpened={setCallOpened}
+                            />
+                        ))}
+                    </div>
                 ) : (
-                    <div>Lich su cuoc goi</div>
+                    <p className='text-center text-sm'>Chưa có cuộc gọi nào</p>
                 )}
             </div>
         </div>

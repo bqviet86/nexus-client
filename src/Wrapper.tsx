@@ -55,6 +55,12 @@ function Wrapper({ children }: { children: React.ReactNode }) {
                 isInDatingCall.current = false
                 emit('leave_call', { user_id: (user as User)._id })
             }
+
+            if (location.pathname.startsWith('/admin')) {
+                setDarkModeToLS(false)
+                setDarkMode(false)
+                document.documentElement.classList.remove('dark')
+            }
         }
     }, [socket, location])
 

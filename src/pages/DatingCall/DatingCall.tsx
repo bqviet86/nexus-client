@@ -135,6 +135,61 @@ function DatingCall() {
                 setToSignal(signal)
             }
 
+            const onRejectConstructiveGame = () => {
+                isRequestConstructiveGame.current = false
+                toast('Đối phương đã từ chối tham gia, bạn có thể thử lại sao', {
+                    position: 'bottom-center'
+                })
+            }
+
+            const onAcceptConstructiveGame = (constructive_result: ConstructiveResult) => {
+                setConstructiveResult(constructive_result)
+                setConstructiveAnswer(constructive_result.first_user.answers[0].question.options[0])
+                setIsShowConstructiveGame(true)
+            }
+
+            const onCompleteConstructiveGame = (constructive_result: ConstructiveResult) => {
+                setConstructiveResult(constructive_result)
+                setIsCompletedConstructiveGame(true)
+            }
+
+            const onLeaveCall = () => {
+                setCallStatus('leaved')
+            }
+
+            const onCreateDatingCall = (dating_call: DatingCallType) => {
+                setCallingDuration(dating_call.duration)
+                setDatingCallId(dating_call._id)
+            }
+
+            socket.on('call_user_queue_empty', onCallUserQueueEmpty)
+            socket.on('find_call_user', onFindCallUser)
+            socket.on('call_timeout', onCallTimeout)
+            socket.on('call_user', onCallUser)
+            socket.on('call_accepted', onCallAccepted)
+            socket.on('reject_constructive_game', onRejectConstructiveGame)
+            socket.on('accept_constructive_game', onAcceptConstructiveGame)
+            socket.on('complete_constructive_game', onCompleteConstructiveGame)
+            socket.on('leave_call', onLeaveCall)
+            socket.on('create_dating_call', onCreateDatingCall)
+
+            return () => {
+                socket.off('call_user_queue_empty', onCallUserQueueEmpty)
+                socket.off('find_call_user', onFindCallUser)
+                socket.off('call_timeout', onCallTimeout)
+                socket.off('call_user', onCallUser)
+                socket.off('call_accepted', onCallAccepted)
+                socket.off('reject_constructive_game', onRejectConstructiveGame)
+                socket.off('accept_constructive_game', onAcceptConstructiveGame)
+                socket.off('complete_constructive_game', onCompleteConstructiveGame)
+                socket.off('leave_call', onLeaveCall)
+                socket.off('create_dating_call', onCreateDatingCall)
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket && socket.connected) {
             const onRequestConstructiveGame = () => {
                 const handleRejectConstructiveGame = (toast_id: string) => {
                     isRequestConstructiveGame.current = false
@@ -192,28 +247,6 @@ function DatingCall() {
                 )
             }
 
-            const onRejectConstructiveGame = () => {
-                isRequestConstructiveGame.current = false
-                toast('Đối phương đã từ chối tham gia, bạn có thể thử lại sao', {
-                    position: 'bottom-center'
-                })
-            }
-
-            const onAcceptConstructiveGame = (constructive_result: ConstructiveResult) => {
-                setConstructiveResult(constructive_result)
-                setConstructiveAnswer(constructive_result.first_user.answers[0].question.options[0])
-                setIsShowConstructiveGame(true)
-            }
-
-            const onCompleteConstructiveGame = (constructive_result: ConstructiveResult) => {
-                setConstructiveResult(constructive_result)
-                setIsCompletedConstructiveGame(true)
-            }
-
-            const onLeaveCall = () => {
-                setCallStatus('leaved')
-            }
-
             const onEndCall = async () => {
                 if (myProfile) {
                     const response = await mutateCreateDatingCall({
@@ -222,51 +255,25 @@ function DatingCall() {
                         ...(constructiveResult ? { constructive_result_id: constructiveResult._id } : {}),
                         duration: callingDuration
                     })
-                    const result = response.data.result as DatingCallType
 
                     emit('create_dating_call', {
+                        my_id: myProfile.user_id,
                         user_id: (userProfile as DatingProfileDetail).user_id,
-                        dating_call: result
+                        dating_call: response.data.result as DatingCallType
                     })
-                    setDatingCallId(result._id)
                 }
                 setCallStatus('ended')
             }
 
-            const onCreateDatingCall = (dating_call: DatingCallType) => {
-                setCallingDuration(dating_call.duration)
-                setDatingCallId(dating_call._id)
-            }
-
-            socket.on('call_user_queue_empty', onCallUserQueueEmpty)
-            socket.on('find_call_user', onFindCallUser)
-            socket.on('call_timeout', onCallTimeout)
-            socket.on('call_user', onCallUser)
-            socket.on('call_accepted', onCallAccepted)
             socket.on('request_constructive_game', onRequestConstructiveGame)
-            socket.on('reject_constructive_game', onRejectConstructiveGame)
-            socket.on('accept_constructive_game', onAcceptConstructiveGame)
-            socket.on('complete_constructive_game', onCompleteConstructiveGame)
-            socket.on('leave_call', onLeaveCall)
             socket.on('end_call', onEndCall)
-            socket.on('create_dating_call', onCreateDatingCall)
 
             return () => {
-                socket.off('call_user_queue_empty', onCallUserQueueEmpty)
-                socket.off('find_call_user', onFindCallUser)
-                socket.off('call_timeout', onCallTimeout)
-                socket.off('call_user', onCallUser)
-                socket.off('call_accepted', onCallAccepted)
                 socket.off('request_constructive_game', onRequestConstructiveGame)
-                socket.off('reject_constructive_game', onRejectConstructiveGame)
-                socket.off('accept_constructive_game', onAcceptConstructiveGame)
-                socket.off('complete_constructive_game', onCompleteConstructiveGame)
-                socket.off('leave_call', onLeaveCall)
                 socket.off('end_call', onEndCall)
-                socket.off('create_dating_call', onCreateDatingCall)
             }
         }
-    }, [socket, myProfile, userProfile])
+    }, [socket, myProfile, userProfile, constructiveResult, callingDuration])
 
     // Call user
     useEffect(() => {
@@ -468,7 +475,7 @@ function DatingCall() {
                             onClick={() =>
                                 callStatus === 'finding'
                                     ? emit('leave_call', { user_id: (user as User)._id })
-                                    : emit('end_call', { user_id: (user as User)._id })
+                                    : callingDuration > 0 && emit('end_call', { user_id: (user as User)._id })
                             }
                         >
                             {callStatus === 'finding' ? (

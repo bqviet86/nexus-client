@@ -4,6 +4,7 @@ import {
     GetAllFriendRequestsResponse,
     GetAllFriendSuggestionsResponse,
     GetAllFriendsResponse,
+    GetAllStatsResponse,
     GetMeResponse,
     GetProfileResponse,
     LoginResponse,
@@ -57,3 +58,5 @@ export const getAllFriendSuggestions = () => http.get<GetAllFriendSuggestionsRes
 export const getProfile = (profile_id: string) => http.get<GetProfileResponse>(`/users/${profile_id}`)
 
 export const getAllFriends = (user_id: string) => http.get<GetAllFriendsResponse>(`/users/friend/all/${user_id}`)
+
+export const getAllStats = () => http.get<GetAllStatsResponse>('/users/admin/stats')

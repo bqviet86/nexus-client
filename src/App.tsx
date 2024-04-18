@@ -30,23 +30,23 @@ function App() {
             // Nếu đã đăng nhập mà truy cập vào các trang không cần thiết như login, register, ...
             if (route.unnecessary && user) {
                 if (user.role === UserRole.Admin) {
-                    // element = <Navigate to={routesConfig.adminUser} state={{ unnecessary: true }} /> // Fix sau
+                    element = <Navigate to={routesConfig.adminStats} />
                 } else {
-                    element = <Navigate to={routesConfig.home} state={{ unnecessary: true }} />
+                    element = <Navigate to={routesConfig.home} />
                 }
             }
 
             // Nếu chưa đăng nhập mà truy cập vào các trang đuợc bảo vệ như account, dating, ...
             if (route.protected && !user) {
-                element = <Navigate to={routesConfig.welcome} state={{ protected: true }} />
+                element = <Navigate to={routesConfig.welcome} />
             }
 
             // Khi truy cập vào trang chỉ dành cho admin
             if (route.onlyAdmin) {
                 if (!user) {
-                    // element = <Navigate to={routesConfig.adminLogin} state={{ onlyAdmin: true }} /> // Fix sau
+                    element = <Navigate to={routesConfig.login} />
                 } else if (user.role !== UserRole.Admin) {
-                    element = <Navigate to={routesConfig.home} state={{ onlyAdmin: true }} />
+                    element = <Navigate to={routesConfig.home} />
                 }
             }
 

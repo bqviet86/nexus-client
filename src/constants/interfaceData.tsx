@@ -834,3 +834,105 @@ export const DATING_CALL_REVIEWS: string[] = [
     'khoe khoang',
     'bất lịch sự'
 ]
+
+// Admin
+type AdminRouteType = {
+    path: string
+    title: string
+    icon: JSX.Element
+}
+
+export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
+    {
+        path: routes.adminStats,
+        title: 'Thống kê',
+        icon: (
+            <svg
+                className='mr-2 h-6 w-6 text-[#e4e6eb]'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+            >
+                <path
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    d='M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z'
+                />
+            </svg>
+        )
+    },
+    {
+        path: routes.adminUsers,
+        title: 'Quản lý người dùng',
+        icon: (
+            <svg
+                className='mr-2 h-6 w-6 text-[#e4e6eb]'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+            >
+                <path
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeWidth='2'
+                    d='M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+                />
+            </svg>
+        )
+    },
+    {
+        path: routes.adminPosts,
+        title: 'Quản lý bài viết',
+        icon: (
+            <svg
+                className='mr-2 h-6 w-6 text-[#e4e6eb]'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+            >
+                <g>
+                    <path
+                        d='M5 11.5C5 9.61438 5 8.67157 5.58579 8.08579C6.17157 7.5 7.11438 7.5 9 7.5H15C16.8856 7.5 17.8284 7.5 18.4142 8.08579C19 8.67157 19 9.61438 19 11.5V12.5C19 14.3856 19 15.3284 18.4142 15.9142C17.8284 16.5 16.8856 16.5 15 16.5H9C7.11438 16.5 6.17157 16.5 5.58579 15.9142C5 15.3284 5 14.3856 5 12.5V11.5Z'
+                        stroke='currentColor'
+                        strokeWidth='1.5'
+                    />
+                    <path
+                        d='M19 2V2.5C19 3.88071 17.8807 5 16.5 5H7.5C6.11929 5 5 3.88071 5 2.5V2'
+                        stroke='currentColor'
+                        strokeWidth='1.5'
+                        strokeLinecap='round'
+                    />
+                    <path
+                        d='M19 22V21.5C19 20.1193 17.8807 19 16.5 19H7.5C6.11929 19 5 20.1193 5 21.5V22'
+                        stroke='currentColor'
+                        strokeWidth='1.5'
+                        strokeLinecap='round'
+                    />
+                </g>
+            </svg>
+        )
+    },
+    {
+        path: routes.adminPersonalityTests,
+        title: 'Quản lý trắc nghiệm tính cách',
+        icon: (
+            <svg
+                className='mr-2 h-6 w-6 text-[#e4e6eb]'
+                fill='currentColor'
+                viewBox='0 0 32 32'
+                id='icon'
+                xmlns='http://www.w3.org/2000/svg'
+            >
+                <g>
+                    <path d='M25,23v3H7V16.83l3.59,3.58L12,19,6,13,0,19l1.41,1.41L5,16.83V26a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V23Z' />
+                    <path d='M27,7v9.17l3.59-3.58L32,14l-6,6-6-6,1.41-1.41L25,16.17V7H13V5H25A2,2,0,0,1,27,7Z' />
+                    <path d='M8,10H4A2,2,0,0,1,2,8V4A2,2,0,0,1,4,2H8a2,2,0,0,1,2,2V8A2,2,0,0,1,8,10ZM4,4V8H8V4Z' />
+                </g>
+            </svg>
+        )
+    }
+]

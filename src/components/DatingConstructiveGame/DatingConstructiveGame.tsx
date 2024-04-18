@@ -111,7 +111,7 @@ function DatingConstructiveGame({
                                 : images.avatar
                         }
                         alt={(datingProfile as DatingProfile).name}
-                        className='z-10 h-20 w-20 translate-x-3 rounded-full'
+                        className='z-10 h-20 w-20 translate-x-3 rounded-full object-cover'
                     />
                     <img
                         src={
@@ -122,7 +122,7 @@ function DatingConstructiveGame({
                                 : images.avatar
                         }
                         alt={(userProfile as DatingProfileDetail).name}
-                        className='h-20 w-20 -translate-x-3 rounded-full'
+                        className='h-20 w-20 -translate-x-3 rounded-full object-cover'
                     />
                     <div className='absolute left-1/2 top-full z-20 flex h-14 w-14 -translate-x-1/2 -translate-y-1/3 items-center justify-center rounded-full bg-white'>
                         <div className='flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-sm text-white'>
@@ -154,7 +154,7 @@ function DatingConstructiveGame({
                                                     : images.avatar
                                             }
                                             alt={(datingProfile as DatingProfile).name}
-                                            className='z-10 h-7 w-7 rounded-full'
+                                            className='z-10 h-7 w-7 flex-shrink-0 rounded-full object-cover'
                                         />
                                         {isMatched && (
                                             <img
@@ -166,7 +166,7 @@ function DatingConstructiveGame({
                                                         : images.avatar
                                                 }
                                                 alt={(userProfile as DatingProfileDetail).name}
-                                                className='h-7 w-7 -translate-x-2 rounded-full'
+                                                className='h-7 w-7 flex-shrink-0 -translate-x-2 rounded-full object-cover'
                                             />
                                         )}
                                         <span className={`text-sm${isMatched ? '' : ' ml-2'}`}>{myAnswer}</span>
@@ -183,7 +183,7 @@ function DatingConstructiveGame({
                                                         : images.avatar
                                                 }
                                                 alt={(userProfile as DatingProfileDetail).name}
-                                                className='h-7 w-7 rounded-full'
+                                                className='h-7 w-7 flex-shrink-0 rounded-full object-cover'
                                             />
                                             <span className='ml-2 text-sm'>{userAnswer}</span>
                                         </div>

@@ -1,6 +1,7 @@
-import { FriendStatus, Sex, UserRole } from '~/constants/enums'
+import { FriendStatus, MBTIType, Sex, UserRole } from '~/constants/enums'
 import { SuccessResponse } from './response.types'
 import { Media } from './medias.types'
+import { ConstructiveQuestion } from './constructiveQuestions.types'
 
 export type User = {
     _id: string
@@ -44,6 +45,16 @@ export type Profile = User & {
     images: Media[]
 }
 
+export type Stats = {
+    onl_amount: number
+    posts_amount: number
+    calling_amount: number
+    avg_start_rating: number
+    top_mbti_types: { mbti_type: MBTIType; amount: number }[]
+    top_constructive_questions: (ConstructiveQuestion & { amount: number })[]
+    top_review_texts: { review_text: string; amount: number }[]
+}
+
 export type LoginResponse = SuccessResponse<AuthResponse>
 
 export type RegisterResponse = SuccessResponse<AuthResponse>
@@ -59,3 +70,5 @@ export type GetAllFriendSuggestionsResponse = SuccessResponse<User[]>
 export type GetProfileResponse = SuccessResponse<Profile>
 
 export type GetAllFriendsResponse = SuccessResponse<User[]>
+
+export type GetAllStatsResponse = SuccessResponse<Stats>

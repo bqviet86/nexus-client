@@ -6,6 +6,7 @@ import InputWithLabelAndError from '~/components/InputWithLabelAndError'
 import { LoginReqData, loginUser } from '~/apis/users.apis'
 import images from '~/assets/images'
 import { routes } from '~/config'
+import { UserRole } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { AuthResponse } from '~/types/users.types'
 import { isAxiosUnprocessableEntityError } from '~/utils/check'
@@ -50,6 +51,12 @@ function Login() {
                 setUserToLS(result.user)
                 setToken(result.token)
                 setTokenToLS(result.token)
+
+                if (result.user.role === UserRole.Admin) {
+                    navigate(routes.adminStats)
+                    return
+                }
+
                 navigate(routes.home)
             },
             onError: (error) => {

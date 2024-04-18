@@ -1,5 +1,6 @@
 import { routes as routesConfig } from '~/config'
 import DefaultLayout, {
+    AdminLayout,
     DatingLayout,
     DatingNoFooterLayout,
     DatingNoHeaderFooterLayout,
@@ -26,6 +27,10 @@ import DatingUpdateProfile from '~/pages/DatingUpdateProfile'
 import DatingUpdateCriteria from '~/pages/DatingUpdateCriteria'
 import DatingPersonalityTest from '~/pages/DatingPersonalityTest'
 import DatingPersonalityTestDetail from '~/pages/DatingPersonalityTestDetail'
+import AdminStat from '~/pages/AdminStat'
+import AdminUser from '~/pages/AdminUser'
+import AdminPost from '~/pages/AdminPost'
+import AdminPersonalityTest from '~/pages/AdminPersonalityTest'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
 // Thêm protected: true để báo là route này cần phải đăng nhập mới được truy cập
@@ -164,6 +169,32 @@ const routes: Route[] = [
         component: DatingChatDetail,
         layout: DatingNoFooterLayout,
         protected: true
+    },
+
+    // Admin
+    {
+        path: routesConfig.adminStats,
+        component: AdminStat,
+        layout: AdminLayout,
+        onlyAdmin: true
+    },
+    {
+        path: routesConfig.adminUsers,
+        component: AdminUser,
+        layout: AdminLayout,
+        onlyAdmin: true
+    },
+    {
+        path: routesConfig.adminPosts,
+        component: AdminPost,
+        layout: AdminLayout,
+        onlyAdmin: true
+    },
+    {
+        path: routesConfig.adminPersonalityTests,
+        component: AdminPersonalityTest,
+        layout: AdminLayout,
+        onlyAdmin: true
     }
 ]
 

@@ -18,7 +18,13 @@ const routes = {
     datingUpdateProfile: '/dating/update-profile',
     datingUpdateCriteria: '/dating/update-criteria',
     datingPersonalityTest: '/dating/personality-test',
-    datingPersonalityTestDetail: '/dating/personality-test/:test_id'
+    datingPersonalityTestDetail: '/dating/personality-test/:test_id',
+
+    // Admin
+    adminStats: '/admin/stats',
+    adminUsers: '/admin/users',
+    adminPosts: '/admin/posts',
+    adminPersonalityTests: '/admin/personality-tests'
 }
 
 export default routes

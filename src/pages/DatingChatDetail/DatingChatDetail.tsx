@@ -53,7 +53,6 @@ function DatingChatDetail() {
     })
 
     const handleFetchMoreConversations = () => {
-        console.log('fetch more conversations')
         const nextPage = pagination.page + 1
 
         if (nextPage < pagination.total_pages) {

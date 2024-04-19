@@ -1,9 +1,10 @@
-import { Fragment, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ApexOptions } from 'apexcharts'
 import ReactApexChart from 'react-apexcharts'
 import { Table } from 'antd'
 
+import Loading from '~/components/Loading'
 import { getAllStats } from '~/apis/users.apis'
 import { AppContext } from '~/contexts/appContext'
 import { Stats } from '~/types/users.types'
@@ -241,7 +242,7 @@ function AdminStat() {
             </div>
 
             <div className='mt-4 grid grid-cols-12 gap-4'>
-                <div className='col-span-3 max-h-[400px] overflow-y-auto overflow-x-hidden rounded-lg bg-white p-4 [&::-webkit-scrollbar-track]:!bg-transparent'>
+                <div className='col-span-3 rounded-lg bg-white p-4'>
                     <h4 className='text-lg font-semibold text-black'>Top tính cách phổ biến nhất</h4>
                     <Table
                         dataSource={topPersonalityData}
@@ -263,7 +264,7 @@ function AdminStat() {
                     />
                 </div>
 
-                <div className='col-span-6 max-h-[400px] overflow-y-auto overflow-x-hidden rounded-lg bg-white p-4 [&::-webkit-scrollbar-track]:!bg-transparent'>
+                <div className='col-span-6 rounded-lg bg-white p-4'>
                     <h4 className='text-lg font-semibold text-black'>Top câu hỏi kiến tạo được trả lời nhiều nhất</h4>
                     <Table
                         dataSource={topConstruciveQuestionData}
@@ -290,7 +291,7 @@ function AdminStat() {
                     />
                 </div>
 
-                <div className='col-span-3 max-h-[400px] overflow-y-auto overflow-x-hidden rounded-lg bg-white p-4 [&::-webkit-scrollbar-track]:!bg-transparent'>
+                <div className='col-span-3 rounded-lg bg-white p-4'>
                     <h4 className='text-lg font-semibold text-black'>Top từ khoá được đánh giá nhiều nhất</h4>
                     <Table
                         dataSource={topReviewTextData}
@@ -314,7 +315,7 @@ function AdminStat() {
             </div>
         </>
     ) : (
-        <Fragment />
+        <Loading className='flex h-[calc(100vh-104px)] items-center justify-center' />
     )
 }
 

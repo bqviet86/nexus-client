@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 import InputWithLabelAndError from '~/components/InputWithLabelAndError'
 import { LoginReqData, loginUser } from '~/apis/users.apis'
@@ -9,7 +10,8 @@ import { routes } from '~/config'
 import { UserRole } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { AuthResponse } from '~/types/users.types'
-import { isAxiosUnprocessableEntityError } from '~/utils/check'
+import { ErrorResponse } from '~/types/response.types'
+import { isAxiosForbiddenError, isAxiosUnprocessableEntityError } from '~/utils/check'
 import { handleUnprocessableEntityError } from '~/utils/handle'
 import { setTokenToLS, setUserToLS } from '~/utils/localStorage'
 
@@ -63,6 +65,10 @@ function Login() {
                 if (isAxiosUnprocessableEntityError<LoginResError>(error)) {
                     const errorObjRes = handleUnprocessableEntityError<LoginResError>(error)
                     setFormError(errorObjRes)
+                }
+
+                if (isAxiosForbiddenError<ErrorResponse>(error)) {
+                    toast(error.response?.data.message as string, { position: 'top-center' })
                 }
             }
         })

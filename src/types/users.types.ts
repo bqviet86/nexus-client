@@ -1,5 +1,5 @@
 import { FriendStatus, MBTIType, Sex, UserRole } from '~/constants/enums'
-import { SuccessResponse } from './response.types'
+import { PaginationResponse, SuccessResponse } from './response.types'
 import { Media } from './medias.types'
 import { ConstructiveQuestion } from './constructiveQuestions.types'
 
@@ -12,6 +12,7 @@ export type User = {
     phone_number: string
     role: UserRole
     avatar: string
+    is_active: boolean
     created_at: string
     updated_at: string
 }
@@ -72,3 +73,5 @@ export type GetProfileResponse = SuccessResponse<Profile>
 export type GetAllFriendsResponse = SuccessResponse<User[]>
 
 export type GetAllStatsResponse = SuccessResponse<Stats>
+
+export type GetAllUsersResponse = SuccessResponse<PaginationResponse<{ users: User[] }>>

@@ -15,6 +15,10 @@ export function isAxiosUnprocessableEntityError<FormError>(
     return isAxiosError(error) && error.response?.status === HTTP_STATUS.UNPROCESSABLE_ENTITY
 }
 
+export function isAxiosForbiddenError<ForbiddenError>(error: unknown): error is AxiosError<ForbiddenError> {
+    return isAxiosError(error) && error.response?.status === HTTP_STATUS.FORBIDDEN
+}
+
 export function isAxiosUnauthorizedError<UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> {
     return isAxiosError(error) && error.response?.status === HTTP_STATUS.UNAUTHORIZED
 }

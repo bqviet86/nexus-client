@@ -5,6 +5,7 @@ import {
     GetAllFriendSuggestionsResponse,
     GetAllFriendsResponse,
     GetAllStatsResponse,
+    GetAllUsersResponse,
     GetMeResponse,
     GetProfileResponse,
     LoginResponse,
@@ -31,6 +32,18 @@ export type RegisterReqData = {
 export type ResponseFriendRequestReqData = {
     user_id: string
     status: FriendStatus
+}
+
+export type GetAllUsersReqData = {
+    name?: string
+    is_active?: boolean
+    page: number
+    limit: number
+}
+
+export type UpdateActiveStatusReqData = {
+    user_id: string
+    is_active: boolean
 }
 
 export const loginUser = (data: LoginReqData) => http.post<LoginResponse>('/users/login', data)
@@ -60,3 +73,9 @@ export const getProfile = (profile_id: string) => http.get<GetProfileResponse>(`
 export const getAllFriends = (user_id: string) => http.get<GetAllFriendsResponse>(`/users/friend/all/${user_id}`)
 
 export const getAllStats = () => http.get<GetAllStatsResponse>('/users/admin/stats')
+
+export const getAllUsers = ({ name, is_active, page, limit }: GetAllUsersReqData) =>
+    http.get<GetAllUsersResponse>('/users/admin/all-users', { params: { name, is_active, page, limit } })
+
+export const updateActiveStatus = ({ user_id, is_active }: UpdateActiveStatusReqData) =>
+    http.patch<SuccessResponse>(`/users/admin/update-active-status/${user_id}`, { is_active })

@@ -29,7 +29,7 @@ import DatingPersonalityTest from '~/pages/DatingPersonalityTest'
 import DatingPersonalityTestDetail from '~/pages/DatingPersonalityTestDetail'
 import AdminStat from '~/pages/AdminStat'
 import AdminUser from '~/pages/AdminUser'
-import AdminPost from '~/pages/AdminPost'
+import AdminConstructiveTest from '~/pages/AdminConstructiveTest'
 import AdminPersonalityTest from '~/pages/AdminPersonalityTest'
 
 // Thêm unnecessary: true để báo là route này khi đã đăng nhập thì không cần truy cập nữa
@@ -185,8 +185,8 @@ const routes: Route[] = [
         onlyAdmin: true
     },
     {
-        path: routesConfig.adminPosts,
-        component: AdminPost,
+        path: routesConfig.adminConstructiveTests,
+        component: AdminConstructiveTest,
         layout: AdminLayout,
         onlyAdmin: true
     },

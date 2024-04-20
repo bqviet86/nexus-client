@@ -885,8 +885,8 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
         )
     },
     {
-        path: routes.adminPosts,
-        title: 'Quản lý bài viết',
+        path: routes.adminConstructiveTests,
+        title: 'Câu hỏi kiến tạo',
         icon: (
             <svg
                 className='mr-2 h-6 w-6 text-[#e4e6eb]'
@@ -918,7 +918,7 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
     },
     {
         path: routes.adminPersonalityTests,
-        title: 'Quản lý trắc nghiệm tính cách',
+        title: 'Trắc nghiệm tính cách',
         icon: (
             <svg
                 className='mr-2 h-6 w-6 text-[#e4e6eb]'

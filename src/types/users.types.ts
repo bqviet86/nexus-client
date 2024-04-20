@@ -56,6 +56,13 @@ export type Stats = {
     top_review_texts: { review_text: string; amount: number }[]
 }
 
+export type UserTableType = Pick<User, 'name' | 'email' | 'date_of_birth'> & {
+    key: string
+    sex: string
+    avatar: Pick<User, '_id' | 'name' | 'avatar'>
+    action: Pick<User, '_id' | 'name' | 'is_active'>
+}
+
 export type LoginResponse = SuccessResponse<AuthResponse>
 
 export type RegisterResponse = SuccessResponse<AuthResponse>

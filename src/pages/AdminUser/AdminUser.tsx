@@ -12,25 +12,18 @@ import images from '~/assets/images'
 import { routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { useQueryParams } from '~/hooks'
-import { User } from '~/types/users.types'
+import { User, UserTableType } from '~/types/users.types'
 import { Pagination } from '~/types/commons.types'
-
-type UserType = Pick<User, 'name' | 'email' | 'date_of_birth'> & {
-    key: string
-    sex: string
-    avatar: Pick<User, '_id' | 'name' | 'avatar'>
-    action: Pick<User, '_id' | 'name' | 'is_active'>
-}
 
 const LIMIT = 10
 
 function AdminUser() {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const { page: pageQuery, search_name, is_active } = useQueryParams()
+    const { page, search_name, is_active } = useQueryParams()
 
-    const [users, setUsers] = useState<UserType[]>([])
-    const [pagination, setPagination] = useState<Pagination>({ page: Number(pageQuery) || 1, total_pages: 0 })
+    const [users, setUsers] = useState<UserTableType[]>([])
+    const [pagination, setPagination] = useState<Pagination>({ page: Number(page) || 1, total_pages: 0 })
     const [searchName, setSearchName] = useState<string>(search_name || '')
     const [isActive, setIsActive] = useState<boolean | undefined>(
         is_active === 'true' ? true : is_active === 'false' ? false : undefined
@@ -74,9 +67,9 @@ function AdminUser() {
             })
     })
 
-    const handleSearchUser = () => {
+    const handleSearchUsers = () => {
         queryClient.fetchQuery({
-            queryKey: ['allUsers'],
+            queryKey: ['allUsers', { page: 1, limit: LIMIT }],
             queryFn: () =>
                 getAllUsersQueryFn({
                     name: searchName || undefined,
@@ -116,11 +109,12 @@ function AdminUser() {
                     className='flex items-center gap-4'
                     onSubmit={(e) => {
                         e.preventDefault()
-                        handleSearchUser()
+                        handleSearchUsers()
                     }}
                 >
                     <input
                         placeholder='Tìm kiếm theo tên người dùng'
+                        spellCheck={false}
                         className='h-10 w-80 rounded-md border border-solid border-[#ddd] px-4 py-2 text-sm transition-all [&:focus]:border-[#3c50e0]'
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
@@ -211,10 +205,10 @@ function AdminUser() {
                             key: 'action',
                             render: ({ _id: user_id, name, is_active }: Pick<User, '_id' | 'name' | 'is_active'>) => (
                                 <Button
-                                    className={`!mx-auto !h-8 !w-auto border border-solid !bg-transparent ${
+                                    className={`!mx-auto !h-8 !w-auto !border !border-solid !px-3 [&>span]:!text-[13px] ${
                                         is_active
-                                            ? '!border-[#f44336] [&>span]:!text-[#f44336]'
-                                            : '!border-[#3c50e0] [&>span]:!text-[#3c50e0]'
+                                            ? '!border-[#f44336] !bg-[#f44336]/10 hover:!bg-[#f44336]/20 [&>span]:!text-[#f44336]'
+                                            : '!border-[#3c50e0] !bg-[#3c50e0]/10 hover:!bg-[#3c50e0]/20 [&>span]:!text-[#3c50e0]'
                                     }`}
                                     onClick={() => handleUpdateActiveStatus({ user_id, name, is_active: !is_active })}
                                 >
@@ -223,13 +217,21 @@ function AdminUser() {
                             )
                         }
                     ]}
-                    size='small'
+                    size='middle'
                     pagination={{ position: ['none'] }}
                     loading={isFetching}
                     className='mt-4 [&_td]:!text-center [&_th]:!bg-[#f7f9fc] [&_th]:!text-center'
                 />
 
-                <ConfigProvider theme={{ token: { colorPrimary: '#3c50e0' } }}>
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorPrimary: '#3c50e0',
+                            colorBgContainer: '#3c50e01a',
+                            colorBgTextHover: '#3c50e01a'
+                        }
+                    }}
+                >
                     <AntdPagination
                         total={pagination.total_pages * LIMIT}
                         pageSize={LIMIT}

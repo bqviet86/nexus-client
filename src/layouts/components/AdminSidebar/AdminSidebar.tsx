@@ -11,7 +11,7 @@ function AdminSidebar() {
                 <span className='text-4xl font-bold text-white'>Nexus</span>
             </Link>
 
-            <nav className='p-5'>
+            <nav className='p-4'>
                 {ADMIN_SIDEBAR_ROUTES.map(({ path, title, icon }, index) => (
                     <NavLink
                         key={index}

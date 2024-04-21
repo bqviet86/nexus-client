@@ -31,15 +31,8 @@ export const getAllConstructiveQuestions = ({ question, page, limit }: GetAllCon
 export const createConstructiveQuestion = (data: CreateConstructiveQuestionReqData) =>
     http.post<CreateConstructiveQuestionResponse>('/constructive-questions', data)
 
-export const updateConstructiveQuestion = ({
-    constructive_question_id,
-    question,
-    options
-}: UpdateConstructiveQuestionReqData) =>
-    http.patch<UpdateConstructiveQuestionResponse>(`/constructive-questions/${constructive_question_id}`, {
-        question,
-        options
-    })
+export const updateConstructiveQuestion = ({ constructive_question_id, ...body }: UpdateConstructiveQuestionReqData) =>
+    http.patch<UpdateConstructiveQuestionResponse>(`/constructive-questions/${constructive_question_id}`, body)
 
 export const deleteConstructiveQuestion = (constructive_question_id: string) =>
     http.delete<SuccessResponse>(`/constructive-questions/${constructive_question_id}`)

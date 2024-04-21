@@ -1,5 +1,12 @@
 import { routes } from '~/config'
-import { MBTIType, NotificationFriendAction, NotificationPostAction, NotificationTag, NotificationType } from './enums'
+import {
+    MBTIDimension,
+    MBTIType,
+    NotificationFriendAction,
+    NotificationPostAction,
+    NotificationTag,
+    NotificationType
+} from './enums'
 import { NotificationAction } from '~/types/notifications.types'
 import { getUserFromLS } from '~/utils/localStorage'
 import { stringEnumToArray } from '~/utils/handle'
@@ -865,7 +872,7 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
         )
     },
     {
-        path: routes.adminUsers,
+        path: `${routes.adminUsers}?page=1`,
         title: 'Quản lý người dùng',
         icon: (
             <svg
@@ -885,7 +892,7 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
         )
     },
     {
-        path: routes.adminConstructiveTests,
+        path: `${routes.adminConstructiveTests}?page=1`,
         title: 'Câu hỏi kiến tạo',
         icon: (
             <svg
@@ -917,7 +924,7 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
         )
     },
     {
-        path: routes.adminPersonalityTests,
+        path: `${routes.adminPersonalityTests}?page=1`,
         title: 'Trắc nghiệm tính cách',
         icon: (
             <svg
@@ -936,3 +943,10 @@ export const ADMIN_SIDEBAR_ROUTES: AdminRouteType[] = [
         )
     }
 ]
+
+export const MBTI_DIMENSIONS: Record<MBTIDimension, string> = {
+    'E-I': 'Extraversion (Hướng ngoại) - Introversion (Hướng nội)',
+    'S-N': 'Sensing (Cảm giác) - Intuition (Trực giác)',
+    'T-F': 'Thinking (Lý trí) - Feeling (Tình cảm)',
+    'J-P': 'Judgment (Nguyên tắc) - Perception (Linh hoạt)'
+}

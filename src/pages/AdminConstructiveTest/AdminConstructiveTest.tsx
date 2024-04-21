@@ -166,7 +166,7 @@ function AdminConstructiveTest() {
                             title: 'Ngày tạo',
                             dataIndex: 'created_at',
                             key: 'created_at',
-                            render: (date: string) => <div className='inline-block w-max'>{date}</div>
+                            render: (date: string) => <div className='mx-auto w-max'>{date}</div>
                         },
                         {
                             title: 'Hành động',
@@ -221,6 +221,7 @@ function AdminConstructiveTest() {
                         total={pagination.total_pages * LIMIT}
                         pageSize={LIMIT}
                         current={pagination.page}
+                        showSizeChanger={false}
                         hideOnSinglePage
                         className='mt-4 flex justify-center'
                         onChange={(page) => setPagination((prev) => ({ ...prev, page }))}

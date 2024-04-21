@@ -1,4 +1,5 @@
 import { MBTIDimension, MBTIValue } from '~/constants/enums'
+import { PaginationResponse, SuccessResponse } from './response.types'
 
 export type MBTIOption = {
     option: string
@@ -13,3 +14,22 @@ export type MBTIQuestion = {
     created_at: string
     updated_at: string
 }
+
+export type MBTIQuestionTableType = {
+    key: string
+    index: number
+    question: string
+    dimension: MBTIDimension
+    created_at: string
+    action: MBTIQuestion
+}
+
+export type GetAllMBTIQuestionsResponse = SuccessResponse<
+    PaginationResponse<{
+        mbti_questions: MBTIQuestion[]
+    }>
+>
+
+export type CreateMBTIQuestionResponse = SuccessResponse<MBTIQuestion>
+
+export type UpdateMBTIQuestionResponse = SuccessResponse<MBTIQuestion>

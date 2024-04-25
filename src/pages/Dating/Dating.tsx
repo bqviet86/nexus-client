@@ -26,8 +26,7 @@ function Dating() {
             result && setDatingProfileToLS(result)
 
             return result
-        },
-        enabled: datingProfile === undefined
+        }
     })
 
     useEffect(() => {

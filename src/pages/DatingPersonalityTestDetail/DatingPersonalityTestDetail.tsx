@@ -69,7 +69,7 @@ function DatingPersonalityTestDetail() {
             setCurrentQuestion(nextQuestion)
             setValue('')
             setIsFetchingUpdateAnswer(false)
-        }, 500)
+        }, 300)
     }
 
     const { mutate: mutateCompleteMBTITest } = useMutation({

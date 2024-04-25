@@ -16,6 +16,7 @@ import { AppContext } from '~/contexts/appContext'
 import { DatingProfile as DatingProfileType } from '~/types/datingUsers.types'
 import { Media } from '~/types/medias.types'
 import { DatingCall } from '~/types/datingCalls.types'
+import { setDatingProfileToLS } from '~/utils/localStorage'
 
 function DatingProfile() {
     const activeBtnClasses =
@@ -52,6 +53,7 @@ function DatingProfile() {
 
             setProfile(result)
             setDatingProfile(result)
+            setDatingProfileToLS(result)
         }
     })
 

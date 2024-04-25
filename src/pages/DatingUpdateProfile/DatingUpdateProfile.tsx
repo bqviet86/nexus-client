@@ -1,5 +1,6 @@
 import { Fragment, useContext, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { pick } from 'lodash'
 
 import Modal from '~/components/Modal'
@@ -11,6 +12,7 @@ import { UpdateDatingProfileReqBody, updateDatingProfile } from '~/apis/datingUs
 import { Language } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { DatingProfile } from '~/types/datingUsers.types'
+import { setDatingProfileToLS } from '~/utils/localStorage'
 
 function DatingUpdateProfile() {
     const { datingProfile, setDatingProfile } = useContext(AppContext)
@@ -25,7 +27,13 @@ function DatingUpdateProfile() {
 
     const { mutate: mutateUpdateDatingProfile } = useMutation({
         mutationFn: (data: UpdateDatingProfileReqBody) => updateDatingProfile(data),
-        onSuccess: (response) => setDatingProfile(response.data.result as DatingProfile)
+        onSuccess: (response) => {
+            const result = response.data.result as DatingProfile
+
+            setDatingProfile(result)
+            setDatingProfileToLS(result)
+            toast.success('Cập nhật thông tin cá nhân thành công', { position: 'bottom-center' })
+        }
     })
 
     return datingProfile ? (
@@ -139,6 +147,7 @@ function DatingUpdateProfile() {
                     <div className='my-2 max-h-[360px] overflow-y-auto [&::-webkit-scrollbar-track]:!bg-transparent'>
                         <input
                             placeholder='Nhập tên của bạn'
+                            spellCheck={false}
                             className='w-full rounded-lg bg-[#3a3b3c] px-4 py-2'
                             value={profileData.name}
                             onChange={(e) => {

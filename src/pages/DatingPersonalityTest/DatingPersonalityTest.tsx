@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
@@ -9,12 +9,16 @@ import { createMBTITest, deleteMBTITest, getAllMBTITests } from '~/apis/mbtiTest
 import { routes } from '~/config'
 import { MBTIType } from '~/constants/enums'
 import { MBTI_TYPES } from '~/constants/interfaceData'
+import { AppContext } from '~/contexts/appContext'
 import { MBTITest } from '~/types/mbtiTests.types'
+import { DatingProfile } from '~/types/datingUsers.types'
 import { formatTime } from '~/utils/handle'
+import { getDatingProfileFromLS, setDatingProfileToLS } from '~/utils/localStorage'
 
 function DatingPersonalityTest() {
     const navigate = useNavigate()
 
+    const { setDatingProfile } = useContext(AppContext)
     const [mbtiTests, setMBTITests] = useState<MBTITest[]>([])
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
     const [isFetchingPerformNewMBTITest, setIsFetchingPerformNewMBTITest] = useState<boolean>(false)
@@ -28,12 +32,17 @@ function DatingPersonalityTest() {
             const response = await getAllMBTITests()
             const result = response.data.result as MBTITest[]
 
-            setMBTITests(() => {
-                completedMBTITestIndexRef.current = result.findIndex((test) => test.status === 'completed')
-                timerRef.current = result.map((test) => formatTime(test.created_at, true))
+            completedMBTITestIndexRef.current = result.findIndex((test) => test.status === 'completed')
+            timerRef.current = result.map((test) => formatTime(test.created_at, true))
+            setMBTITests(result)
 
-                return result
-            })
+            if (completedMBTITestIndexRef.current !== -1) {
+                const datingProfile = getDatingProfileFromLS() as DatingProfile
+                const mbtiType = result[completedMBTITestIndexRef.current].mbti_type
+
+                setDatingProfile({ ...datingProfile, mbti_type: mbtiType })
+                setDatingProfileToLS({ ...datingProfile, mbti_type: mbtiType })
+            }
 
             return result
         }
@@ -44,7 +53,7 @@ function DatingPersonalityTest() {
     })
 
     const handlePerformMBTITest = async () => {
-        if (completedMBTITestIndexRef.current === 1 || (mbtiTests.length && completedMBTITestIndexRef.current === -1)) {
+        if (mbtiTests.length && completedMBTITestIndexRef.current !== 0) {
             setIsOpenModal(true)
             return
         }

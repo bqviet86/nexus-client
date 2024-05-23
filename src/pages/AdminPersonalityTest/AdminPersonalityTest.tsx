@@ -108,7 +108,7 @@ function AdminPersonalityTest() {
 
             <div className='mt-4 rounded-lg bg-white p-4'>
                 <div className='flex items-center justify-between'>
-                    <h4 className='text-lg font-semibold text-black'>Danh sách câu hỏi kiến tạo</h4>
+                    <h4 className='text-lg font-semibold text-black'>Danh sách câu hỏi trắc nghiệm tính cách</h4>
 
                     <Button
                         icon={

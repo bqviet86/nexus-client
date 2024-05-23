@@ -14,7 +14,7 @@ import '@vidstack/react/player/styles/plyr/theme.css'
 type MediasGridProps = {
     mode?: 'edit' | 'display'
     medias: Media[]
-    setMedias?: React.Dispatch<React.SetStateAction<MediaWithFile[]>>
+    setMedias?: React.Dispatch<React.SetStateAction<(Media | MediaWithFile)[]>>
     handleUploadFile?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -98,7 +98,8 @@ function MediasGrid({
                             {media.type === MediaTypes.Image ? (
                                 <AntdImage
                                     src={
-                                        mode === 'edit'
+                                        media.url.includes('blob:') ||
+                                        media.url.includes(`${import.meta.env.VITE_IMAGE_URL_PREFIX}`)
                                             ? media.url
                                             : `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${media.url}`
                                     }
@@ -109,7 +110,12 @@ function MediasGrid({
                                     }`}
                                     preview
                                 />
-                            ) : mode === 'edit' ? (
+                            ) : media.url.endsWith('.m3u8') ? (
+                                <MediaPlayer src={`${import.meta.env.VITE_VIDEO_URL_PREFIX}/${media.url}`}>
+                                    <MediaProvider />
+                                    <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
+                                </MediaPlayer>
+                            ) : (
                                 <video
                                     controls
                                     loop
@@ -119,11 +125,6 @@ function MediasGrid({
                                 >
                                     <source src={`${media.url}#t=0.1`} type='video/mp4' />
                                 </video>
-                            ) : (
-                                <MediaPlayer src={`${import.meta.env.VITE_VIDEO_URL_PREFIX}/${media.url}`}>
-                                    <MediaProvider />
-                                    <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
-                                </MediaPlayer>
                             )}
 
                             {mode === 'edit' && (

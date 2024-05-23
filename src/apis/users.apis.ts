@@ -1,4 +1,4 @@
-import { FriendStatus, Sex } from '~/constants/enums'
+import { FriendStatus } from '~/constants/enums'
 import { SuccessResponse } from '~/types/response.types'
 import {
     GetAllFriendRequestsResponse,
@@ -10,7 +10,10 @@ import {
     GetProfileResponse,
     LoginResponse,
     RefreshTokenResponse,
-    RegisterResponse
+    RegisterResponse,
+    UpdateMyAvatarResponse,
+    UpdateMyProfileResponse,
+    User
 } from '~/types/users.types'
 import http from '~/utils/http'
 
@@ -19,15 +22,12 @@ export type LoginReqData = {
     password: string
 }
 
-export type RegisterReqData = {
-    name: string
-    email: string
+export type RegisterReqData = Pick<User, 'name' | 'email' | 'date_of_birth' | 'sex' | 'phone_number'> & {
     password: string
     confirm_password: string
-    date_of_birth: string
-    sex: Sex
-    phone_number: string
 }
+
+export type UpdateMyProfileReqData = Partial<Pick<User, 'name' | 'email' | 'date_of_birth' | 'sex' | 'phone_number'>>
 
 export type ResponseFriendRequestReqData = {
     user_id: string
@@ -56,6 +56,10 @@ export const refreshToken = (refresh_token: string) =>
     http.post<RefreshTokenResponse>('/users/refresh-token', { refresh_token })
 
 export const getMe = () => http.get<GetMeResponse>('/users/me')
+
+export const updateMyAvatar = (data: FormData) => http.patch<UpdateMyAvatarResponse>('/users/update-avatar', data)
+
+export const updateMyProfile = (data: UpdateMyProfileReqData) => http.patch<UpdateMyProfileResponse>('/users/me', data)
 
 export const sendFriendRequest = (user_id: string) => http.post<SuccessResponse>(`/users/friend/request/${user_id}`)
 

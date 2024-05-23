@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser'
+import { Instance as TippyInstance } from 'tippy.js'
+import Tippy from '@tippyjs/react/headless'
 
 import MediasGrid from '~/components/MediasGrid'
 import Button from '~/components/Button'
@@ -35,7 +37,9 @@ function Post({ data, isParentPost = false }: PostProps) {
     const [commentCount, setCommentCount] = useState<number>(postData.comment_count)
     const [shareCount, setShareCount] = useState<number>(postData.share_count)
     const [isDisabledLikeBtn, setIsDisabledLikeBtn] = useState<boolean>(false)
-    const [isOpenShareModal, setIsOpenShareModal] = useState<boolean>(false)
+    const [mode, setMode] = useState<'edit_post' | 'share_post' | 'delete_post'>('edit_post')
+    const [isOpenPostForm, setIsOpenPostForm] = useState<boolean>(false)
+    const [isShowInputFile, setIsShowInputFile] = useState<boolean>(data.medias.length > 0)
 
     const contentDivRef = useRef<HTMLDivElement>(null)
 
@@ -188,7 +192,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                         />
                     </Link>
 
-                    <div className='ml-2 flex flex-col'>
+                    <div className='ml-2 mr-auto flex flex-col'>
                         <Link
                             to={routes.profile.replace(':profile_id', data.user._id)}
                             className='w-max text-sm font-medium transition-all sm:text-[15px] dark:text-[#e4e6eb]'
@@ -199,6 +203,93 @@ function Post({ data, isParentPost = false }: PostProps) {
                             {formatTime(data.created_at, true)}
                         </span>
                     </div>
+
+                    {user && user._id === data.user._id && (
+                        <Tippy
+                            interactive
+                            hideOnClick
+                            trigger='click'
+                            placement='bottom'
+                            offset={[0, 8]}
+                            render={(attrs, _, tippy) => (
+                                <div
+                                    className='min-w-32 animate-fadeIn rounded-lg bg-white p-1 shadow-[0_0_10px_rgba(0,0,0,.2)] transition-all dark:bg-[#242526]'
+                                    tabIndex={-1}
+                                    {...attrs}
+                                >
+                                    <div
+                                        className='flex cursor-pointer items-center rounded-md bg-white px-1 py-2 text-sm transition-all hover:bg-[#f2f2f2] dark:bg-[#242526] dark:hover:bg-[#3a3b3c]'
+                                        onClick={() => {
+                                            setMode('edit_post')
+                                            setIsOpenPostForm(true)
+                                            ;(tippy as TippyInstance).hide()
+                                        }}
+                                    >
+                                        <svg
+                                            className='h-[20px] w-[20px] text-[#050505] transition-all dark:text-[#e4e6eb]'
+                                            aria-hidden='true'
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            fill='none'
+                                            viewBox='0 0 24 24'
+                                        >
+                                            <path
+                                                stroke='currentColor'
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                strokeWidth='2'
+                                                d='m14.3 4.8 2.9 2.9M7 7H4a1 1 0 0 0-1 1v10c0 .6.4 1 1 1h11c.6 0 1-.4 1-1v-4.5m2.4-10a2 2 0 0 1 0 3l-6.8 6.8L8 14l.7-3.6 6.9-6.8a2 2 0 0 1 2.8 0Z'
+                                            />
+                                        </svg>
+                                        <span className='ml-1 text-[#050505] transition-all dark:text-[#e4e6eb]'>
+                                            Chỉnh sửa
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        className='flex cursor-pointer items-center rounded-md bg-white px-1 py-2 text-sm transition-all hover:bg-[#f2f2f2] dark:bg-[#242526] dark:hover:bg-[#3a3b3c]'
+                                        onClick={() => {
+                                            setMode('delete_post')
+                                            setIsOpenPostForm(true)
+                                            ;(tippy as TippyInstance).hide()
+                                        }}
+                                    >
+                                        <svg
+                                            className='h-[20px] w-[20px] text-[#050505] transition-all dark:text-[#e4e6eb]'
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            fill='none'
+                                            viewBox='0 0 24 24'
+                                            strokeWidth='1.5'
+                                            stroke='currentColor'
+                                        >
+                                            <path
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+                                            />
+                                        </svg>
+                                        <span className='ml-1 text-[#050505] transition-all dark:text-[#e4e6eb]'>
+                                            Xoá
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        >
+                            <div className='flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-all hover:bg-[#f0f2f5] dark:hover:bg-[#3a3b3c]'>
+                                <svg
+                                    className='h-6 w-6 text-[#606770] transition-all dark:text-[#a8abaf]'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    viewBox='0 0 24 24'
+                                    fill='currentColor'
+                                >
+                                    <path
+                                        fillRule='evenodd'
+                                        d='M10.5 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z'
+                                        clipRule='evenodd'
+                                    ></path>
+                                </svg>
+                            </div>
+                        </Tippy>
+                    )}
                 </div>
 
                 {data.content !== '<br>' && (
@@ -336,44 +427,51 @@ function Post({ data, isParentPost = false }: PostProps) {
                             (data.type === PostType.Post
                                 ? data.user._id !== user._id
                                 : (postData.parent_post as ParentPost).user._id !== user._id) && (
-                                <>
-                                    <Button
-                                        icon={
-                                            <svg
-                                                className='h-[20px] w-[20px] text-[#65676b] transition-all dark:text-[#b0b3b8]'
-                                                aria-hidden='true'
-                                                xmlns='http://www.w3.org/2000/svg'
-                                                fill='none'
-                                                viewBox='0 0 24 24'
-                                            >
-                                                <path
-                                                    stroke='currentColor'
-                                                    strokeLinecap='round'
-                                                    strokeLinejoin='round'
-                                                    strokeWidth='2'
-                                                    d='M4.2 19c-1-3.2 1-10.8 8.3-10.8V6.1a1 1 0 0 1 1.6-.9l5.5 4.3a1.1 1.1 0 0 1 0 1.7L14 15.6a1 1 0 0 1-1.6-1v-2c-7.2 1-8.3 6.4-8.3 6.4Z'
-                                                />
-                                            </svg>
-                                        }
-                                        className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
-                                        onClick={() => setIsOpenShareModal(true)}
-                                    >
-                                        Chia sẻ
-                                    </Button>
-
-                                    <PostForm
-                                        formType='share_post'
-                                        isOpenForm={isOpenShareModal}
-                                        onCloseForm={() => setIsOpenShareModal(false)}
-                                        postShared={data.type === PostType.Post ? data : postData.parent_post}
-                                    />
-                                </>
+                                <Button
+                                    icon={
+                                        <svg
+                                            className='h-[20px] w-[20px] text-[#65676b] transition-all dark:text-[#b0b3b8]'
+                                            aria-hidden='true'
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            fill='none'
+                                            viewBox='0 0 24 24'
+                                        >
+                                            <path
+                                                stroke='currentColor'
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                strokeWidth='2'
+                                                d='M4.2 19c-1-3.2 1-10.8 8.3-10.8V6.1a1 1 0 0 1 1.6-.9l5.5 4.3a1.1 1.1 0 0 1 0 1.7L14 15.6a1 1 0 0 1-1.6-1v-2c-7.2 1-8.3 6.4-8.3 6.4Z'
+                                            />
+                                        </svg>
+                                    }
+                                    className='!h-9 !w-full !rounded !px-1 [&+.btn]:!ml-1'
+                                    onClick={() => {
+                                        setMode('share_post')
+                                        setIsOpenPostForm(true)
+                                    }}
+                                >
+                                    Chia sẻ
+                                </Button>
                             )}
                     </div>
                 </>
             )}
 
             {isShowComment && <PostComment postId={data._id} />}
+
+            <PostForm
+                formType={mode}
+                isOpenForm={isOpenPostForm}
+                onCloseForm={() => setIsOpenPostForm(false)}
+                {...(mode === 'share_post'
+                    ? { postShared: data.type === PostType.Post ? data : postData.parent_post }
+                    : {
+                          isShowInputFile,
+                          setIsShowInputFile,
+                          post: data as PostDataType
+                      })}
+            />
         </div>
     )
 }

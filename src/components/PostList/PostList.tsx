@@ -21,9 +21,13 @@ const LIMIT = 10
 function PostList({ profile_id = '' }: PostListProps) {
     const queryClient = useQueryClient()
 
-    const { socket } = useContext(AppContext)
-    const [posts, setPosts] = useState<PostType[]>([])
+    const { posts, setPosts, socket } = useContext(AppContext)
+    const [postList, setPostList] = useState<PostType[]>([])
     const [pagination, setPagination] = useState<Pagination>({ page: 1, total_pages: 0 })
+
+    useEffect(() => {
+        setPostList(posts)
+    }, [posts])
 
     const getPostListQueryFn = async (query: GetPostListReqQuery) => {
         const response = profile_id ? await getProfilePosts(profile_id, query) : await getNewsFeed(query)
@@ -51,7 +55,7 @@ function PostList({ profile_id = '' }: PostListProps) {
             !!socket &&
             socket.connected &&
             (pagination.page === 1 || pagination.page < pagination.total_pages) &&
-            posts.length < pagination.page * LIMIT &&
+            postList.length < pagination.page * LIMIT &&
             queryClient.getQueryData(
                 profile_id
                     ? ['postList', { profile_id, page: pagination.page, limit: LIMIT }]
@@ -107,13 +111,13 @@ function PostList({ profile_id = '' }: PostListProps) {
 
     return (
         <InfiniteScroll
-            dataLength={posts.length}
+            dataLength={postList.length}
             hasMore={pagination.page < pagination.total_pages}
             loader={<Loading className='my-2 w-full' loaderClassName='dark:!text-[#e4e6eb]' />}
             next={handleFetchMorePosts}
             className='flex flex-col gap-5'
         >
-            {posts.map((post) => (
+            {postList.map((post) => (
                 <Post key={post._id} data={post} />
             ))}
         </InfiniteScroll>

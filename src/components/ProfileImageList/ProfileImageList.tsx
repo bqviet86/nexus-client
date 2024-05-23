@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Image } from 'antd'
 import { nanoid } from 'nanoid'
 
@@ -34,4 +35,4 @@ function ProfileImageList({ images }: ProfileImageListProps) {
     )
 }
 
-export default ProfileImageList
+export default memo(ProfileImageList)

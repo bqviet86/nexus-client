@@ -1,6 +1,7 @@
 import { Fragment, useContext, useEffect } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 import DatingWelcome from '~/components/DatingWelcome'
 import DatingProfileCard from '~/components/DatingProfileCard'
@@ -13,6 +14,7 @@ import { setDatingProfileToLS } from '~/utils/localStorage'
 
 function Dating() {
     const { pathname } = useLocation()
+    const navigate = useNavigate()
 
     const { user, datingProfile, setDatingProfile, datingOnlineAmount, stream, setStream } = useContext(AppContext)
 
@@ -38,6 +40,27 @@ function Dating() {
                 .then((currentStream) => setStream(currentStream))
         }
     }, [stream])
+
+    const handleStartCall = () => {
+        if (stream && datingProfile && datingProfile.mbti_type !== '') {
+            navigate(routes.datingCall)
+        } else {
+            if (!stream) {
+                toast.error('Bạn cần cấp quyền truy cập microphone để bắt đầu cuộc gọi.', {
+                    position: 'bottom-center'
+                })
+                navigator.mediaDevices
+                    .getUserMedia({
+                        audio: true
+                    })
+                    .then((currentStream) => setStream(currentStream))
+            } else {
+                toast.error('Vui lòng thực hiện trắc nghiệm tính cách trước khi bắt đầu cuộc gọi.', {
+                    position: 'bottom-center'
+                })
+            }
+        }
+    }
 
     return datingProfile !== undefined ? (
         datingProfile === null ? (
@@ -73,8 +96,8 @@ function Dating() {
                     </div>
 
                     <Button
-                        to={routes.datingCall}
                         className='!w-60 !bg-teal-500 hover:!bg-teal-500/80 [&>span]:!text-[#fff]'
+                        onClick={handleStartCall}
                     >
                         Bắt đầu gọi ngay
                     </Button>

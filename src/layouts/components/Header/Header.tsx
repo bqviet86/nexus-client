@@ -199,7 +199,9 @@ function Header() {
                                         <Comp
                                             className='flex cursor-pointer items-center rounded p-2 transition-all hover:bg-white/10'
                                             onClick={() => setShowMenu(false)}
-                                            {...(item.path ? { to: item.path } : { onClick: handleLogout })}
+                                            {...(item.path
+                                                ? { to: item.path.replace(':profile_id', user?._id || '') }
+                                                : { onClick: handleLogout })}
                                         >
                                             {item.icon}
                                             <span className='ml-2 text-[15px] font-medium text-white'>

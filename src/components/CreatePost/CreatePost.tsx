@@ -6,7 +6,7 @@ import PostForm from '~/components/PostForm'
 import images from '~/assets/images'
 import { routes } from '~/config'
 import { AppContext } from '~/contexts/appContext'
-import { MediaWithFile } from '~/types/medias.types'
+import { Media, MediaWithFile } from '~/types/medias.types'
 
 function CreatePost() {
     const { user } = useContext(AppContext)
@@ -18,7 +18,7 @@ function CreatePost() {
         medias = []
     }: {
         showInputFile?: boolean
-        medias?: MediaWithFile[]
+        medias?: (Media | MediaWithFile)[]
     }) => {
         setIsOpenForm(true)
 

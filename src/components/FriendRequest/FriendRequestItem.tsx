@@ -56,7 +56,7 @@ function FriendRequestItem({ friend }: FriendRequestItemProps) {
                             : images.avatar
                     }
                     alt='avatar'
-                    className='h-10 w-10 rounded-full'
+                    className='h-10 w-10 rounded-full object-cover'
                 />
             </div>
 

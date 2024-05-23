@@ -33,8 +33,8 @@ function Notification() {
     const [tag, setTag] = useState<NotificationTag>(NotificationTag.All)
     const [pagination, setPagination] = useState<Pagination>({ page: 1, total_pages: 0 })
 
-    const handleIncreaseUnreadCount = ({ notification }: { notification: NotificationResponse }) => {
-        if (user && notification.user_to._id === user._id) {
+    const handleIncreaseUnreadCount = ({ notification }: { notification: NotificationResponse | null }) => {
+        if (user && notification && notification.user_to._id === user._id) {
             if (
                 showNotification &&
                 tag !== NotificationTag.Read &&

@@ -40,8 +40,7 @@ function DatingUpdateCriteria() {
             onSuccess: () =>
                 toast.success('Cập nhật tiêu chí hẹn hò thành công', {
                     position: 'top-center'
-                }),
-            onError: (error) => console.log(error)
+                })
         })
     }
 

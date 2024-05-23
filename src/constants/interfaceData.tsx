@@ -8,7 +8,6 @@ import {
     NotificationType
 } from './enums'
 import { NotificationAction } from '~/types/notifications.types'
-import { getUserFromLS } from '~/utils/localStorage'
 import { stringEnumToArray } from '~/utils/handle'
 
 type HeaderNavItemType = {
@@ -21,8 +20,6 @@ type HeaderMenuItemType = {
     title: string
     path?: string
 } & Omit<HeaderNavItemType, 'path'>
-
-const user = getUserFromLS()
 
 export const HEADER_NAV_ITEMS_NOT_LOGGED_IN: HeaderNavItemType[] = [
     {
@@ -176,7 +173,7 @@ export const HEADER_MENU_ITEMS_NOT_LOGGED_IN: HeaderMenuItemType[] = [
 export const HEADER_MENU_ITEMS_LOGGED_IN: HeaderMenuItemType[] = [
     {
         title: 'Trang cá nhân',
-        path: routes.profile.replace(':profile_id', user?._id || ''),
+        path: routes.profile,
         color: '#ff5722',
         icon: (
             <svg

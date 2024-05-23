@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 import { Socket } from 'socket.io-client'
 
 import { TokenResponse, User } from '~/types/users.types'
+import { Post } from '~/types/posts.types'
 import { DatingProfile } from '~/types/datingUsers.types'
 import { listenEvent } from '~/utils/event'
 import { getDarkModeFromLS, getDatingProfileFromLS, getTokenFromLS, getUserFromLS } from '~/utils/localStorage'
@@ -18,6 +19,8 @@ type AppContextType = {
     setToken: React.Dispatch<React.SetStateAction<TokenResponse | null>>
     darkMode: boolean
     setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
+    posts: Post[]
+    setPosts: React.Dispatch<React.SetStateAction<Post[]>>
     socket: Socket | null
     setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
     emitEvents: EmitEvent[]
@@ -38,6 +41,8 @@ const initialAppContext: AppContextType = {
     setToken: defaultFunction,
     darkMode: Boolean(getDarkModeFromLS()),
     setDarkMode: defaultFunction,
+    posts: [],
+    setPosts: defaultFunction,
     socket: null,
     setSocket: defaultFunction,
     emitEvents: [],
@@ -62,6 +67,7 @@ function AppProvider({
     const [user, setUser] = useState<User | null>(defaultValue.user)
     const [token, setToken] = useState<TokenResponse | null>(defaultValue.token)
     const [darkMode, setDarkMode] = useState<boolean>(defaultValue.darkMode)
+    const [posts, setPosts] = useState<Post[]>(defaultValue.posts)
     const [socket, setSocket] = useState<Socket | null>(defaultValue.socket)
     const [emitEvents, setEmitEvents] = useState<EmitEvent[]>(defaultValue.emitEvents)
     const [datingProfile, setDatingProfile] = useState<DatingProfile | null | undefined>(defaultValue.datingProfile)
@@ -88,6 +94,8 @@ function AppProvider({
                 setToken,
                 darkMode,
                 setDarkMode,
+                posts,
+                setPosts,
                 socket,
                 setSocket,
                 emitEvents,

@@ -30,3 +30,5 @@ export type ParentPost = Omit<Post, 'parent_post' | 'like_count' | 'comment_coun
 export type CreatePostResponse = SuccessResponse<Post>
 
 export type GetPostListResponse = SuccessResponse<PaginationResponse<{ posts: Post[] }>>
+
+export type UpdatePostResponse = SuccessResponse<Post>

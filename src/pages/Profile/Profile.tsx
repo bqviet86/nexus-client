@@ -16,7 +16,7 @@ import {
     sendFriendRequest
 } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { FriendStatus } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { Profile as ProfileType } from '~/types/users.types'
@@ -110,11 +110,7 @@ function Profile() {
                     <div className='mx-2 flex flex-col items-center md:mx-5 md:flex-row md:items-start lg:mx-10'>
                         <div className='h-[86px] md:h-[unset]'>
                             <img
-                                src={
-                                    profile.avatar
-                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${profile.avatar}`
-                                        : images.avatar
-                                }
+                                src={profile.avatar ? `${envConfig.imageUrlPrefix}/${profile.avatar}` : images.avatar}
                                 alt='avatar'
                                 className='h-[172px] w-[172px] -translate-y-1/2 rounded-full border-[4px] border-solid border-white object-cover transition-all md:-translate-y-8 dark:border-[#242526]'
                             />
@@ -142,9 +138,7 @@ function Profile() {
                                                     <Avatar
                                                         src={
                                                             friend.avatar
-                                                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                                                      friend.avatar
-                                                                  }`
+                                                                ? `${envConfig.imageUrlPrefix}/${friend.avatar}`
                                                                 : images.avatar
                                                         }
                                                     />

@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Loading from '~/components/Loading'
 import { GetConversationReqData, getAllConversations, getConversation } from '~/apis/conversations.apis'
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
 import { User } from '~/types/users.types'
@@ -210,9 +211,7 @@ function Chat() {
                                         <img
                                             src={
                                                 conversation[userProperty].avatar
-                                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                                          conversation[userProperty].avatar
-                                                      }`
+                                                    ? `${envConfig.imageUrlPrefix}/${conversation[userProperty].avatar}`
                                                     : images.avatar
                                             }
                                             alt={conversation[userProperty].name}
@@ -285,9 +284,7 @@ function Chat() {
                                             <img
                                                 src={
                                                     currentConversation[currentUserProperty].avatar
-                                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                                              currentConversation[currentUserProperty].avatar
-                                                          }`
+                                                        ? `${envConfig.imageUrlPrefix}/${currentConversation[currentUserProperty].avatar}`
                                                         : images.avatar
                                                 }
                                                 alt={currentConversation[currentUserProperty].name}
@@ -330,9 +327,7 @@ function Chat() {
                                                             <img
                                                                 src={
                                                                     message.sender.avatar
-                                                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                                                              message.sender.avatar
-                                                                          }`
+                                                                        ? `${envConfig.imageUrlPrefix}/${message.sender.avatar}`
                                                                         : images.avatar
                                                                 }
                                                                 alt={message.sender.name}

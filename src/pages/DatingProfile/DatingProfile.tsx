@@ -9,7 +9,7 @@ import { UpdateDatingProfileReqBody, getDatingProfile, updateDatingProfile } fro
 import { getAllDatingCalls } from '~/apis/datingCalls.apis'
 import { uploadImages } from '~/apis/medias.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { MBTI_TYPES } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
@@ -109,11 +109,7 @@ function DatingProfile() {
             <div className='flex items-start py-2'>
                 <div className='relative flex aspect-[1] w-1/3 rounded-lg'>
                     <Image
-                        src={
-                            profile.avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${profile.avatar}`
-                                : images.avatar
-                        }
+                        src={profile.avatar ? `${envConfig.imageUrlPrefix}/${profile.avatar}` : images.avatar}
                         alt='avatar'
                         wrapperClassName='h-full w-full'
                         className='!h-full !w-full rounded-lg !object-cover'
@@ -362,7 +358,7 @@ function DatingProfile() {
                         {profile.images.map((image, index) => (
                             <div key={index} className='flex aspect-[1]'>
                                 <Image
-                                    src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
+                                    src={`${envConfig.imageUrlPrefix}/${image.url}`}
                                     alt={`image-${index}`}
                                     wrapperClassName='h-full w-full'
                                     className='!h-full !w-full !object-cover'

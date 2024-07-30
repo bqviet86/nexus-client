@@ -11,7 +11,7 @@ import PostForm from '~/components/PostForm'
 import PostComment from '~/components/PostComment'
 import { likePost, unlikePost } from '~/apis/likes.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { NotificationPostAction, PostType } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
@@ -182,11 +182,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                         className='h-10 w-10 overflow-hidden rounded-full'
                     >
                         <img
-                            src={
-                                data.user.avatar
-                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.user.avatar}`
-                                    : images.avatar
-                            }
+                            src={data.user.avatar ? `${envConfig.imageUrlPrefix}/${data.user.avatar}` : images.avatar}
                             alt='avatar'
                             className='h-full w-full rounded-full object-cover'
                         />

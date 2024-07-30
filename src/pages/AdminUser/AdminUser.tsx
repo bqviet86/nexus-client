@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 import Button from '~/components/Button'
 import { GetAllUsersReqData, UpdateActiveStatusReqData, getAllUsers, updateActiveStatus } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { Sex } from '~/constants/enums'
 import { useQueryParams } from '~/hooks'
 import { User, UserTableType } from '~/types/users.types'
@@ -168,11 +168,7 @@ function AdminUser() {
                                     className='mx-auto block h-9 w-9 overflow-hidden rounded-full'
                                 >
                                     <img
-                                        src={
-                                            avatar
-                                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${avatar}`
-                                                : images.avatar
-                                        }
+                                        src={avatar ? `${envConfig.imageUrlPrefix}/${avatar}` : images.avatar}
                                         alt={name}
                                         className='h-full w-full object-cover'
                                     />

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { DatePicker, Radio } from 'antd'
 import toast from 'react-hot-toast'
@@ -9,6 +9,7 @@ import Button from '~/components/Button'
 import Loading from '~/components/Loading'
 import { UpdateMyProfileReqData, getMe, updateMyAvatar, updateMyProfile } from '~/apis/users.apis'
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { Sex } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { User } from '~/types/users.types'
@@ -100,11 +101,7 @@ function UpdateProfile() {
             <div className='flex flex-col items-center gap-1 pb-10 pt-4 lg:w-1/3'>
                 <div className='group relative h-40 w-40 overflow-hidden rounded-full'>
                     <img
-                        src={
-                            profile.avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${profile.avatar}`
-                                : images.avatar
-                        }
+                        src={profile.avatar ? `${envConfig.imageUrlPrefix}/${profile.avatar}` : images.avatar}
                         alt='avatar'
                         className='h-full w-full object-cover'
                     />
@@ -249,10 +246,10 @@ function UpdateProfile() {
                 </form>
             </div>
         </div>
+    ) : isFetching ? (
+        <Loading loaderSize={40} className='flex h-[calc(100vh-60px)] w-full items-center justify-center' />
     ) : (
-        isFetching && (
-            <Loading loaderSize={40} className='flex h-[calc(100vh-60px)] w-full items-center justify-center' />
-        )
+        <Fragment />
     )
 }
 

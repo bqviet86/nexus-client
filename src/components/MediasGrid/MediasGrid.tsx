@@ -5,6 +5,7 @@ import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr
 import ColorThief from 'colorthief'
 
 import Button from '~/components/Button'
+import { envConfig } from '~/config'
 import { MediaTypes } from '~/constants/enums'
 import { MEDIAS_GRID_AREA, MEDIAS_GRID_TEMPLATE_AREAS, MEDIAS_MAX_LENGTH } from '~/constants/interfaceData'
 import { Media, MediaWithFile } from '~/types/medias.types'
@@ -67,7 +68,7 @@ function MediasGrid({
             const colorThief = new ColorThief()
             const image = new Image()
 
-            image.src = `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${medias[0].url}`
+            image.src = `${envConfig.imageUrlPrefix}/${medias[0].url}`
             image.crossOrigin = 'Anonymous' // Ensure the image can be accessed without CORS issues
             image.onload = () => {
                 const dominantColor = colorThief.getColor(image)
@@ -98,10 +99,9 @@ function MediasGrid({
                             {media.type === MediaTypes.Image ? (
                                 <AntdImage
                                     src={
-                                        media.url.includes('blob:') ||
-                                        media.url.includes(`${import.meta.env.VITE_IMAGE_URL_PREFIX}`)
+                                        media.url.includes('blob:') || media.url.includes(`${envConfig.imageUrlPrefix}`)
                                             ? media.url
-                                            : `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${media.url}`
+                                            : `${envConfig.imageUrlPrefix}/${media.url}`
                                     }
                                     alt={`image-${index + 1}`}
                                     wrapperClassName='h-full w-full'
@@ -111,7 +111,7 @@ function MediasGrid({
                                     preview
                                 />
                             ) : media.url.endsWith('.m3u8') ? (
-                                <MediaPlayer src={`${import.meta.env.VITE_VIDEO_URL_PREFIX}/${media.url}`}>
+                                <MediaPlayer src={`${envConfig.videoUrlPrefix}/${media.url}`}>
                                     <MediaProvider />
                                     <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
                                 </MediaPlayer>

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from 'axios'
 
+import { envConfig } from '~/config'
 import { ErrorResponse } from '~/types/response.types'
 import { RefreshTokenResponse, TokenResponse } from '~/types/users.types'
 import { isAccessTokenExpired, isAxiosUnauthorizedError } from './check'
@@ -7,7 +8,7 @@ import { sendEvent } from './event'
 import { getTokenFromLS, setTokenToLS } from './localStorage'
 
 export const requestConfig: CreateAxiosDefaults | AxiosRequestConfig = {
-    baseURL: import.meta.env.VITE_API_URL as string, // http://localhost:4000
+    baseURL: envConfig.apiUrl as string, // http://localhost:4000
     timeout: 15000
 }
 

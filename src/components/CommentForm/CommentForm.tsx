@@ -7,6 +7,7 @@ import Loading from '~/components/Loading'
 import { uploadImages } from '~/apis/medias.apis'
 import { UpdateCommentReqData, updateComment } from '~/apis/comments.apis'
 import assetImages from '~/assets/images'
+import { envConfig } from '~/config'
 import { MediaTypes, NotificationPostAction } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
@@ -180,11 +181,7 @@ function CommentForm({
                 <div className={`relative flex items-start ${parentId ? 'mt-2' : 'mt-3'}${showInput ? '' : ' hidden'}`}>
                     <div className={`overflow-hidden ${parentId ? 'mt-1 h-7 w-7' : 'h-9 w-9'}`}>
                         <img
-                            src={
-                                user.avatar
-                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}`
-                                    : assetImages.avatar
-                            }
+                            src={user.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : assetImages.avatar}
                             alt='avatar'
                             className='h-full w-full rounded-full object-cover'
                         />

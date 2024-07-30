@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import Button from '~/components/Button'
 import { ResponseFriendRequestReqData, responseFriendRequest } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { FriendStatus } from '~/constants/enums'
 import { Friend } from '~/types/users.types'
 import { formatTime } from '~/utils/handle'
@@ -52,7 +52,7 @@ function FriendRequestItem({ friend }: FriendRequestItemProps) {
                 <img
                     src={
                         friend.user_from.avatar
-                            ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${friend.user_from.avatar}`
+                            ? `${envConfig.imageUrlPrefix}/${friend.user_from.avatar}`
                             : images.avatar
                     }
                     alt='avatar'

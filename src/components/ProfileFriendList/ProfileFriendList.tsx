@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getAllFriends } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import Loading from '~/components/Loading'
 
 type ProfileFriendListProps = {
@@ -37,7 +37,7 @@ function ProfileFriendList({ profile_id }: ProfileFriendListProps) {
                                     <img
                                         src={
                                             friend.avatar
-                                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${friend.avatar}`
+                                                ? `${envConfig.imageUrlPrefix}/${friend.avatar}`
                                                 : images.avatar
                                         }
                                         alt='avatar'

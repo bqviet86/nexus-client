@@ -3,6 +3,7 @@ import { io } from 'socket.io-client'
 import { useMutation } from '@tanstack/react-query'
 
 import { refreshToken } from '~/apis/users.apis'
+import { envConfig } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { TokenResponse } from '~/types/users.types'
 import { ErrorResponse } from '~/types/response.types'
@@ -22,7 +23,7 @@ function useSocket({ initSocket }: UseSocketProps = { initSocket: false }) {
 
     useEffect(() => {
         if (initSocket && access_token && !isAccessTokenExpired(access_token)) {
-            const newSocket = io(import.meta.env.VITE_API_URL, {
+            const newSocket = io(envConfig.apiUrl, {
                 auth: {
                     Authorization: `Bearer ${access_token}`
                 }

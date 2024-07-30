@@ -6,6 +6,7 @@ import { min } from 'lodash'
 import Button from '~/components/Button'
 import { UpdateAnswerConstructiveResultReqData, updateAnswerConstructiveResult } from '~/apis/constructiveResults.apis'
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { ConstructiveResult } from '~/types/constructiveResults.types'
 import { DatingProfile, DatingProfileDetail } from '~/types/datingUsers.types'
@@ -107,7 +108,7 @@ function DatingConstructiveGame({
                     <img
                         src={
                             (datingProfile as DatingProfile).avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${(datingProfile as DatingProfile).avatar}`
+                                ? `${envConfig.imageUrlPrefix}/${(datingProfile as DatingProfile).avatar}`
                                 : images.avatar
                         }
                         alt={(datingProfile as DatingProfile).name}
@@ -116,9 +117,7 @@ function DatingConstructiveGame({
                     <img
                         src={
                             (userProfile as DatingProfileDetail).avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                      (userProfile as DatingProfileDetail).avatar
-                                  }`
+                                ? `${envConfig.imageUrlPrefix}/${(userProfile as DatingProfileDetail).avatar}`
                                 : images.avatar
                         }
                         alt={(userProfile as DatingProfileDetail).name}
@@ -148,7 +147,7 @@ function DatingConstructiveGame({
                                         <img
                                             src={
                                                 (datingProfile as DatingProfile).avatar
-                                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
+                                                    ? `${envConfig.imageUrlPrefix}/${
                                                           (datingProfile as DatingProfile).avatar
                                                       }`
                                                     : images.avatar
@@ -160,7 +159,7 @@ function DatingConstructiveGame({
                                             <img
                                                 src={
                                                     (userProfile as DatingProfileDetail).avatar
-                                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
+                                                        ? `${envConfig.imageUrlPrefix}/${
                                                               (userProfile as DatingProfileDetail).avatar
                                                           }`
                                                         : images.avatar
@@ -177,7 +176,7 @@ function DatingConstructiveGame({
                                             <img
                                                 src={
                                                     (userProfile as DatingProfileDetail).avatar
-                                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
+                                                        ? `${envConfig.imageUrlPrefix}/${
                                                               (userProfile as DatingProfileDetail).avatar
                                                           }`
                                                         : images.avatar

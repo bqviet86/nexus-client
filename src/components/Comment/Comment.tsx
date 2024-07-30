@@ -12,7 +12,7 @@ import CommentForm from '~/components/CommentForm'
 import Modal from '~/components/Modal'
 import { deleteComment } from '~/apis/comments.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { MediaTypes } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
 import { CommentDetail, Comment as CommentType } from '~/types/comments.types'
@@ -60,7 +60,7 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
             editImage={
                 data.media && {
                     ...data.media,
-                    url: `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.media.url}`
+                    url: `${envConfig.imageUrlPrefix}/${data.media.url}`
                 }
             }
             setIsEditMode={setIsEditMode}
@@ -74,11 +74,7 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                     className={`flex-shrink-0 overflow-hidden rounded-full ${data.parent_id ? 'h-7 w-7' : 'h-9 w-9'}`}
                 >
                     <img
-                        src={
-                            data.user.avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.user.avatar}`
-                                : images.avatar
-                        }
+                        src={data.user.avatar ? `${envConfig.imageUrlPrefix}/${data.user.avatar}` : images.avatar}
                         alt='avatar'
                         className='h-full w-full rounded-full object-cover'
                     />
@@ -102,14 +98,14 @@ function Comment({ data, handleClickReplyCommentBtn, setComments, isHasOverlay =
                                 <div className='relative mt-1 aspect-[16/9] max-w-[260px] overflow-hidden rounded-lg bg-black'>
                                     {data.media.type === MediaTypes.Image ? (
                                         <Image
-                                            src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${data.media.url}`}
+                                            src={`${envConfig.imageUrlPrefix}/${data.media.url}`}
                                             alt='comment-image'
                                             wrapperClassName='h-full w-full'
                                             className='!h-full !w-full !object-cover'
                                             preview
                                         />
                                     ) : (
-                                        <MediaPlayer src={`${import.meta.env.VITE_VIDEO_URL_PREFIX}/${data.media.url}`}>
+                                        <MediaPlayer src={`${envConfig.videoUrlPrefix}/${data.media.url}`}>
                                             <MediaProvider />
                                             <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
                                         </MediaPlayer>

@@ -6,6 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Loading from '~/components/Loading'
 import { GetDatingConversationReqData, getDatingConversation } from '~/apis/datingConversations.apis'
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
 import { DatingConversation } from '~/types/datingConversations.types'
@@ -139,9 +140,7 @@ function DatingChatDetail() {
                                         <img
                                             src={
                                                 conversation.sender.avatar
-                                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                                          conversation.sender.avatar
-                                                      }`
+                                                    ? `${envConfig.imageUrlPrefix}/${conversation.sender.avatar}`
                                                     : images.avatar
                                             }
                                             alt={conversation.sender.name}

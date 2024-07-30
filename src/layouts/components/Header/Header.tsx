@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import Notification from '~/components/Notification'
 import { getMe, logoutUser } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import {
     HEADER_MENU_ITEMS_LOGGED_IN,
     HEADER_MENU_ITEMS_LOGGED_IN_MOBILE,
@@ -155,11 +155,7 @@ function Header() {
                             {user ? (
                                 <div className='h-[30px] w-[30px] overflow-hidden rounded-full border border-solid border-black'>
                                     <img
-                                        src={
-                                            user.avatar
-                                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}`
-                                                : images.avatar
-                                        }
+                                        src={user.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : images.avatar}
                                         alt='avatar'
                                         className='h-full w-full object-cover'
                                     />

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Button from '~/components/Button'
 import PostForm from '~/components/PostForm'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { Media, MediaWithFile } from '~/types/medias.types'
 
@@ -41,7 +41,7 @@ function CreatePost() {
                     className='mr-2 overflow-hidden rounded-full sm:mr-4'
                 >
                     <img
-                        src={user?.avatar ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}` : images.avatar}
+                        src={user?.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : images.avatar}
                         alt='avatar'
                         className='h-10 w-10 object-cover'
                     />

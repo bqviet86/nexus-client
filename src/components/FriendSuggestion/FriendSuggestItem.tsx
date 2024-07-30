@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import Button from '~/components/Button'
 import { sendFriendRequest } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { User } from '~/types/users.types'
 import { ErrorResponse } from '~/types/response.types'
 import { isAxiosError } from '~/utils/check'
@@ -54,7 +54,7 @@ function FriendSuggestItem({ user }: FriendSuggestItemProps) {
         >
             <div className='h-10 w-10 overflow-hidden rounded-full'>
                 <img
-                    src={user.avatar ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}` : images.avatar}
+                    src={user.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : images.avatar}
                     alt='avatar'
                     className='h-full w-full object-cover'
                 />

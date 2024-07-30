@@ -1,4 +1,5 @@
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { Sex } from '~/constants/enums'
 import { MBTI_TYPES } from '~/constants/interfaceData'
 import { DatingProfile } from '~/types/datingUsers.types'
@@ -17,11 +18,7 @@ function DatingProfileCard({ datingProfile, mode = 'light' }: DatingProfileCardP
         >
             <div className='aspect-[3/4] h-full max-w-[calc(100%/3)] flex-shrink-0'>
                 <img
-                    src={
-                        datingProfile.avatar
-                            ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${datingProfile.avatar}`
-                            : images.avatar
-                    }
+                    src={datingProfile.avatar ? `${envConfig.imageUrlPrefix}/${datingProfile.avatar}` : images.avatar}
                     alt='avatar'
                     className='h-full w-full object-cover'
                 />

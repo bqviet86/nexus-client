@@ -15,7 +15,7 @@ import Post from '~/components/Post'
 import { uploadImages, uploadVideos } from '~/apis/medias.apis'
 import { CreatePostReqData, UpdatePostReqData, createPost, deletePost, updatePost } from '~/apis/posts.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { MEDIAS_MAX_LENGTH } from '~/constants/interfaceData'
 import { MediaTypes, PostType } from '~/constants/enums'
 import { AppContext } from '~/contexts/appContext'
@@ -66,8 +66,6 @@ function PostForm({
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const files = e.target.files
 
-            console.log('files', files)
-
             if (!files) return
 
             const toastFileTooMax = () => {
@@ -81,8 +79,6 @@ function PostForm({
                 }
 
                 const newMedias = [...prevMedias]
-
-                console.log('newMedias', newMedias)
 
                 for (const file of files) {
                     const mediaUrl = URL.createObjectURL(file)
@@ -98,8 +94,6 @@ function PostForm({
                 if (newMedias.filter((media) => media.type === MediaTypes.Video).length > 1) {
                     return toastFileTooMax()
                 }
-
-                console.log('newMedias', newMedias)
 
                 mediasRef.current = newMedias
                 return newMedias
@@ -375,11 +369,7 @@ function PostForm({
                             className='mr-2 overflow-hidden rounded-full sm:mr-4'
                         >
                             <img
-                                src={
-                                    user?.avatar
-                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}`
-                                        : images.avatar
-                                }
+                                src={user?.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : images.avatar}
                                 alt='avatar'
                                 className='h-10 w-10 object-cover'
                             />

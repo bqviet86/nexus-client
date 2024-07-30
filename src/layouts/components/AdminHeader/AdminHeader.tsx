@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 
 import images from '~/assets/images'
+import { envConfig } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 
 function AdminHeader() {
@@ -50,9 +51,7 @@ function AdminHeader() {
 
                     <div className='h-10 w-10 cursor-pointer overflow-hidden rounded-full'>
                         <img
-                            src={
-                                user.avatar ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${user.avatar}` : images.avatar
-                            }
+                            src={user.avatar ? `${envConfig.imageUrlPrefix}/${user.avatar}` : images.avatar}
                             alt='avatar'
                             className='h-full w-full object-cover'
                         />

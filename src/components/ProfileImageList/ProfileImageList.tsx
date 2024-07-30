@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Image } from 'antd'
 import { nanoid } from 'nanoid'
 
+import { envConfig } from '~/config'
 import { Media } from '~/types/medias.types'
 
 type ProfileImageListProps = {
@@ -19,7 +20,7 @@ function ProfileImageList({ images }: ProfileImageListProps) {
                         {images.map((image) => (
                             <Image
                                 key={nanoid()}
-                                src={`${import.meta.env.VITE_IMAGE_URL_PREFIX}/${image.url}`}
+                                src={`${envConfig.imageUrlPrefix}/${image.url}`}
                                 alt={image.url}
                                 wrapperClassName='w-[calc((100%-8px)/3)] aspect-[1]'
                                 className='!h-full !w-full object-cover'

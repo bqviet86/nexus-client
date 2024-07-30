@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import Loading from '~/components/Loading'
 import { getAllDatingConversations } from '~/apis/datingConversations.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { AppContext } from '~/contexts/appContext'
 import { DatingProfile } from '~/types/datingUsers.types'
 import { formatTime } from '~/utils/handle'
@@ -40,9 +40,7 @@ function DatingChat() {
                             <img
                                 src={
                                     conversation[userProperty].avatar
-                                        ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${
-                                              conversation[userProperty].avatar
-                                          }`
+                                        ? `${envConfig.imageUrlPrefix}/${conversation[userProperty].avatar}`
                                         : images.avatar
                                 }
                                 alt={conversation[userProperty].name}

@@ -2,7 +2,7 @@ import { useContext, useRef } from 'react'
 
 import Button from '~/components/Button'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { MBTI_TYPES } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { DatingCall } from '~/types/datingCalls.types'
@@ -34,7 +34,7 @@ function DatingCallHistoryItem({ datingCall, callOpened, setCallOpened }: Dating
                     <img
                         src={
                             datingCall[userProperty].avatar
-                                ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${datingCall[userProperty].avatar}`
+                                ? `${envConfig.imageUrlPrefix}/${datingCall[userProperty].avatar}`
                                 : images.avatar
                         }
                         alt={datingCall[userProperty].name}

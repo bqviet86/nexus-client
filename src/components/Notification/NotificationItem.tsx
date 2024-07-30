@@ -8,7 +8,7 @@ import Button from '~/components/Button'
 import { UpdateNotificationReqData, deleteNotification, updateNotification } from '~/apis/notifications.apis'
 import { ResponseFriendRequestReqData, responseFriendRequest } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { FriendStatus, NotificationFriendAction, NotificationType } from '~/constants/enums'
 import { NOTIFICATION_ITEMS, NotificationItemType } from '~/constants/interfaceData'
 import { Notification } from '~/types/notifications.types'
@@ -26,7 +26,7 @@ type NotificationItemProps = {
 function NotificationItem({ data, notifications, setNotifications, onClick }: NotificationItemProps) {
     const { _id, user_from, user_to, type, action, payload, is_read, created_at } = data
     const avatarSuffix = user_from?.avatar ?? user_to.avatar
-    const avatar = avatarSuffix ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${avatarSuffix}` : images.avatar
+    const avatar = avatarSuffix ? `${envConfig.imageUrlPrefix}/${avatarSuffix}` : images.avatar
     const { title, icon, color } = NOTIFICATION_ITEMS[type][action] as NotificationItemType
 
     const parseOptions: HTMLReactParserOptions = {

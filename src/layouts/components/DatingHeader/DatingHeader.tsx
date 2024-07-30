@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react/headless'
 
 import { logoutUser } from '~/apis/users.apis'
 import images from '~/assets/images'
-import { routes } from '~/config'
+import { envConfig, routes } from '~/config'
 import { DATING_HEADER_MENU_ITEMS } from '~/constants/interfaceData'
 import { AppContext } from '~/contexts/appContext'
 import { removeDatingProfileFromLS, removeTokenFromLS, removeUserFromLS } from '~/utils/localStorage'
@@ -114,7 +114,7 @@ function DatingHeader({ backBtn = false, linkLogo = true }: DatingHeaderProps) {
                         <img
                             src={
                                 datingProfile.avatar
-                                    ? `${import.meta.env.VITE_IMAGE_URL_PREFIX}/${datingProfile.avatar}`
+                                    ? `${envConfig.imageUrlPrefix}/${datingProfile.avatar}`
                                     : images.avatar
                             }
                             alt='avatar'

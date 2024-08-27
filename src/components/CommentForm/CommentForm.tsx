@@ -199,7 +199,7 @@ function CommentForm({
                                 placeholder='Viết phản hồi...'
                                 spellCheck='false'
                                 autoFocus={mode === 'edit' && !replyInputRefs}
-                                className='h-full flex-[1] rounded-full bg-[#f0f2f5] px-3 py-2 text-sm transition-all dark:bg-[#3a3b3c] dark:text-[#e4e6eb]'
+                                className='h-full w-full rounded-full bg-[#f0f2f5] px-3 py-2 text-sm transition-all dark:bg-[#3a3b3c] dark:text-[#e4e6eb]'
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                             />

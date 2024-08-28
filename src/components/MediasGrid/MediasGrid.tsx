@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { Image as AntdImage } from 'antd'
-import { MediaPlayer, MediaProvider } from '@vidstack/react'
+import { MediaPlayer, MediaProvider, PlyrControl } from '@vidstack/react'
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr'
 import ColorThief from 'colorthief'
 
@@ -30,8 +30,20 @@ function MediasGrid({
     const mediasLength = medias.length
 
     const [bgColor, setBgColor] = useState<string>('black')
+    const [isMobile, setIsMobile] = useState<boolean>(false)
 
     const mediasGridRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768)
+        }
+
+        window.addEventListener('resize', checkMobile)
+        checkMobile()
+
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
 
     const handleRemoveMedia = (index: number) => {
         setMedias((prevMedias) => {
@@ -90,6 +102,9 @@ function MediasGrid({
                 } ${mediasLength === 1 ? 'max-h-[500px]' : 'aspect-[1]'}${mode === 'edit' ? ' rounded-lg' : ''}`}
             >
                 {medias.map((media, index) => {
+                    const isVidSmall =
+                        ([3, 4].includes(mediasLength) && index !== 0) || mediasLength === MEDIAS_MAX_LENGTH
+
                     return (
                         <div
                             key={index}
@@ -111,9 +126,26 @@ function MediasGrid({
                                     preview
                                 />
                             ) : media.url.endsWith('.m3u8') ? (
-                                <MediaPlayer src={`${envConfig.videoUrlPrefix}/${media.url}`}>
+                                <MediaPlayer playsInline src={`${envConfig.videoUrlPrefix}/${media.url}`}>
                                     <MediaProvider />
-                                    <PlyrLayout icons={plyrLayoutIcons} className='left-auto right-0' />
+                                    <PlyrLayout
+                                        icons={plyrLayoutIcons}
+                                        className='min-w-full [&>[class*="controls"]>[class*="volume"]]:max-w-max'
+                                        displayDuration
+                                        controls={[
+                                            'play-large',
+                                            'play',
+                                            'progress',
+                                            ...(isVidSmall ? [] : (['current-time'] as PlyrControl[])),
+                                            ...(isMobile !== isVidSmall
+                                                ? (['mute'] as PlyrControl[])
+                                                : isMobile
+                                                  ? []
+                                                  : (['mute+volume'] as PlyrControl[])),
+                                            'settings',
+                                            'fullscreen'
+                                        ]}
+                                    />
                                 </MediaPlayer>
                             ) : (
                                 <video

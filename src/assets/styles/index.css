@@ -16,7 +16,14 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
 body {
+    @apply transition-all;
+
     font-family: var(--font-family);
     font-size: 1em;
     line-height: 1.5;
@@ -72,5 +79,9 @@ a {
 
     .hashtag {
         @apply text-lg text-[#1da1f2] sm:text-xl;
+    }
+
+    .plyr__volume {
+        @apply !max-w-max;
     }
 }

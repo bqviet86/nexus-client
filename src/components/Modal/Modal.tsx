@@ -1,5 +1,6 @@
 import { Modal as AntdModal } from 'antd'
 import { ModalProps } from 'antd/lib/modal'
+import { isMobile } from 'react-device-detect'
 
 function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) {
     return (
@@ -33,6 +34,9 @@ function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) 
                     ? '!w-[calc(100%-32px)]'
                     : 'sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 sm:[&_.ant-modal-content]:p-4 sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0'
             } ${props.className || ''}`}
+            afterOpenChange={(visible) =>
+                document.documentElement.classList.toggle('overflow-y-hidden', visible && isMobile)
+            }
         >
             <div className='border-t border-solid border-black/20 dark:border-white/20'>{props.children}</div>
         </AntdModal>

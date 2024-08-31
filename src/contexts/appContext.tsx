@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import { Socket } from 'socket.io-client'
 
 import { TokenResponse, User } from '~/types/users.types'
@@ -83,6 +84,10 @@ function AppProvider({
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode)
+
+        if (isMobile) {
+            document.documentElement.classList.add('overflow-x-hidden')
+        }
     }, [])
 
     return (

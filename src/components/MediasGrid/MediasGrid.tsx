@@ -1,13 +1,14 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { Image as AntdImage } from 'antd'
-import { MediaPlayer, MediaProvider, PlyrControl } from '@vidstack/react'
-import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr'
+import { MediaPlayer, MediaProvider, MediaProviderInstance } from '@vidstack/react'
+import { PlyrControl, PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr'
 import ColorThief from 'colorthief'
 
 import Button from '~/components/Button'
 import { envConfig } from '~/config'
 import { MediaTypes } from '~/constants/enums'
 import { MEDIAS_GRID_AREA, MEDIAS_GRID_TEMPLATE_AREAS, MEDIAS_MAX_LENGTH } from '~/constants/interfaceData'
+import { useVideoPlayer } from '~/hooks'
 import { Media, MediaWithFile } from '~/types/medias.types'
 import '@vidstack/react/player/styles/base.css'
 import '@vidstack/react/player/styles/plyr/theme.css'
@@ -33,6 +34,14 @@ function MediasGrid({
     const [isMobile, setIsMobile] = useState<boolean>(false)
 
     const mediasGridRef = useRef<HTMLDivElement>(null)
+    const mediaProviderRef = useRef<MediaProviderInstance>(null)
+
+    if (mode === 'display' && mediasLength === 1 && medias[0].type === MediaTypes.Video) {
+        useVideoPlayer({
+            videoProviderRef: mediaProviderRef,
+            options: { root: null, rootMargin: '-60px 0px 0px', threshold: 0.5 }
+        })
+    }
 
     useEffect(() => {
         const checkMobile = () => {
@@ -126,8 +135,8 @@ function MediasGrid({
                                     preview
                                 />
                             ) : media.url.endsWith('.m3u8') ? (
-                                <MediaPlayer playsInline src={`${envConfig.videoUrlPrefix}/${media.url}`}>
-                                    <MediaProvider />
+                                <MediaPlayer muted playsInline src={`${envConfig.videoUrlPrefix}/${media.url}`}>
+                                    <MediaProvider ref={mediaProviderRef} />
                                     <PlyrLayout
                                         icons={plyrLayoutIcons}
                                         className='min-w-full [&>[class*="controls"]>[class*="volume"]]:max-w-max'

@@ -22,6 +22,12 @@ type AppContextType = {
     setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
     posts: Post[]
     setPosts: React.Dispatch<React.SetStateAction<Post[]>>
+    onViewVideos: HTMLVideoElement[]
+    setOnViewVideos: React.Dispatch<React.SetStateAction<HTMLVideoElement[]>>
+    playingVideo: HTMLVideoElement | null
+    setPlayingVideo: React.Dispatch<React.SetStateAction<HTMLVideoElement | null>>
+    isUserPaused: boolean
+    setIsUserPaused: React.Dispatch<React.SetStateAction<boolean>>
     socket: Socket | null
     setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
     emitEvents: EmitEvent[]
@@ -44,6 +50,12 @@ const initialAppContext: AppContextType = {
     setDarkMode: defaultFunction,
     posts: [],
     setPosts: defaultFunction,
+    onViewVideos: [],
+    setOnViewVideos: defaultFunction,
+    playingVideo: null,
+    setPlayingVideo: defaultFunction,
+    isUserPaused: true,
+    setIsUserPaused: defaultFunction,
     socket: null,
     setSocket: defaultFunction,
     emitEvents: [],
@@ -69,6 +81,9 @@ function AppProvider({
     const [token, setToken] = useState<TokenResponse | null>(defaultValue.token)
     const [darkMode, setDarkMode] = useState<boolean>(defaultValue.darkMode)
     const [posts, setPosts] = useState<Post[]>(defaultValue.posts)
+    const [onViewVideos, setOnViewVideos] = useState<HTMLVideoElement[]>(defaultValue.onViewVideos)
+    const [playingVideo, setPlayingVideo] = useState<HTMLVideoElement | null>(defaultValue.playingVideo)
+    const [isUserPaused, setIsUserPaused] = useState<boolean>(defaultValue.isUserPaused)
     const [socket, setSocket] = useState<Socket | null>(defaultValue.socket)
     const [emitEvents, setEmitEvents] = useState<EmitEvent[]>(defaultValue.emitEvents)
     const [datingProfile, setDatingProfile] = useState<DatingProfile | null | undefined>(defaultValue.datingProfile)
@@ -101,6 +116,12 @@ function AppProvider({
                 setDarkMode,
                 posts,
                 setPosts,
+                onViewVideos,
+                setOnViewVideos,
+                playingVideo,
+                setPlayingVideo,
+                isUserPaused,
+                setIsUserPaused,
                 socket,
                 setSocket,
                 emitEvents,

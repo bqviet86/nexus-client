@@ -1,10 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser'
 import { Instance as TippyInstance } from 'tippy.js'
 import Tippy from '@tippyjs/react/headless'
 
+import PostContent from '~/components/PostContent'
 import MediasGrid from '~/components/MediasGrid'
 import Button from '~/components/Button'
 import PostForm from '~/components/PostForm'
@@ -30,7 +30,6 @@ function Post({ data, isParentPost = false }: PostProps) {
     const { instance: socket } = useSocket()
 
     const { user } = useContext(AppContext)
-    const [isShowMoreBtn, setIsShowMoreBtn] = useState<boolean>(false)
     const [isShowComment, setIsShowComment] = useState<boolean>(false)
     const [isLiked, setIsLiked] = useState<boolean>(isParentPost ? false : postData.is_liked)
     const [likeCount, setLikeCount] = useState<number>(postData.like_count)
@@ -40,42 +39,6 @@ function Post({ data, isParentPost = false }: PostProps) {
     const [mode, setMode] = useState<'edit_post' | 'share_post' | 'delete_post'>('edit_post')
     const [isOpenPostForm, setIsOpenPostForm] = useState<boolean>(false)
     const [isShowInputFile, setIsShowInputFile] = useState<boolean>(data.medias.length > 0)
-
-    const contentDivRef = useRef<HTMLDivElement>(null)
-
-    const parseOptions: HTMLReactParserOptions = {
-        replace: (domNode) => {
-            if (domNode instanceof Element) {
-                const { attribs, children } = domNode
-
-                if (attribs.class === 'text') {
-                    return (
-                        <span className='text-sm text-[#333] transition-all sm:text-[15px] dark:text-[#e4e6eb]'>
-                            {domToReact(children as DOMNode[], parseOptions)}
-                        </span>
-                    )
-                }
-
-                if (attribs.class === 'hashtag') {
-                    const hashtagName = domToReact(children as DOMNode[], parseOptions) as string
-                    return (
-                        <Link
-                            to={routes.hashtag.replace(':hashtag_name', hashtagName.slice(1))}
-                            className='text-sm text-[#1da1f2] transition-all hover:underline sm:text-[15px]'
-                        >
-                            {hashtagName}
-                        </Link>
-                    )
-                }
-            }
-        }
-    }
-
-    useEffect(() => {
-        if (contentDivRef.current && contentDivRef.current.clientHeight > 24 * 5) {
-            setIsShowMoreBtn(true)
-        }
-    }, [])
 
     const { mutate: mutateLikePost } = useMutation({
         mutationFn: (post_id: string) => likePost(post_id)
@@ -191,11 +154,11 @@ function Post({ data, isParentPost = false }: PostProps) {
                     <div className='ml-2 mr-auto flex flex-col'>
                         <Link
                             to={routes.profile.replace(':profile_id', data.user._id)}
-                            className='w-max text-sm font-medium transition-all sm:text-[15px] dark:text-[#e4e6eb]'
+                            className='w-max text-sm font-medium transition-all dark:text-[#e4e6eb] sm:text-[15px]'
                         >
                             {data.user.name}
                         </Link>
-                        <span className='text-xs transition-all sm:mt-0.5 sm:text-[13px] dark:text-[#b0b3b8]'>
+                        <span className='text-xs transition-all dark:text-[#b0b3b8] sm:mt-0.5 sm:text-[13px]'>
                             {formatTime(data.created_at, true)}
                         </span>
                     </div>
@@ -288,20 +251,7 @@ function Post({ data, isParentPost = false }: PostProps) {
                     )}
                 </div>
 
-                {data.content !== '<br>' && (
-                    <div ref={contentDivRef} className={`leading-6 mt-3${isShowMoreBtn ? ' line-clamp-5' : ''}`}>
-                        {parse(data.content, parseOptions)}
-                    </div>
-                )}
-
-                {isShowMoreBtn && (
-                    <span
-                        className='cursor-pointer text-sm font-medium leading-6 text-[#333] transition-all hover:underline dark:text-[#e4e6eb]'
-                        onClick={() => setIsShowMoreBtn(false)}
-                    >
-                        Xem thêm
-                    </span>
-                )}
+                {data.content && <PostContent content={data.content} />}
             </div>
 
             {data.medias.length ? (

@@ -1,8 +1,24 @@
+import { useEffect, useState } from 'react'
 import { Modal as AntdModal } from 'antd'
-import { ModalProps } from 'antd/lib/modal'
+import { ModalProps as AntdModalProps } from 'antd/lib/modal'
 import { isMobile } from 'react-device-detect'
+import { isBoolean } from 'lodash'
 
-function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) {
+type ModalProps = AntdModalProps & {
+    onOpen?: () => void
+    dating?: boolean
+}
+
+function Modal({ onOpen, dating = false, ...props }: ModalProps) {
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (isBoolean(props.open)) {
+            setIsOpen(props.open)
+            props.open && onOpen?.()
+        }
+    }, [props.open])
+
     return (
         <AntdModal
             centered
@@ -29,14 +45,16 @@ function Modal({ dating = false, ...props }: ModalProps & { dating?: boolean }) 
                     : 'border-[#d9d9d9] hover:!text-[#2997ff] hover:!border-[#2997ff]'
             }}
             {...props}
+            open={isOpen}
             className={`[&_.ant-modal-close]:right-3 [&_.ant-modal-close]:top-3 [&_.ant-modal-close]:h-[26px] [&_.ant-modal-close]:w-[26px] [&_.ant-modal-close]:hover:bg-transparent [&_.ant-modal-content]:p-2 [&_.ant-modal-header]:mb-3 [&_.ant-modal-header]:mt-1 [&_.ant-modal-header]:text-center [&_.ant-modal-title]:text-xl ${
                 dating
                     ? '!w-[calc(100%-32px)]'
                     : 'sm:[&_.ant-modal-close]:right-[18px] sm:[&_.ant-modal-close]:top-[18px] sm:[&_.ant-modal-close]:h-6 sm:[&_.ant-modal-close]:w-6 sm:[&_.ant-modal-content]:p-4 sm:[&_.ant-modal-header]:mb-4 sm:[&_.ant-modal-header]:mt-0'
             } ${props.className || ''}`}
-            afterOpenChange={(visible) =>
+            afterOpenChange={(visible) => {
+                props.afterOpenChange?.(visible)
                 document.documentElement.classList.toggle('overflow-y-hidden', visible && isMobile)
-            }
+            }}
         >
             <div className='border-t border-solid border-black/20 dark:border-white/20'>{props.children}</div>
         </AntdModal>

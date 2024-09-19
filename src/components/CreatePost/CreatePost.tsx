@@ -21,12 +21,7 @@ function CreatePost() {
         medias?: (Media | MediaWithFile)[]
     }) => {
         setIsOpenForm(true)
-
-        if (medias.length) {
-            setIsShowInputFile(true)
-        } else {
-            setIsShowInputFile(showInputFile)
-        }
+        medias.length ? setIsShowInputFile(true) : setIsShowInputFile(showInputFile)
     }
 
     const handleCloseForm = () => {
@@ -34,7 +29,7 @@ function CreatePost() {
     }
 
     return (
-        <div className='rounded-lg bg-white px-2 pt-2 transition-all sm:px-4 sm:pt-3 dark:bg-[#242526]'>
+        <div className='rounded-lg bg-white px-2 pt-2 transition-all dark:bg-[#242526] sm:px-4 sm:pt-3'>
             <div className='flex border-b border-solid border-b-[#bbb9b9] pb-2 sm:pb-3'>
                 <Link
                     to={routes.profile.replace(':profile_id', user?._id || '')}
@@ -50,7 +45,7 @@ function CreatePost() {
                     className='flex flex-1 cursor-pointer items-center rounded-full bg-[#eff0f2] px-6 py-2 transition-all hover:bg-[#e4e6e9] dark:bg-[#4e4f50]/70 dark:hover:bg-[#4e4f50]'
                     onClick={() => handleOpenForm({ showInputFile: false })}
                 >
-                    <span className='line-clamp-1 text-sm text-[#65676b] transition-all sm:text-base dark:text-[#b0b3b8]'>
+                    <span className='line-clamp-1 text-sm text-[#65676b] transition-all dark:text-[#b0b3b8] sm:text-base'>
                         Bạn đang nghĩ gì, {user?.name}?
                     </span>
                 </div>
@@ -98,7 +93,9 @@ function CreatePost() {
                 isOpenForm={isOpenForm}
                 isShowInputFile={isShowInputFile}
                 setIsShowInputFile={setIsShowInputFile}
-                onOpenForm={(medias) => handleOpenForm({ medias })}
+                onOpenForm={(medias) => {
+                    if (medias.length) handleOpenForm({ medias })
+                }}
                 onCloseForm={handleCloseForm}
             />
         </div>

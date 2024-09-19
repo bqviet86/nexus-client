@@ -453,6 +453,8 @@ export const NOTIFICATION_ITEMS: Record<NotificationType, NotificationItemsType>
     }
 }
 
+export const LEXICAL_POST_EDITOR_DEFAULT_CONTENT: string = '<p class="post-editor-paragraph"><br></p>'
+
 type DatingHeaderMenuItemType = {
     title: string
     path?: string

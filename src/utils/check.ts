@@ -31,14 +31,3 @@ export function isAccessTokenExpired(access_token: string): boolean {
     const { exp } = jwtDecode<TokenPayload>(access_token)
     return Date.now() >= exp * 1000
 }
-
-export function isHashtag(input: string): boolean {
-    if (input.startsWith('#')) {
-        const stringWithoutHash = input.slice(1)
-        const regex = /^[a-zA-Z0-9]+$/
-
-        return regex.test(stringWithoutHash)
-    }
-
-    return false
-}

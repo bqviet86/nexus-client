@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 :root {
     --text-color: #333;
-    --font-family: 'Poppins', 'IBM Plex Sans', sans-serif;
+    --font-family: 'Inter', 'IBM Plex Sans', sans-serif;
 }
 
 * {
@@ -72,12 +72,24 @@ a {
 }
 
 @layer components {
-    .text {
-        @apply text-lg text-[#333] sm:text-xl dark:text-[#e4e6eb];
+    .post-editor-paragraph {
+        @apply text-lg text-[#333] transition-all dark:text-[#e4e6eb] sm:text-xl;
     }
 
-    .hashtag {
-        @apply text-lg text-[#1da1f2] sm:text-xl;
+    .post-paragraph {
+        @apply text-sm text-[#333] transition-all dark:text-[#e4e6eb] sm:text-[15px] sm:leading-[1.5];
+    }
+
+    .post-paragraph + .post-paragraph {
+        @apply mt-2;
+    }
+
+    .post-editor-hashtag {
+        @apply bg-[#0866ff]/20 text-lg transition-all dark:bg-[#1d85fc]/45 sm:text-xl;
+    }
+
+    .post-hashtag {
+        @apply text-sm text-[#0064d1] transition-all hover:underline dark:text-[#5aa7ff] sm:text-[15px] sm:leading-[1.5];
     }
 
     .plyr__volume {

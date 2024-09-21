@@ -147,7 +147,7 @@ function PostComment({ postId }: PostCommentProps) {
     }, [socket])
 
     return (
-        <div className='border-t-[1px] border-solid border-[#ced0d4] py-2 transition-all sm:py-3 dark:border-[#3e4042]'>
+        <div className='border-t-[1px] border-solid border-[#ced0d4] py-2 transition-all dark:border-[#3e4042] sm:py-3'>
             {isFetchingComments ? (
                 <Loading className='w-full' loaderClassName='!text-[#65676b] dark:!text-[#e4e6eb]' />
             ) : (
@@ -229,7 +229,6 @@ function PostComment({ postId }: PostCommentProps) {
                                     ))}
 
                                 <CommentForm
-                                    mode='create'
                                     showInput={isShowReplyInput}
                                     postId={postId}
                                     parentId={comment._id}
@@ -245,7 +244,7 @@ function PostComment({ postId }: PostCommentProps) {
                         )
                     })}
 
-                    <CommentForm mode='create' postId={postId} replyInputRefs={replyInputRefs} />
+                    <CommentForm postId={postId} replyInputRefs={replyInputRefs} />
                 </>
             )}
         </div>

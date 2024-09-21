@@ -96,7 +96,9 @@ function PostForm({
                     return toastFileTooMax()
                 }
 
+                e.target.value = ''
                 mediasRef.current = newMedias
+
                 return newMedias
             })
         },
@@ -398,7 +400,7 @@ function PostForm({
 
                             {formType !== 'share_post' && isShowInputFile && (
                                 <div
-                                    className={`group relative aspect-[16/9] w-full rounded-lg border border-solid border-black/20 p-2 transition-all dark:border-white/20 ${
+                                    className={`aspect-[16/9] w-full rounded-lg border border-solid border-black/20 p-2 transition-all dark:border-white/20 ${
                                         medias.length ? 'h-auto' : 'h-[200px]'
                                     }`}
                                 >
@@ -409,72 +411,56 @@ function PostForm({
                                             handleUploadFile={handleUploadFile}
                                         />
                                     ) : (
-                                        <>
-                                            <div className='relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-[#eaebed]/60 transition-all group-hover:bg-[#d9dadc]/60 dark:bg-[#323436] dark:group-hover:bg-[#5a5b5c]/60'>
-                                                <div
-                                                    className='absolute right-2 top-2 z-50 h-6 w-6 cursor-pointer'
-                                                    onClick={() => setIsShowInputFile(false)}
+                                        <div className='relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-[#eaebed]/60 transition-all hover:bg-[#d9dadc]/60 dark:bg-[#323436] dark:hover:bg-[#5a5b5c]/60'>
+                                            <div
+                                                className='absolute right-2 top-2 z-50 h-6 w-6 cursor-pointer'
+                                                onClick={() => setIsShowInputFile(false)}
+                                            >
+                                                <svg
+                                                    className='h-full w-full text-[#8e8f91] transition-all hover:text-[#525151] dark:hover:text-[#c0bebe]'
+                                                    aria-hidden='true'
+                                                    xmlns='http://www.w3.org/2000/svg'
+                                                    fill='currentColor'
+                                                    viewBox='0 0 20 20'
                                                 >
+                                                    <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z' />
+                                                </svg>
+                                            </div>
+
+                                            <div className='flex justify-center'>
+                                                <div className='flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#d8dadf] transition-all group-hover:bg-[#c2c3c8]'>
                                                     <svg
-                                                        className='h-full w-full text-[#8e8f91] transition-all hover:text-[#525151] dark:hover:text-[#c0bebe]'
-                                                        aria-hidden='true'
+                                                        className='h-3/5 w-3/5'
+                                                        viewBox='0 0 24.00 24.00'
                                                         xmlns='http://www.w3.org/2000/svg'
-                                                        fill='currentColor'
-                                                        viewBox='0 0 20 20'
+                                                        fill='#000000'
                                                     >
-                                                        <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z' />
+                                                        <rect x='0' fill='none' width='24' height='24' />
+                                                        <g>
+                                                            <path d='M23 4v2h-3v3h-2V6h-3V4h3V1h2v3h3zm-8.5 7c.828 0 1.5-.672 1.5-1.5S15.328 8 14.5 8 13 8.672 13 9.5s.672 1.5 1.5 1.5zm3.5 3.234l-.513-.57c-.794-.885-2.18-.885-2.976 0l-.655.73L9 9l-3 3.333V6h7V4H6c-1.105 0-2 .895-2 2v12c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2v-7h-2v3.234z' />
+                                                        </g>
                                                     </svg>
-                                                </div>
-
-                                                <div className='flex justify-center'>
-                                                    <div className='flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#d8dadf] transition-all group-hover:bg-[#c2c3c8]'>
-                                                        <svg
-                                                            className='h-3/5 w-3/5'
-                                                            viewBox='0 0 24.00 24.00'
-                                                            xmlns='http://www.w3.org/2000/svg'
-                                                            fill='#000000'
-                                                            transform='rotate(0)'
-                                                        >
-                                                            <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
-                                                            <g
-                                                                id='SVGRepo_tracerCarrier'
-                                                                strokeLinecap='round'
-                                                                strokeLinejoin='round'
-                                                                stroke='#CCCCCC'
-                                                                strokeWidth='0.288'
-                                                            ></g>
-                                                            <g id='SVGRepo_iconCarrier'>
-                                                                <rect x='0' fill='none' width='24' height='24'></rect>
-                                                                <g>
-                                                                    <path d='M23 4v2h-3v3h-2V6h-3V4h3V1h2v3h3zm-8.5 7c.828 0 1.5-.672 1.5-1.5S15.328 8 14.5 8 13 8.672 13 9.5s.672 1.5 1.5 1.5zm3.5 3.234l-.513-.57c-.794-.885-2.18-.885-2.976 0l-.655.73L9 9l-3 3.333V6h7V4H6c-1.105 0-2 .895-2 2v12c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2v-7h-2v3.234z'></path>
-                                                                </g>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                </div>
-
-                                                <div className='text-center text-lg font-medium leading-6 text-black/60 transition-all dark:text-[#e4e6eb]'>
-                                                    Thêm ảnh/video
-                                                </div>
-
-                                                <div className='text-center text-xs text-[#949698] transition-all dark:text-[#e4e6eb]'>
-                                                    hoặc kéo và thả
                                                 </div>
                                             </div>
 
-                                            <label
-                                                htmlFor='upload-file-post'
-                                                className='absolute inset-0 cursor-pointer'
-                                            />
-                                            <input
-                                                id='upload-file-post'
-                                                type='file'
-                                                multiple
-                                                accept='image/*, video/*'
-                                                className='invisible block h-0 w-0'
-                                                onChange={handleUploadFile}
-                                            />
-                                        </>
+                                            <div className='text-center text-lg font-medium leading-6 text-black/60 transition-all dark:text-[#e4e6eb]'>
+                                                Thêm ảnh/video
+                                            </div>
+
+                                            <div className='text-center text-xs text-[#949698] transition-all dark:text-[#e4e6eb]'>
+                                                hoặc kéo và thả
+                                            </div>
+
+                                            <label className='absolute inset-0 cursor-pointer rounded-lg'>
+                                                <input
+                                                    type='file'
+                                                    multiple
+                                                    accept='image/*, video/*'
+                                                    className='invisible block h-0 w-0'
+                                                    onChange={handleUploadFile}
+                                                />
+                                            </label>
+                                        </div>
                                     )}
                                 </div>
                             )}

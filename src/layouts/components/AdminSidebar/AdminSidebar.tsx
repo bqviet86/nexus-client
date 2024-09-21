@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 
+import images from '~/assets/images'
 import { routes } from '~/config'
 import { ADMIN_SIDEBAR_ROUTES } from '~/constants/interfaceData'
 
@@ -7,7 +8,7 @@ function AdminSidebar() {
     return (
         <div className='sticky left-0 top-0 z-50 h-screen w-[280px] bg-[#1c2434] text-[#e4e6eb]'>
             <Link to={routes.home} className='mx-5 my-6 flex cursor-pointer items-center gap-2'>
-                <img src='/src/assets/images/logo-dark.png' alt='logo' className='h-16' />
+                <img src={images.logo_dark} alt='logo' className='h-16' />
                 <span className='text-4xl font-bold text-white'>Nexus</span>
             </Link>
 

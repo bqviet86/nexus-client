@@ -207,15 +207,15 @@ function MediasGrid({
                     className='relative mt-1.5 w-full !bg-[#e4e6e9] hover:!bg-[#cdced1] dark:!bg-[#212223] dark:hover:!bg-[#4e4f50]'
                 >
                     Thêm ảnh/video
-                    <label htmlFor='upload-file2' className='absolute inset-0 cursor-pointer' />
-                    <input
-                        id='upload-file2'
-                        type='file'
-                        multiple
-                        accept='image/*, video/*'
-                        className='invisible h-0 w-0'
-                        onChange={handleUploadFile}
-                    />
+                    <label className='absolute inset-0 cursor-pointer'>
+                        <input
+                            type='file'
+                            multiple
+                            accept='image/*, video/*'
+                            className='invisible h-0 w-0'
+                            onChange={handleUploadFile}
+                        />
+                    </label>
                 </Button>
             )}
         </>

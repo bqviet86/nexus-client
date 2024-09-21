@@ -12,8 +12,6 @@ import {
 import { vi } from 'date-fns/locale'
 
 import { ErrorObjResponse, ErrorResponse } from '~/types/response.types'
-import { Comment, CommentDetail } from '~/types/comments.types'
-import { Media } from '~/types/medias.types'
 
 export const numberEnumToArray = (numberEnum: { [key: string]: any }) => {
     return Object.values(numberEnum).filter((value) => typeof value === 'number') as number[]
@@ -58,33 +56,6 @@ export const formatTime: (time: string, extend?: boolean) => string = (time, ext
     })
 
     return extend ? result : result.replace('trước', '').trim()
-}
-
-export function renderCommentUpdated<T>({
-    comment,
-    parentId = '',
-    commentId,
-    newContent,
-    newMedia
-}: {
-    comment: T
-    parentId?: string
-    commentId: string
-    newContent: string
-    newMedia: Media | null
-}): T {
-    return (comment as any)._id === (parentId || commentId)
-        ? {
-              ...comment,
-              ...(parentId
-                  ? {
-                        children: (comment as CommentDetail).children.map((child) =>
-                            renderCommentUpdated<Comment>({ comment: child, commentId, newContent, newMedia })
-                        )
-                    }
-                  : { content: newContent, media: newMedia })
-          }
-        : comment
 }
 
 export function calculateAge(date_of_birth: string): number {

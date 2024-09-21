@@ -56,6 +56,7 @@ function UpdateProfile() {
                 const result = response.data.result as Media
                 const newAvatar = result.url.split('/').slice(-1)[0]
 
+                e.target.value = ''
                 toast.success('Cập nhật ảnh đại diện thành công!')
                 setUser((prev) => ({ ...(prev as User), avatar: newAvatar }))
                 setProfile((prev) => ({ ...(prev as User), avatar: newAvatar }))
@@ -108,24 +109,24 @@ function UpdateProfile() {
 
                     <div className='invisible absolute inset-0 z-10 flex cursor-pointer items-center justify-center rounded-full bg-white/30 opacity-0 transition-all group-hover:visible group-hover:opacity-100 dark:bg-black/30'>
                         <svg
-                            className='h-10 w-10 text-black/70 transition-all'
+                            className='h-10 w-10 text-black/70 transition-all dark:text-white/70'
                             stroke='currentColor'
                             fill='currentColor'
                             strokeWidth='0'
                             viewBox='0 0 1024 1024'
                             xmlns='http://www.w3.org/2000/svg'
                         >
-                            <path d='M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z'></path>
+                            <path d='M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z' />
                         </svg>
 
-                        <label htmlFor='upload-avatar' className='absolute inset-0 cursor-pointer rounded-full' />
-                        <input
-                            id='upload-avatar'
-                            type='file'
-                            accept='image/*'
-                            className='invisible block h-0 w-0'
-                            onChange={handleUploadAvatar}
-                        />
+                        <label className='absolute inset-0 cursor-pointer rounded-full'>
+                            <input
+                                type='file'
+                                accept='image/*'
+                                className='invisible block h-0 w-0'
+                                onChange={handleUploadAvatar}
+                            />
+                        </label>
                     </div>
                 </div>
 
@@ -136,7 +137,7 @@ function UpdateProfile() {
                 <p className='line-clamp-1 text-xl dark:text-[#e4e6eb]'>({profile.email})</p>
             </div>
 
-            <div className='w-[500px] max-w-full rounded-lg bg-[#d7dae0] p-5 lg:mx-auto lg:w-[600px] dark:bg-[#242526]'>
+            <div className='w-[500px] max-w-full rounded-lg bg-[#d7dae0] p-5 dark:bg-[#242526] lg:mx-auto lg:w-[600px]'>
                 <h3 className='my-4 text-center text-2xl font-semibold dark:text-[#e4e6eb]'>Cập nhật trang cá nhân</h3>
 
                 <form className='[&>div:not(:first-child)]:mt-5' onSubmit={handleUpdateMyProfile}>
@@ -209,7 +210,7 @@ function UpdateProfile() {
                                         date_of_birth: new Date(value.$d as string).toISOString()
                                     }))
                                 }
-                                className='h-10 w-full rounded-lg border border-solid border-[#ddd] bg-white px-2 py-1 text-[14px] !shadow-none transition-all lg:h-11 lg:px-3 lg:py-2 lg:text-base dark:border-white/70 dark:bg-[#4e4f50]/70 dark:text-[#e4e6eb] dark:hover:border-[#9b7cee] [&>*>input::placeholder]:!text-[#9ca3af] [&>*>input]:!text-[14px] [&>*>input]:!text-[#333] lg:[&>*>input]:!text-base dark:[&>*>input]:!text-white/70'
+                                className='h-10 w-full rounded-lg border border-solid border-[#ddd] bg-white px-2 py-1 text-[14px] !shadow-none transition-all dark:border-white/70 dark:bg-[#4e4f50]/70 dark:text-[#e4e6eb] dark:hover:border-[#9b7cee] lg:h-11 lg:px-3 lg:py-2 lg:text-base [&>*>input::placeholder]:!text-[#9ca3af] [&>*>input]:!text-[14px] [&>*>input]:!text-[#333] dark:[&>*>input]:!text-white/70 lg:[&>*>input]:!text-base'
                             />
                             {formError.date_of_birth && (
                                 <div className='mt-1 pl-2 text-[13px] text-red-500 lg:pl-3'>

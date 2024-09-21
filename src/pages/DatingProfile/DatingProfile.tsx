@@ -69,6 +69,7 @@ function DatingProfile() {
         const response = await mutateUploadImage(formData)
         const avatar = (response.data.result as Media[])[0]?.url.split('/').slice(-1)[0]
 
+        e.target.value = ''
         mutateUpdateDatingProfile({ avatar })
     }
 
@@ -92,6 +93,7 @@ function DatingProfile() {
             ...(profile as DatingProfileType).images
         ]
 
+        e.target.value = ''
         mutateUpdateDatingProfile({ images })
     }
 
@@ -127,14 +129,14 @@ function DatingProfile() {
                                 <path d='M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z' />
                             </svg>
 
-                            <label htmlFor='upload-avatar-dating' className='absolute inset-0 cursor-pointer' />
-                            <input
-                                id='upload-avatar-dating'
-                                type='file'
-                                accept='image/*'
-                                className='invisible block h-0 w-0'
-                                onChange={handleUploadAvatar}
-                            />
+                            <label className='absolute inset-0 cursor-pointer'>
+                                <input
+                                    type='file'
+                                    accept='image/*'
+                                    className='invisible block h-0 w-0'
+                                    onChange={handleUploadAvatar}
+                                />
+                            </label>
                         </div>
                     )}
                 </div>

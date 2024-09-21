@@ -13,10 +13,9 @@ import { AppContext } from '~/contexts/appContext'
 import { useSocket } from '~/hooks'
 import { Comment, CommentDetail } from '~/types/comments.types'
 import { Media, MediaWithFile } from '~/types/medias.types'
-import { renderCommentUpdated } from '~/utils/handle'
 
 type CommentFormProps = {
-    mode: 'create' | 'edit'
+    mode?: 'create' | 'edit'
     showInput?: boolean
     postId: string
     parentId?: string
@@ -29,7 +28,7 @@ type CommentFormProps = {
 }
 
 function CommentForm({
-    mode,
+    mode = 'create',
     showInput = true,
     postId,
     parentId = '',
@@ -63,6 +62,7 @@ function CommentForm({
             type: MediaTypes.Image,
             file: files[0]
         })
+        e.target.value = ''
     }
 
     useEffect(() => {
@@ -134,18 +134,54 @@ function CommentForm({
             media: mediaRes && { ...mediaRes, url: mediaRes.url.split('/').slice(-1)[0] }
         })
 
-        setIsEditMode(false)
-        setComments((prevComments) =>
-            prevComments.map((comment) => {
-                const { result } = updateCommentRes.data
-                const newContent = result?.content as string
-                const newMedia = result?.media as Media | null
+        const renderCommentUpdated = <T,>({
+            currentComment,
+            updateCommentId,
+            parentCommentId = '',
+            updateData
+        }: {
+            currentComment: T
+            updateCommentId: string
+            parentCommentId?: string
+            updateData: { content: string; media: Media | null }
+        }): T => {
+            const currentCommentId = (currentComment as any)._id as string
 
-                return parentId
-                    ? renderCommentUpdated<CommentDetail>({ comment, parentId, commentId, newContent, newMedia })
-                    : renderCommentUpdated<CommentDetail>({ comment, commentId, newContent, newMedia })
-            })
-        )
+            if (currentCommentId === updateCommentId) {
+                return {
+                    ...currentComment,
+                    ...updateData
+                }
+            } else if (currentCommentId === parentCommentId) {
+                return {
+                    ...currentComment,
+                    children: (currentComment as CommentDetail).children.map((child) =>
+                        renderCommentUpdated({
+                            currentComment: child,
+                            updateCommentId,
+                            parentCommentId,
+                            updateData
+                        })
+                    )
+                }
+            }
+
+            return currentComment
+        }
+
+        setIsEditMode(false)
+        setComments((prevComments) => {
+            const { content, media } = updateCommentRes.data.result as Comment
+
+            return prevComments.map((comment) =>
+                renderCommentUpdated({
+                    currentComment: comment,
+                    updateCommentId: commentId,
+                    parentCommentId: parentId,
+                    updateData: { content, media }
+                })
+            )
+        })
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -213,7 +249,10 @@ function CommentForm({
                                     />
                                 ) : (
                                     <>
-                                        <label htmlFor={`upload-image-comment-${parentId}`} className='cursor-pointer'>
+                                        <label
+                                            htmlFor={`upload-image-comment-${parentId || postId}`}
+                                            className='cursor-pointer'
+                                        >
                                             <svg
                                                 className='h-[20px] w-[20px] text-[#bec3c9] transition-all hover:text-[#65676b] dark:hover:text-[#e4e6eb]'
                                                 aria-hidden='true'
@@ -237,7 +276,7 @@ function CommentForm({
                                         </label>
 
                                         <input
-                                            id={`upload-image-comment-${parentId}`}
+                                            id={`upload-image-comment-${parentId || postId}`}
                                             type='file'
                                             accept='image/*'
                                             className='invisible block h-0 w-0'

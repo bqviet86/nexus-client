@@ -3,7 +3,7 @@ import { MediaProviderInstance } from '@vidstack/react'
 
 import { AppContext } from '~/contexts/appContext'
 
-type useVideoPlayerProps = {
+type UseVideoPlayerProps = {
     videoProviderRef: React.RefObject<MediaProviderInstance>
     options?: IntersectionObserverInit
 }
@@ -15,7 +15,7 @@ function useVideoPlayer({
         rootMargin: '0px',
         threshold: 0.5
     }
-}: useVideoPlayerProps) {
+}: UseVideoPlayerProps) {
     const { onViewVideos, setOnViewVideos, playingVideo, setPlayingVideo, isUserPaused, setIsUserPaused } =
         useContext(AppContext)
     const [isOnView, setIsOnView] = useState<boolean>(false)

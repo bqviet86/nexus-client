@@ -70,7 +70,7 @@ function PostForm({
             if (!files) return
 
             const toastFileTooMax = () => {
-                toast(`Bạn chỉ có thể đăng tối đa ${MEDIAS_MAX_LENGTH} ảnh + video (tối đa 1 video) trong một bài viết`)
+                toast(`Bạn chỉ có thể đăng ${MEDIAS_MAX_LENGTH} phương tiện (tối đa 1 video) trong bài viết`)
                 return medias
             }
 
@@ -400,7 +400,7 @@ function PostForm({
 
                             {formType !== 'share_post' && isShowInputFile && (
                                 <div
-                                    className={`aspect-[16/9] w-full rounded-lg border border-solid border-black/20 p-2 transition-all dark:border-white/20 ${
+                                    className={`flex w-full flex-col items-center justify-center rounded-lg border border-solid border-black/20 p-2 transition-all dark:border-white/20 ${
                                         medias.length ? 'h-auto' : 'h-[200px]'
                                     }`}
                                 >

@@ -11,7 +11,7 @@ type LoadingProps = {
 function Loading({ className, loaderClassName, loaderSize = 24 }: LoadingProps) {
     return (
         <Spin
-            className={className}
+            className={`flex items-center justify-center ${className || ''}`}
             indicator={
                 <LoadingOutlined
                     spin

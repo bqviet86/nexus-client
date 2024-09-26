@@ -18,6 +18,11 @@ export enum MediaTypes {
     Video = 'video'
 }
 
+export enum MediaLayout {
+    Vertical = 'vertical',
+    Horizontal = 'horizontal'
+}
+
 export enum VideoEncodingStatus {
     Pending = 'pending',
     Processing = 'processing',

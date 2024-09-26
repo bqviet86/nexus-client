@@ -286,20 +286,36 @@ export const HEADER_MENU_ITEMS_LOGGED_IN_MOBILE: HeaderMenuItemType[] = [
 
 export const MEDIAS_MAX_LENGTH: number = 5
 
-export const MEDIAS_GRID_TEMPLATE_AREAS: Record<number, string> = {
-    1: 'grid-areas-medias-1',
-    2: 'grid-areas-medias-2',
-    3: 'grid-areas-medias-3',
-    4: 'grid-areas-medias-4',
-    5: 'grid-areas-medias-5'
+export const MEDIAS_GRID_TEMPLATE_VERTICAL: Record<number, string> = {
+    1: 'grid-cols-vertical-medias-1 grid-rows-vertical-medias-1 grid-areas-vertical-medias-1',
+    2: 'grid-cols-vertical-medias-2 grid-rows-vertical-medias-2 grid-areas-vertical-medias-2',
+    3: 'grid-cols-vertical-medias-3 grid-rows-vertical-medias-3 grid-areas-vertical-medias-3',
+    4: 'grid-cols-vertical-medias-4 grid-rows-vertical-medias-4 grid-areas-vertical-medias-4',
+    5: 'grid-cols-vertical-medias-5 grid-rows-vertical-medias-5 grid-areas-vertical-medias-5'
+}
+
+export const MEDIAS_GRID_TEMPLATE_VERTICAL_BALANCED: Record<number, string> = {
+    3: 'grid-cols-vertical-balance-medias-3 grid-rows-vertical-balance-medias-3 grid-areas-vertical-balance-medias-3'
+}
+
+export const MEDIAS_GRID_TEMPLATE_HORIZONTAL: Record<number, string> = {
+    1: 'grid-cols-horizontal-medias-1 grid-rows-horizontal-medias-1 grid-areas-horizontal-medias-1',
+    2: 'grid-cols-horizontal-medias-2 grid-rows-horizontal-medias-2 grid-areas-horizontal-medias-2',
+    3: 'grid-cols-horizontal-medias-3 grid-rows-horizontal-medias-3 grid-areas-horizontal-medias-3',
+    4: 'grid-cols-horizontal-medias-4 grid-rows-horizontal-medias-4 grid-areas-horizontal-medias-4',
+    5: 'grid-cols-horizontal-medias-5 grid-rows-horizontal-medias-5 grid-areas-horizontal-medias-5'
+}
+
+export const MEDIAS_GRID_TEMPLATE_HORIZONTAL_BALANCED: Record<number, string> = {
+    3: 'grid-cols-horizontal-balance-medias-3 grid-rows-horizontal-balance-medias-3 grid-areas-horizontal-balance-medias-3'
 }
 
 export const MEDIAS_GRID_AREA: Record<number, string> = {
-    1: 'grid-in-media-1',
-    2: 'grid-in-media-2',
-    3: 'grid-in-media-3',
-    4: 'grid-in-media-4',
-    5: 'grid-in-media-5'
+    1: 'grid-in-m-1',
+    2: 'grid-in-m-2',
+    3: 'grid-in-m-3',
+    4: 'grid-in-m-4',
+    5: 'grid-in-m-5'
 }
 
 export type NotificationItemType = { title: string; icon: JSX.Element; color: string }
